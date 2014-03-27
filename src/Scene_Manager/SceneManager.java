@@ -24,8 +24,6 @@ public class SceneManager
 		m_SceneGraph = new ArrayList<Scene>();
 		m_ItemList = new ArrayList<Item>();
 		player = new Player();
-		
-		testPopulate();
 	}
 	
 	public Scene addScene()
@@ -58,10 +56,5 @@ public class SceneManager
 	{
 		return m_SceneGraph;
 	}
-	
-	public void testPopulate ()
-	{
-		for (int i = 0; i < 10; i ++)
-			m_ItemList.add(new Item ("Test" + i, "Test" ));
-	}
+
 }
