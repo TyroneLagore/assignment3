@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import Game_System.GameSystem;
 import Panels.ItemManagerPanel;
 import Panels.SceneManagerPanel;
+import TableModels.*;
 
 import javax.swing.*;
 
@@ -22,10 +23,10 @@ import javax.swing.JPanel;
  * @author Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
-public class MainWindow {
+public class MainWindow extends JFrame{
 
 	/* Private Variables for Main Window */
-	private JFrame frame;
+	
 	private GameSystem m_MainSystem;
 	private SceneManagerPanel m_SceneMngrPnl;
 	private ItemManagerPanel m_ItemMngrPnl;
@@ -35,6 +36,8 @@ public class MainWindow {
 	private JMenuItem mntmLoad;
 	private JMenuItem mntmQuit;
 	private JTable itemTable, sceneTable;
+	private ItemTableModel m_ItemTableModel;
+	private SceneTableModel m_SceneTableModel;
 
 	// ================== Inner Class ==============================
 	public class MenuHandler implements ActionListener {
@@ -65,28 +68,28 @@ public class MainWindow {
 	}
 
 	// =============================================================
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow window = new MainWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
+	public void run()
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
+					setVisible(true);
+				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
 		});
 	}
-
+	
+	
 	/**
 	 * Create the application.
 	 */
-	public MainWindow(/* GameSystem mainSystem */) {
-		// m_MainSystem = mainSystem;
+	public MainWindow( GameSystem mainSystem ) {
+		m_MainSystem = mainSystem;
 		initialize();
 	}
 
@@ -94,17 +97,16 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		itemTable = new JTable();
-		sceneTable = new JTable();
+		itemTable = new JTable( m_MainSystem.getItemTableModel() );
+		sceneTable = new JTable( m_MainSystem.getSceneTableModel() );
 		
 		MenuHandler btnHandler = new MenuHandler(this);
 		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 448, 296);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 448, 296);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		setJMenuBar(menuBar);
 
 		mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -122,10 +124,10 @@ public class MainWindow {
 		mnFile.add(mntmQuit);
 
 		m_MainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		frame.getContentPane().add(m_MainTabbedPane, BorderLayout.CENTER);
+		getContentPane().add(m_MainTabbedPane, BorderLayout.CENTER);
 		
-				m_SceneMngrPnl = new SceneManagerPanel(sceneTable);
-				m_MainTabbedPane.addTab("Scenes", null, m_SceneMngrPnl, null);
+		m_SceneMngrPnl = new SceneManagerPanel(sceneTable);
+		m_MainTabbedPane.addTab("Scenes", null, m_SceneMngrPnl, null);
 
 		m_ItemMngrPnl = new ItemManagerPanel(itemTable);
 		m_MainTabbedPane.addTab("Items", null, m_ItemMngrPnl, null);

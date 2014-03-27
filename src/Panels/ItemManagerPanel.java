@@ -6,7 +6,7 @@ import javax.swing.JButton;
 import net.miginfocom.swing.MigLayout;
 import java.awt.event.*;
 
-
+//This better fucking work
 /**
  * Panel used for monitoring/managing Items.
  *

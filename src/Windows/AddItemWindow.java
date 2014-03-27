@@ -3,33 +3,17 @@ package Windows;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-public class ItemManagerWindow {
+public class AddItemWindow {
 
 	private JFrame	frame;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main( String[] args )
-	{
-		EventQueue.invokeLater( new Runnable( ) {
-			public void run( )
-			{
-				try {
-					ItemManagerWindow window = new ItemManagerWindow( );
-					window.frame.setVisible( true );
-				}
-				catch( Exception e ) {
-					e.printStackTrace( );
-				}
-			}
-		} );
-	}
-
 	/**
 	 * Create the application.
 	 */
-	public ItemManagerWindow( )
+	public AddItemWindow( )
 	{
 		initialize( );
 	}
