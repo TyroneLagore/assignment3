@@ -1,8 +1,6 @@
 package Panels;
 
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JButton;
+import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
 import java.awt.event.*;
 
@@ -42,7 +40,7 @@ public class ItemManagerPanel extends JPanel {
 
 		ItemManagerButtonHandler btnHandler = new ItemManagerButtonHandler(this);
 		setLayout(new MigLayout("", "[grow][][][][][][][][][][][][][][][][][][grow]", "[grow,top][][grow][][][][][grow]"));
-	
+		
 		m_ItemsTable = itemsTable;
 		add(m_ItemsTable, "cell 0 0 6 10,grow");
 		
