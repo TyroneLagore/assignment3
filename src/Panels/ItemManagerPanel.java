@@ -3,8 +3,9 @@ package Panels;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import net.miginfocom.swing.MigLayout;
+import java.awt.event.*;
+
 
 /**
  * Panel used for monitoring/managing Items.
@@ -18,28 +19,39 @@ public class ItemManagerPanel extends JPanel {
 	private JButton 	m_RmvItmBtn;
 	private JButton 	m_AddItmBtn;
 
+	
+	public class ItemManagerButtonHandler implements ActionListener {
+		private ItemManagerPanel parent;
+
+		public ItemManagerButtonHandler(ItemManagerPanel parent) {
+			this.parent = parent;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) 
+		{
+			/* TODO button handling goes here */
+		}
+	}
+
 	/**
 	 * Create the panel.
 	 */
-	public ItemManagerPanel( )
+	public ItemManagerPanel( JTable itemsTable )
 	{
-		setLayout(null);
-		
-		m_ItemsTable = new JTable();
-		m_ItemsTable.setBounds(10, 287, 299, -276);
-		add(m_ItemsTable);
+
+		ItemManagerButtonHandler btnHandler = new ItemManagerButtonHandler(this);
+		setLayout(new MigLayout("", "[grow][][][][][][][][][][][][][][][][][][grow]", "[grow,top][][grow][][][][][grow]"));
+	
+		m_ItemsTable = itemsTable;
+		add(m_ItemsTable, "cell 0 0 6 10,grow");
 		
 		m_AddItmBtn = new JButton("Add Item");
-		m_AddItmBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		m_AddItmBtn.setBounds(327, 11, 113, 23);
-		add(m_AddItmBtn);
-		
-		m_RmvItmBtn = new JButton("Remove Item");
-		m_RmvItmBtn.setBounds(327, 45, 113, 23);
-		add(m_RmvItmBtn);
+		m_AddItmBtn.addActionListener(btnHandler);
+		add(m_AddItmBtn, "flowy,cell 7 0,growx");
 
+		m_RmvItmBtn = new JButton("Remove Item");
+		m_RmvItmBtn.addActionListener(btnHandler);
+		add(m_RmvItmBtn, "cell 7 0,growx");
 	}
 }
