@@ -3,6 +3,7 @@ package Windows;
 import java.awt.*;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import Game_System.GameSystem;
 import Panels.ItemManagerPanel;
@@ -19,6 +20,14 @@ import javax.swing.JPanel;
 /**
  * Main Window object for displaying the majority of the game editor
  * functionality.
+ * 
+ * 
+ * Useful JFrame calls: 		
+		JOptionPane.showMessageDialog(Window calling, String);
+ * 			- Displays the selected string, and halts the process of the calling window
+ * 				until it is dealt with.
+ * 
+ * 		
  * 
  * @author Team Smart Water
  * @version v1.0 - Mar 25, 2014
@@ -51,19 +60,25 @@ public class MainWindow extends JFrame{
 		public void actionPerformed(ActionEvent e) 
 		{
 			if (e.getSource().equals(mntmSave))
-			{
+				saveProject();
 				/* TODO add save functionality */
-			}
 			else if (e.getSource().equals(mntmLoad))
-			{
-				/* TODO add load functionality */
-			}
-			else if (e.getSource().equals(mntmQuit))
-			{
-				/* TODO add quit functionality */
-			}
+				loadProject();
 			
-
+			else if (e.getSource().equals(mntmQuit))
+				switch (quitSelected())
+				{
+					case 0:
+						saveProject();  // intentionally left out break
+					case 1:
+						closeWindow();
+						break;			// 0 = save
+					case 2:				// 1 = don't save
+						break;			// 2 = cancel
+					default:
+						break;
+				};
+				/* TODO add quit functionality */
 		}
 	}
 
@@ -92,11 +107,89 @@ public class MainWindow extends JFrame{
 		m_MainSystem = mainSystem;
 		initialize();
 	}
+	
+	/**
+	 * Name: loadProject
+	 * Purpose: Load has been selected, opens the window explorer for the user
+	 * 	to select a file to load.
+	 * 
+	 */
+	public void loadProject()
+	{
+		String fileName = getFileName(FileDialog.LOAD);
+		
+		/* XXX for testing purposes - remove later */
+		JOptionPane.showMessageDialog(this,"Selected file was: " + fileName);
+	}
+	
+	/**
+	 * Name: saveProject
+	 * Purpose: Save has been selected, opens the window explorer for the user
+	 * 	to select a file (or enter a filename) that they would like to save as.
+	 * 
+	 */
+	public void saveProject()
+	{
+		String fileName = getFileName(FileDialog.SAVE);
+		
+		/* XXX for testing purposes - remove later */
+		JOptionPane.showMessageDialog(this,"Selected file was: " + fileName);
+		/* TODO Implement this: m_MainSystem.saveSceneManager( fileGetter.getFile() ); */
+	}
+	
+	/**
+	 * Name: quitSelected
+	 * Purpose: Quit has been selected from the main menu.  Prompts the user to see
+	 *  if they would like to save or not.
+	 */
+	public int quitSelected()
+	{
+		Object[] options = {"Yes", "No", "Cancel"};
+		
+		return JOptionPane.showOptionDialog(this, 
+				"Would you like to save before Quitting?", 
+				"Exit", 
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, 
+				options, options[0]);
+	}
+	
+	/* XXX could implement if we need to use multiple
+	private int getYesNo(Component parent, String prompt, String title)
+	{
+		Object[] options = {"Yes", "No"};
+		return JOptionPane.showOptionDialog(parent, prompt, title, 
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, 
+				options, options[0]);
+	}
+	*/
+	
+	
+	/*
+	 * Opens the window explorer and returns the string of the file
+	 * that was selected by the user.
+	 */
+	
+	public String getFileName(int dialogueType)
+	{
+		FileDialog fileGetter = new FileDialog(this);
+		fileGetter.setMode(dialogueType);
+		fileGetter.setVisible(true);
+
+		
+		return fileGetter.getFile();	
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				closeWindow();
+			}
+		});
+		
 		itemTable = new JTable( m_MainSystem.getItemTableModel() );
 		itemTable.setLocation(341, 96);
 		sceneTable = new JTable( m_MainSystem.getSceneTableModel() );
@@ -132,5 +225,11 @@ public class MainWindow extends JFrame{
 
 		m_ItemMngrPnl = new ItemManagerPanel(m_MainSystem.getItemTableModel());
 		m_MainTabbedPane.addTab("Items", null, m_ItemMngrPnl, null);
+	}
+	
+	private void closeWindow()
+	{
+		setVisible(false);
+		dispose();
 	}
 }
