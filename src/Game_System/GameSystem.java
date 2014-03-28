@@ -25,10 +25,10 @@ public class GameSystem
 	
 	public GameSystem()
 	{
-		m_MainWindow = new MainWindow(this);
 		m_SceneManager = new SceneManager();
 		m_ItemTableModel = new ItemTableModel ( grabItemList() );
 		m_SceneTableModel = new SceneTableModel ( grabSceneGraph() );
+		m_MainWindow = new MainWindow(this);
 	}
 	
 	public void run()

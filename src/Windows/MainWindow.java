@@ -98,11 +98,12 @@ public class MainWindow extends JFrame{
 	 */
 	private void initialize() {
 		itemTable = new JTable( m_MainSystem.getItemTableModel() );
+		itemTable.setLocation(341, 96);
 		sceneTable = new JTable( m_MainSystem.getSceneTableModel() );
 		
 		MenuHandler btnHandler = new MenuHandler(this);
 		
-		setBounds(100, 100, 448, 296);
+		setBounds(100, 100, 800, 640);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -129,8 +130,7 @@ public class MainWindow extends JFrame{
 		m_SceneMngrPnl = new SceneManagerPanel(sceneTable);
 		m_MainTabbedPane.addTab("Scenes", null, m_SceneMngrPnl, null);
 
-		m_ItemMngrPnl = new ItemManagerPanel(itemTable);
+		m_ItemMngrPnl = new ItemManagerPanel(m_MainSystem.getItemTableModel());
 		m_MainTabbedPane.addTab("Items", null, m_ItemMngrPnl, null);
 	}
-
 }

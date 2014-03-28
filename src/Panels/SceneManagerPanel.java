@@ -17,54 +17,49 @@ import net.miginfocom.swing.MigLayout;
  * @version v1.0 - Mar 25, 2014
  */
 public class SceneManagerPanel extends JPanel {
-	private JButton m_EdtScnBtn;
 	private JButton m_RmvScnBtn;
 	private JButton m_AddScnBtn;
 	private JTable m_SceneTable;
-	
-	/* Private Variables of this Panel */
-	/* private JTable 		m_SceneTable;
 	private JButton m_EdtScnBtn;
-	private JButton m_RmvScnBtn;
-	private JButton m_AddScnBtn;*/
-
 	
-	public class SceneManagerButtonHandler implements ActionListener {
-		private SceneManagerPanel parent;
+	
+	public class ButtonHandler implements ActionListener {
+		private SceneManagerPanel scenePanel;
 
-		public SceneManagerButtonHandler(SceneManagerPanel parent) {
-			this.parent = parent;
+		public ButtonHandler (SceneManagerPanel scenePanel) {
+			this.scenePanel = scenePanel;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) 
+		public void actionPerformed(ActionEvent e) 
 		{
-			/* TODO button handling goes here */
 		}
 	}
-	
 	/**
 	 * Create the panel.
 	 */
 	public SceneManagerPanel(JTable scenesTable )
 	{
-		SceneManagerButtonHandler btnHandler = new SceneManagerButtonHandler(this);
-		setLayout(new MigLayout("", "[grow][][][][][][][][][][][][][][][][][][grow]", "[grow,top][][grow][][][][][grow]"));
 
+		ButtonHandler btnHandler = new ButtonHandler(this);
+		
 		m_SceneTable = scenesTable;
 		add(m_SceneTable, "cell 0 0 6 10,grow");
 		
 		m_AddScnBtn = new JButton("Add Scene");
+		m_AddScnBtn.setBounds(133, 7, 103, 23);
 		m_AddScnBtn.addActionListener(btnHandler);
-		add(m_AddScnBtn, "flowy,cell 7 0,growx");
+		setLayout(null);
+		add(m_AddScnBtn);
 
 		m_RmvScnBtn = new JButton("Remove Scene");
+		m_RmvScnBtn.setBounds(133, 34, 103, 23);
 		m_RmvScnBtn.addActionListener(btnHandler);
-		add(m_RmvScnBtn, "cell 7 0,growx");
+		add(m_RmvScnBtn);
 		
 		m_EdtScnBtn = new JButton("Edit Scene");
-		m_EdtScnBtn.addActionListener(btnHandler);
-		add(m_EdtScnBtn, "cell 7 0,growx");
+		m_EdtScnBtn.setBounds(133, 61, 103, 23);
+		add(m_EdtScnBtn);
 
 	}
 }
