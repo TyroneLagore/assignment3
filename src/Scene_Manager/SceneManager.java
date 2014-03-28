@@ -28,7 +28,7 @@ public class SceneManager
 	
 	public Scene addScene()
 	{
-		return new Scene();
+		return new Scene("Test", "Test");
 	}
 	
 	

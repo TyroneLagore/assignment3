@@ -66,18 +66,7 @@ public class MainWindow extends JFrame{
 				loadProject();
 			
 			else if (e.getSource().equals(mntmQuit))
-				switch (quitSelected())
-				{
-					case 0:
-						saveProject();  // intentionally left out break
-					case 1:
-						closeWindow();
-						break;			// 0 = save
-					case 2:				// 1 = don't save
-						break;			// 2 = cancel
-					default:
-						break;
-				};
+				verifyQuit();
 				/* TODO add quit functionality */
 		}
 	}
@@ -106,6 +95,28 @@ public class MainWindow extends JFrame{
 	public MainWindow( GameSystem mainSystem ) {
 		m_MainSystem = mainSystem;
 		initialize();
+	}
+	
+	/**
+	 * Name: verifyQuit
+	 * 
+	 * Purpose: Verifies that the user wants to exit, and asks if they
+	 *  would like to save.
+	 */
+	public void verifyQuit()
+	{
+		switch (quitSelected())
+		{
+			case 0:
+				saveProject();  // intentionally left out break
+			case 1:
+				closeWindow();
+				break;			// 0 = save
+			case 2:				// 1 = don't save
+				break;			// 2 = cancel
+			default:
+				break;
+		};
 	}
 	
 	/**
@@ -186,7 +197,7 @@ public class MainWindow extends JFrame{
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				closeWindow();
+				verifyQuit();
 			}
 		});
 		
