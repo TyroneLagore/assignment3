@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 
+import Scene_Manager.Scene;
+import Windows.EditSceneWindow;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -31,9 +33,41 @@ public class SceneManagerPanel extends JPanel {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) 
+		public void actionPerformed(ActionEvent btnPressed) 
 		{
-		}
+			if (btnPressed.getSource().equals(m_RmvScnBtn))
+				removeSceneClicked();
+			else if (btnPressed.getSource().equals(m_AddScnBtn))
+				addSceneClicked();
+			else if (btnPressed.getSource().equals(m_EdtScnBtn))
+				editSceneClicked();
+		}		
+	}
+	
+	/**
+	 * 
+	 */
+	public void removeSceneClicked()
+	{
+		// TODO implement
+	}
+	
+	/**
+	 * 
+	 */
+	public void addSceneClicked()
+	{
+		// TODO implement
+	}
+	
+	/**
+	 * 
+	 */
+	public void editSceneClicked()
+	{
+		// TODO implement
+		EditSceneWindow esw = new EditSceneWindow( new Scene("testTitle", "testDescription"));
+		esw.run();
 	}
 	/**
 	 * Create the panel.
@@ -59,6 +93,7 @@ public class SceneManagerPanel extends JPanel {
 		
 		m_EdtScnBtn = new JButton("Edit Scene");
 		m_EdtScnBtn.setBounds(133, 61, 103, 23);
+		m_EdtScnBtn.addActionListener(btnHandler);
 		add(m_EdtScnBtn);
 
 	}
