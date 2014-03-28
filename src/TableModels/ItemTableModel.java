@@ -8,7 +8,7 @@ import Game_System.*;
 public class ItemTableModel extends AbstractTableModel
 {
 	private String[] headers = { "Name","Description","SceneConnectedTo" };
-	private ArrayList<Item> m_itemList;
+	private ArrayList<Item> m_ItemList;
 	
 	// Constant Variables
 	private static final int NAME 		= 0;
@@ -18,20 +18,36 @@ public class ItemTableModel extends AbstractTableModel
 	
 	public ItemTableModel( ArrayList<Item> itemList)
 	{
-		m_itemList = itemList;
-		testPopulate( );
+		m_ItemList = itemList;
 	}
 	
 	public void addItem( Item newItem )
 	{
-		m_itemList.add( newItem );
+		m_ItemList.add( newItem );
 		fireTableDataChanged( );
+	}
+	
+	public Item testGetItem()
+	{
+		return m_ItemList.get(0);
 	}
 	
 	public void testPopulate ()
 	{
 		for (int i = 0; i < 10; i ++)
 			addItem(new Item ("Test" + i, "Test" ));
+	}
+
+	@Override
+	public String getColumnName( int iColumn )
+	{
+		return headers[iColumn];
+	}
+	
+	@Override
+	public boolean isCellEditable( int rowIndex, int columnIndex )
+	{
+		return false;
 	}
 	
 	@Override
@@ -41,7 +57,7 @@ public class ItemTableModel extends AbstractTableModel
 
 	@Override
 	public int getRowCount() {
-		m_itemList.size( );
+		m_ItemList.size( );
 		return 0;
 	}
 
@@ -53,24 +69,24 @@ public class ItemTableModel extends AbstractTableModel
 		
 		if( rowIndex >= 0 && rowIndex < getRowCount( ) )
 		{
-			aIndexedItem = m_itemList.get( rowIndex );
+			aIndexedItem = m_ItemList.get( rowIndex );
 			
 			switch( columnIndex )
 			{
 			case NAME:
-				oReturnObj = aIndexedItem.getName( );
+				oReturnObj = (Object) aIndexedItem.getName( );
 				break;
 			case DESC:
-				oReturnObj = aIndexedItem.getDesc( );
+				oReturnObj = (Object) aIndexedItem.getDesc( );
 				break;
 			case CONNECTED:
-				oReturnObj = new String( "Bitches!(" + rowIndex + ")" );
+				oReturnObj = (Object) new String( "Bitches!(" + rowIndex + ")" );
 				break;
 			default:
 				break;
 			};
 		}
-
+		 
 		return oReturnObj;
 	}
 

@@ -1,7 +1,11 @@
 package Panels;
 
 import javax.swing.*;
+
+import Game_System.Item;
+import TableModels.ItemTableModel;
 import net.miginfocom.swing.MigLayout;
+
 import java.awt.event.*;
 
 //This better fucking work
@@ -13,9 +17,11 @@ import java.awt.event.*;
  */
 public class ItemManagerPanel extends JPanel {
 	/* Private Variables */
-	private JTable 		m_ItemsTable;
-	private JButton 	m_RmvItmBtn;
-	private JButton 	m_AddItmBtn;
+	private JTable m_ItemTable;
+	private JButton m_AddItmBtn;
+	private JButton m_RmvItmBtn;
+	private JScrollPane scrollPane;
+	
 
 	
 	public class ItemManagerButtonHandler implements ActionListener {
@@ -26,8 +32,11 @@ public class ItemManagerPanel extends JPanel {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) 
+		public void actionPerformed(ActionEvent e) 
 		{
+			if (e.getSource().equals(m_RmvItmBtn))
+			{
+			}
 			/* TODO button handling goes here */
 		}
 	}
@@ -35,21 +44,29 @@ public class ItemManagerPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ItemManagerPanel( JTable itemsTable )
+	public ItemManagerPanel( ItemTableModel itemsTable )
 	{
-
 		ItemManagerButtonHandler btnHandler = new ItemManagerButtonHandler(this);
-		setLayout(new MigLayout("", "[grow][][][][][][][][][][][][][][][][][][grow]", "[grow,top][][grow][][][][][grow]"));
-		
-		m_ItemsTable = itemsTable;
-		add(m_ItemsTable, "cell 0 0 6 10,grow");
 		
 		m_AddItmBtn = new JButton("Add Item");
+		m_AddItmBtn.setBounds(320, 11, 97, 23);
 		m_AddItmBtn.addActionListener(btnHandler);
-		add(m_AddItmBtn, "flowy,cell 7 0,growx");
+		setLayout(null);
+		add(m_AddItmBtn);
 
 		m_RmvItmBtn = new JButton("Remove Item");
+		m_RmvItmBtn.setBounds(320, 45, 97, 23);
 		m_RmvItmBtn.addActionListener(btnHandler);
-		add(m_RmvItmBtn, "cell 7 0,growx");
+		add(m_RmvItmBtn);
+	
+		itemsTable.testPopulate( );
+		
+		m_ItemTable = new JTable (itemsTable);
+		
+		scrollPane = new JScrollPane(m_ItemTable);
+		scrollPane.setBounds(10, 11, 298, 251);
+		add(scrollPane);
+		scrollPane.setViewportView(m_ItemTable);	
+
 	}
 }
