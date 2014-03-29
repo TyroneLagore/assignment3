@@ -1,18 +1,46 @@
 package Windows;
 
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 
-public class EditSceneWindow {
+import Scene_Manager.Scene;
+
+/**
+ * EditSceneWindow
+ * Allows for the editting of an individual scene, passed in upon creation.
+ * @author Tyrone Lagore
+ */
+
+public class EditSceneWindow extends JFrame {
 
 	private JFrame	frame;
+	private Scene m_Scene;
 
 	/**
 	 * Create the application.
 	 */
-	public EditSceneWindow( )
+	public EditSceneWindow( Scene scene )
 	{
+		m_Scene = scene;
 		initialize( );
+	}
+	
+	
+	public void run()
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
+					setVisible(true);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	/**
@@ -20,9 +48,7 @@ public class EditSceneWindow {
 	 */
 	private void initialize( )
 	{
-		frame = new JFrame( );
-		frame.setBounds( 100, 100, 450, 300 );
-		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		setBounds( 100, 100, 800, 640 );
 	}
 
 }
