@@ -57,8 +57,7 @@ public class ItemTableModel extends AbstractTableModel
 
 	@Override
 	public int getRowCount() {
-		m_ItemList.size( );
-		return 0;
+		return m_ItemList.size( );
 	}
 
 	@Override
