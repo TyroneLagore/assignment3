@@ -20,14 +20,10 @@ public class GameSystem
 {
 	private MainWindow m_MainWindow;
 	private SceneManager m_SceneManager;
-	private ItemTableModel m_ItemTableModel;
-	private SceneTableModel m_SceneTableModel;
 	
 	public GameSystem()
 	{
 		m_SceneManager = new SceneManager();
-		m_ItemTableModel = new ItemTableModel ( grabItemList() );
-		m_SceneTableModel = new SceneTableModel ( grabSceneGraph() );
 		m_MainWindow = new MainWindow(this);
 	}
 	
@@ -38,12 +34,12 @@ public class GameSystem
 	
 	public SceneTableModel getSceneTableModel()
 	{
-		return m_SceneTableModel;
+		return m_SceneManager.getSceneModel();
 	}
 	
 	public ItemTableModel getItemTableModel()
 	{
-		return m_ItemTableModel;
+		return m_SceneManager.getItemModel();
 	}
 	
 	public boolean loadSceneManager( String fileName )
@@ -57,14 +53,8 @@ public class GameSystem
 		
 	}
 	
-	private final ArrayList<Item> grabItemList()
+	public SceneManager getSceneManager()
 	{
-		return m_SceneManager.getItemList();
+		return m_SceneManager;
 	}
-	
-	private final ArrayList<Scene> grabSceneGraph()
-	{
-		return m_SceneManager.getSceneGraph();
-	}
-
 }

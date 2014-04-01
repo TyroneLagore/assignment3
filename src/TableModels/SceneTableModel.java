@@ -30,9 +30,19 @@ public class SceneTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public Object getValueAt(int arg0, int arg1) {
-		// TODO Auto-generated method stub
+	public Object getValueAt(int row, int col) 
+	{
 		return null;
+	}
+	
+	/**
+	 * Gets a scene from the specified index
+	 * @param index The row in which the item is kept.
+	 * @return Scene The indexed item.
+	 */
+	public Scene getSceneAt(int index)
+	{
+		return m_SceneGraph.get(index);
 	}
 
 }

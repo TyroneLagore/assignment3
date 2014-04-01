@@ -9,6 +9,7 @@ import Game_System.GameSystem;
 import Panels.ItemManagerPanel;
 import Panels.SceneManagerPanel;
 import TableModels.*;
+import UserIO.WindowComm;
 
 import javax.swing.*;
 
@@ -39,6 +40,7 @@ public class MainWindow extends JFrame{
 	private GameSystem m_MainSystem;
 	private SceneManagerPanel m_SceneMngrPnl;
 	private ItemManagerPanel m_ItemMngrPnl;
+	private WindowComm m_WindowComm;
 	private JTabbedPane m_MainTabbedPane;
 	private JMenu mnFile;
 	private JMenuItem mntmSave;
@@ -105,7 +107,7 @@ public class MainWindow extends JFrame{
 	 */
 	public void verifyQuit()
 	{
-		switch (quitSelected())
+		switch (m_WindowComm.getYesNoCancel("Would you like to save before quitting?", "Quit"))
 		{
 			case 0:
 				saveProject();  // intentionally left out break
@@ -127,10 +129,10 @@ public class MainWindow extends JFrame{
 	 */
 	public void loadProject()
 	{
-		String fileName = getFileName(FileDialog.LOAD);
+		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
 		
 		/* XXX for testing purposes - remove later */
-		JOptionPane.showMessageDialog(this,"Selected file was: " + fileName);
+		m_WindowComm.displayMessage("The selected file was " + fileName);
 	}
 	
 	/**
@@ -141,53 +143,11 @@ public class MainWindow extends JFrame{
 	 */
 	public void saveProject()
 	{
-		String fileName = getFileName(FileDialog.SAVE);
+		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.SAVE);
 		
 		/* XXX for testing purposes - remove later */
-		JOptionPane.showMessageDialog(this,"Selected file was: " + fileName);
+		m_WindowComm.displayMessage("The selected file was " + fileName);
 		/* TODO Implement this: m_MainSystem.saveSceneManager( fileGetter.getFile() ); */
-	}
-	
-	/**
-	 * Name: quitSelected
-	 * Purpose: Quit has been selected from the main menu.  Prompts the user to see
-	 *  if they would like to save or not.
-	 */
-	public int quitSelected()
-	{
-		Object[] options = {"Yes", "No", "Cancel"};
-		
-		return JOptionPane.showOptionDialog(this, 
-				"Would you like to save before Quitting?", 
-				"Exit", 
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, 
-				options, options[0]);
-	}
-	
-	/* XXX could implement if we need to use multiple
-	private int getYesNo(Component parent, String prompt, String title)
-	{
-		Object[] options = {"Yes", "No"};
-		return JOptionPane.showOptionDialog(parent, prompt, title, 
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, 
-				options, options[0]);
-	}
-	*/
-	
-	
-	/*
-	 * Opens the window explorer and returns the string of the file
-	 * that was selected by the user.
-	 */
-	
-	public String getFileName(int dialogueType)
-	{
-		FileDialog fileGetter = new FileDialog(this);
-		fileGetter.setMode(dialogueType);
-		fileGetter.setVisible(true);
-
-		
-		return fileGetter.getFile();	
 	}
 
 	/**
@@ -200,6 +160,8 @@ public class MainWindow extends JFrame{
 				verifyQuit();
 			}
 		});
+		
+		m_WindowComm = new WindowComm(this);
 		
 		itemTable = new JTable( m_MainSystem.getItemTableModel() );
 		itemTable.setLocation(341, 96);
@@ -231,10 +193,13 @@ public class MainWindow extends JFrame{
 		m_MainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(m_MainTabbedPane, BorderLayout.CENTER);
 		
-		m_SceneMngrPnl = new SceneManagerPanel(sceneTable);
+		m_SceneMngrPnl = new SceneManagerPanel(m_MainSystem.getSceneTableModel(), this,
+													m_MainSystem.getSceneManager());
+		
 		m_MainTabbedPane.addTab("Scenes", null, m_SceneMngrPnl, null);
 
-		m_ItemMngrPnl = new ItemManagerPanel(m_MainSystem.getItemTableModel());
+		m_ItemMngrPnl = new ItemManagerPanel(m_MainSystem.getItemTableModel(), this,
+												m_MainSystem.getSceneManager());
 		m_MainTabbedPane.addTab("Items", null, m_ItemMngrPnl, null);
 	}
 	

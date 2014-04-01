@@ -3,7 +3,10 @@ package Panels;
 import javax.swing.*;
 
 import Game_System.Item;
+import Scene_Manager.SceneManager;
 import TableModels.ItemTableModel;
+import UserIO.WindowComm;
+import Windows.MainWindow;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.event.*;
@@ -21,8 +24,8 @@ public class ItemManagerPanel extends JPanel {
 	private JButton m_AddItmBtn;
 	private JButton m_RmvItmBtn;
 	private JScrollPane scrollPane;
-	
-
+	private WindowComm m_WindowComm;
+	private SceneManager m_SceneManager;
 	
 	public class ItemManagerButtonHandler implements ActionListener {
 		private ItemManagerPanel parent;
@@ -44,9 +47,11 @@ public class ItemManagerPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ItemManagerPanel( ItemTableModel itemsTable )
+	public ItemManagerPanel( ItemTableModel itemsTable, MainWindow mWindow, SceneManager sManager )
 	{
 		ItemManagerButtonHandler btnHandler = new ItemManagerButtonHandler(this);
+		m_WindowComm = new WindowComm(mWindow);
+		m_SceneManager = sManager;
 		
 		m_AddItmBtn = new JButton("Add Item");
 		m_AddItmBtn.setBounds(320, 11, 97, 23);
