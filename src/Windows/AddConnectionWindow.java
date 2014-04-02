@@ -87,7 +87,7 @@ public class AddConnectionWindow extends JFrame
 		getContentPane().add(btnConnectScene);
 		
 		btnCancel = new JButton("Cancel");
-		btnConnectScene.addActionListener(btnHandler);
+		btnCancel.addActionListener(btnHandler);
 		btnCancel.setBounds(230, 66, 130, 23);
 		getContentPane().add(btnCancel);
 
