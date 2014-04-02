@@ -34,6 +34,7 @@ public class SceneManager
 		m_SceneTableModel = new SceneTableModel ( m_SceneGraph );
 		player = new Player();
 	}
+
 	
 	public Scene addScene()
 	{
@@ -44,6 +45,7 @@ public class SceneManager
 	public void removeScene (Scene toRemove)
 	{
 		m_SceneGraph.remove(toRemove);
+		m_SceneTableModel.fireTableDataChanged();
 	}
 	
 	/**
@@ -61,7 +63,7 @@ public class SceneManager
 		{
 			m_SceneGraph.add(toSave);
 			sceneAdded = true;
-			m_ItemTableModel.fireTableDataChanged();
+			m_SceneTableModel.fireTableDataChanged();
 		}
 		
 		return sceneAdded;
@@ -107,6 +109,16 @@ public class SceneManager
 		}
 		
 		return conflict;
+	}
+	
+	private void updateSceneConnections()
+	{
+		for (Scene o_CurrentScene : m_SceneGraph)
+			o_CurrentScene.setSceneIsConnected(false);
+		
+		for (Scene o_CurrentScene : m_SceneGraph)
+			for (Scene o_ConnectedScene : o_CurrentScene.getConnections())
+				o_ConnectedScene.setSceneIsConnected(true);
 	}
 
 }
