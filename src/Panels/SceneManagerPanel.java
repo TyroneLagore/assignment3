@@ -1,6 +1,7 @@
 package Panels;
 
 import java.awt.*;
+import Windows.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,9 +14,13 @@ import Scene_Manager.Scene;
 import Scene_Manager.SceneManager;
 import TableModels.SceneTableModel;
 import UserIO.WindowComm;
+import Windows.AddConnectionWindow;
 import Windows.EditSceneWindow;
 import Windows.MainWindow;
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.DropMode;
+import javax.swing.ListSelectionModel;
 
 /**
  * Main Panel for Managing all the scenes in the game, allows the user the
@@ -33,6 +38,7 @@ public class SceneManagerPanel extends JPanel {
 	private JButton m_EdtScnBtn;
 	private SceneManager m_SceneManager;
 	private WindowComm m_WindowComm;
+	private SceneTableModel m_SceneTableModel;
 	
 
 	public class ButtonHandler implements ActionListener {
@@ -58,11 +64,20 @@ public class SceneManagerPanel extends JPanel {
 	 */
 	public void removeSceneClicked() 
 	{
-		if (m_WindowComm.getYesNo ("Are you sure you want to remove the selected scene?", "Remove Scene") == 0)
-			// TODO remove the scene
-			m_WindowComm.displayMessage("Removed the scene - test message remove upon implementation");
-		else
-			m_WindowComm.displayMessage("Did not remove the scene - test message remove upon implementation");
+		int selectedSceneIndex;
+		Scene toRemove;
+		if (m_SceneTable.getSelectedRow() != -1)
+		{
+			selectedSceneIndex = m_SceneTable.getSelectedRow();
+			toRemove = m_SceneTableModel.getSceneAt(selectedSceneIndex);
+		
+			if (m_WindowComm.getYesNo ("Are you sure you want to the Scene \"" + 
+					toRemove.getTitle() + "\"?", "Remove Scene") == 0)
+			{
+				m_SceneManager.removeScene(toRemove);
+				m_WindowComm.displayMessage("Scene Removed.");
+			}
+		}
 	}
 
 	/**
@@ -71,41 +86,32 @@ public class SceneManagerPanel extends JPanel {
 	public void addSceneClicked()
 	{
 		Scene newScene = m_SceneManager.addScene();
-		newScene.addConnection(new Scene("Fun", "Uh yeah"), "Go east");
-		newScene.addConnection(new Scene("This is another Scene", "Does stuff"), "Go west");
-		newScene.addConnection(new Scene("This is another Scene", "Does stuff"), "Go west");
-		openEditSceneWindow (newScene);		
-		// TODO implement
+		openEditSceneWindow (newScene);
 	}
 
 	/**
 	 * 
 	 */
-	public void editSceneClicked() {
-		// TODO implement
-		EditSceneWindow esw = new EditSceneWindow(new Scene("testTitle",
-				"testDescription"), this);
-		toggleSaveEditEnabled(false);
-		esw.run();
+	public void editSceneClicked() 
+	{
+		if (m_SceneTable.getSelectedRow() != -1)
+			openEditSceneWindow(m_SceneTableModel.getSceneAt(m_SceneTable.getSelectedRow()));
 	}
 	
 	private void openEditSceneWindow(Scene toEdit)
 	{
 		toggleSaveEditEnabled(false);
-		EditSceneWindow esw = new EditSceneWindow (toEdit, this);
+		EditSceneWindow esw = new EditSceneWindow (toEdit, this, m_SceneTableModel);
 		esw.run();
 	}
 
-
-	public void saveEdittedScene(Scene toSave)
+	public boolean saveEdittedScene(Scene toSave)
 	{
-		if (!m_SceneManager.saveScene(toSave))
-		{
-			m_WindowComm.displayMessage("Title conflict.  Please rename scene.");
-			openEditSceneWindow (toSave);
-		}else
+		boolean b_SceneAdded = m_SceneManager.saveScene(toSave);
+		if (b_SceneAdded)
 			toggleSaveEditEnabled(true);
-
+	
+		return b_SceneAdded;
 	}
 	
 	public void editSceneWindowHasClosed()
@@ -128,32 +134,39 @@ public class SceneManagerPanel extends JPanel {
 		m_WindowComm = new WindowComm (mWindow);
 		m_SceneManager = sManager;
 
-		
+		m_SceneTableModel = scenesTable;
 		m_SceneTable = new JTable (scenesTable);
+		m_SceneTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		m_SceneTable.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		m_SceneTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
+		m_SceneTable.setFillsViewportHeight(true);
+		m_SceneTable.setColumnSelectionAllowed(false);
 		
 		scrollPane = new JScrollPane(m_SceneTable);
-		scrollPane.setBounds(10, 11, 298, 251);
+		scrollPane.setBounds(10, 11, 436, 432);
 		add(scrollPane);
 		scrollPane.setViewportView(m_SceneTable);	
 
 		m_AddScnBtn = new JButton("Add Scene");
-		m_AddScnBtn.setBounds(338, 8, 103, 23);
+		m_AddScnBtn.setToolTipText("Add a new scene.");
+		m_AddScnBtn.setBounds(456, 8, 103, 23);
 		m_AddScnBtn.addActionListener(btnHandler);
 		setLayout(null);
 		add(m_AddScnBtn);
 
 		m_RmvScnBtn = new JButton("Remove Scene");
-		m_RmvScnBtn.setBounds(338, 42, 103, 23);
+		m_RmvScnBtn.setToolTipText("Remove the selected scene.");
+		m_RmvScnBtn.setBounds(456, 41, 103, 23);
 		m_RmvScnBtn.addActionListener(btnHandler);
 		add(m_RmvScnBtn);
 
 		m_EdtScnBtn = new JButton("Edit Scene");
-		m_EdtScnBtn.setBounds(338, 76, 103, 23);
+		m_EdtScnBtn.setToolTipText("Edit the selected scene.");
+		m_EdtScnBtn.setBounds(456, 75, 103, 23);
 		m_EdtScnBtn.addActionListener(btnHandler);
 		add(m_EdtScnBtn);
-		
-
-		
-
 	}
+
+
 }

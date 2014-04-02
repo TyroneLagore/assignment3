@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 
 import Panels.SceneManagerPanel;
 import Scene_Manager.Scene;
+import TableModels.SceneTableModel;
 import UserIO.WindowComm;
 
 import javax.swing.DefaultListModel;
@@ -40,6 +41,7 @@ public class EditSceneWindow extends JFrame {
 	private Scene m_Scene;
 	private SceneManagerPanel m_Parent;
 	private WindowComm m_WindowComm;
+	private SceneTableModel m_SceneTableModel;
 	private JLabel lblLargeTitle;
 	private JButton btnCancel;
 	private JButton btnSaveScene;
@@ -73,11 +75,8 @@ public class EditSceneWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) 
 		{
 			if (e.getSource().equals(btnSaveScene))
-			{
-				lblLargeTitle.setText(m_TitleTextField.getText());
 				saveScene();
-				m_WindowComm.displayMessage("You clicked save");
-			}
+			
 				/* TODO add save functionality */
 			else if (e.getSource().equals(btnCancel))
 			{
@@ -85,9 +84,8 @@ public class EditSceneWindow extends JFrame {
 				m_Parent.editSceneWindowHasClosed();
 			}
 			else if (e.getSource().equals(btnConnectScene))
-			{
-				m_WindowComm.displayMessage("You clicked connect scene");
-			}
+				connectSceneButtonClicked();
+
 			else if (e.getSource().equals(btnRemoveConnection))
 				m_WindowComm.displayMessage("You clicked remove connection");
 		}
@@ -96,9 +94,10 @@ public class EditSceneWindow extends JFrame {
 	/**
 	 * Create the application.
 	 */
-	public EditSceneWindow( Scene scene, SceneManagerPanel parent)
+	public EditSceneWindow( Scene scene, SceneManagerPanel parent, SceneTableModel sceneTableModel)
 	{
 		m_WindowComm = new WindowComm(this);
+		m_SceneTableModel = sceneTableModel;
 
 		m_Connections = scene.getConnections();
 
@@ -188,7 +187,7 @@ public class EditSceneWindow extends JFrame {
 		m_ConnectedScenesJList.setModel(m_ConnectedScenesModel);
 		m_ConnectedScenesScrollPane.setViewportView(m_ConnectedScenesJList);
 		
-		populatedConnectedScenes();
+		populateConnectedScenes();
 		
 		m_DescScrollPane = new JScrollPane();
 		m_DescScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -209,22 +208,22 @@ public class EditSceneWindow extends JFrame {
 		
 		btnConnectScene = new JButton("Connect A Scene");
 		btnConnectScene.addActionListener(btnHandler);
-		btnConnectScene.setBounds(385, 318, 168, 23);
+		btnConnectScene.setBounds(345, 318, 208, 23);
 		getContentPane().add(btnConnectScene);
 		
 		btnRemoveConnection = new JButton("Remove Connection");
 		btnRemoveConnection.addActionListener(btnHandler);
-		btnRemoveConnection.setBounds(385, 354, 168, 23);
+		btnRemoveConnection.setBounds(345, 354, 208, 23);
 		getContentPane().add(btnRemoveConnection);
 		
 		btnSaveScene = new JButton("Save Scene");
 		btnSaveScene.addActionListener(btnHandler);
-		btnSaveScene.setBounds(633, 318, 168, 23);
+		btnSaveScene.setBounds(578, 318, 208, 23);
 		getContentPane().add(btnSaveScene);
 		
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(btnHandler);
-		btnCancel.setBounds(633, 354, 168, 23);
+		btnCancel.setBounds(578, 354, 208, 23);
 		getContentPane().add(btnCancel);
 		
 		lblLargeTitle = new JLabel("");
@@ -235,11 +234,14 @@ public class EditSceneWindow extends JFrame {
 		getContentPane().add(lblLargeTitle);
 		
 		lblConnectionLabel = new JLabel("Connection Label");
-		lblConnectionLabel.setBounds(582, 184, 196, 14);
+		lblConnectionLabel.setBounds(563, 184, 196, 14);
 		getContentPane().add(lblConnectionLabel);
+		
+		m_TitleTextField.grabFocus();
+		m_TitleTextField.selectAll();
 	}
 	
-	private void populatedConnectedScenes()
+	private void populateConnectedScenes()
 	{	
 		ArrayList<String> connectionLabels = m_Scene.getConnectionLabels();
 		int i = 0;
@@ -264,10 +266,33 @@ public class EditSceneWindow extends JFrame {
 		
 	}
 	
+	private void connectSceneButtonClicked()
+	{
+		btnConnectScene.setEnabled(false);
+		
+		AddConnectionWindow acw = new AddConnectionWindow(m_Scene, m_SceneTableModel, this);
+		acw.run();
+	}
+	
 	private void saveScene()
 	{
-		m_Parent.saveEdittedScene( m_Scene );
-		setVisible(false);
+		m_Scene.setTitle(m_TitleTextField.getText());
+		m_Scene.setDesc(m_DescTextArea.getText());
+		if (m_Parent.saveEdittedScene( m_Scene ))
+			setVisible(false);
+		else
+			m_WindowComm.displayMessage("Name conflict. Please enter a unique title for the scene.");
+	}
+
+	public void addConnectionWindowHasClosed()
+	{
+		btnConnectScene.setEnabled(true);
+	}
+	
+	public void connectScene(Scene selectedScene) 
+	{
+		m_Scene.addConnection(selectedScene, "");
+		populateConnectedScenes();
 	}
 	
 	private void closeWindow()
