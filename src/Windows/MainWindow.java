@@ -169,7 +169,7 @@ public class MainWindow extends JFrame{
 		
 		MenuHandler btnHandler = new MenuHandler(this);
 		
-		setBounds(100, 100, 800, 640);
+		setBounds(100, 100, 600, 569);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();

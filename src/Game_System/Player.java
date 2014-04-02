@@ -19,7 +19,4 @@ public class Player
 	{
 		m_Inventory = new ArrayList<Item>();
 	}
-	
-	
-
 }

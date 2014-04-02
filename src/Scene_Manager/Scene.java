@@ -5,6 +5,8 @@ package Scene_Manager;
 
 import java.util.ArrayList;
 
+import Game_System.Item;
+
 /**
  * Description
  *
@@ -15,16 +17,30 @@ public class Scene
 {
 	private String m_Title;
 	private String m_Desc;
+	private Item m_ConnectedItem;
 	private ArrayList<Scene> m_Connections;
 	private ArrayList<String> m_ConnectionLabels;
+	private boolean m_NoConnectionsTo;
 	private static final int MAX_CONNECTIONS = 4;
 	
 	public Scene(String title, String desc)
 	{
+		m_ConnectedItem = null;
 		m_Connections = new ArrayList<Scene>();
 		m_ConnectionLabels = new ArrayList<String>();
 		m_Title = title;
 		m_Desc = desc;
+		m_NoConnectionsTo = true;
+	}
+	
+	public void connectItem(Item toConnect)
+	{
+		m_ConnectedItem = toConnect;
+	}
+	
+	public Item getConnectedItem()
+	{
+		return m_ConnectedItem;
 	}
 	
 	public String getTitle()
@@ -36,6 +52,17 @@ public class Scene
 	{
 		return m_Desc;
 	}
+	
+	public void setSceneIsConnected(boolean bIsConnected)
+	{
+		m_NoConnectionsTo = bIsConnected;
+	}
+	
+	public boolean getSceneIsConnected()
+	{
+		return m_NoConnectionsTo;
+	}
+	
 	
 	public void addConnection( Scene toConnect, String connectionLabel )
 	{
@@ -75,6 +102,11 @@ public class Scene
 	public void setDesc(String m_Desc) 
 	{
 		this.m_Desc = m_Desc;
+	}
+	
+	public String toString()
+	{
+		return getTitle();
 	}
 	
 }
