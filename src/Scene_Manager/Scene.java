@@ -84,6 +84,12 @@ public class Scene
 		}
 	}
 	
+	public void modifyLabelByIndex(int indexOfScene, String newLabel)
+	{
+		m_ConnectionLabels.remove(indexOfScene);
+		m_ConnectionLabels.add(indexOfScene, newLabel);
+	}
+	
 	public ArrayList<String> getConnectionLabels()
 	{
 		return m_ConnectionLabels;

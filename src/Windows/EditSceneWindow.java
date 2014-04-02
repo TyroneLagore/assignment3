@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.ListSelectionModel;
 
 /**
  * EditSceneWindow
@@ -52,8 +53,8 @@ public class EditSceneWindow extends JFrame {
 	private JTextArea m_DescTextArea;
 	private JScrollPane m_DescScrollPane;
 	private JScrollPane m_ConnectedScenesScrollPane;
-	private JList m_ConnectedScenesJList;
-	private DefaultListModel<String> m_ConnectedScenesModel;
+	private JList <Scene>m_ConnectedScenesJList;
+	private DefaultListModel<Scene> m_ConnectedScenesModel;
 	private JLabel lblTitle;
 	private JTextField m_TitleTextField;
 	private JTextField []m_ConnectionLabels;
@@ -84,7 +85,8 @@ public class EditSceneWindow extends JFrame {
 				connectSceneButtonClicked();
 
 			else if (e.getSource().equals(btnRemoveConnection))
-				m_WindowComm.displayMessage("You clicked remove connection");
+				removeConnectionButtonClicked();
+				/*m_WindowComm.displayMessage("You clicked remove connection");*/
 		}
 	}
 	
@@ -178,8 +180,9 @@ public class EditSceneWindow extends JFrame {
 		m_ConnectedScenesScrollPane.setBounds(345, 209, 208, 98);
 		getContentPane().add(m_ConnectedScenesScrollPane);
 		
-		m_ConnectedScenesModel = new DefaultListModel<String>();
-		m_ConnectedScenesJList = new JList();
+		m_ConnectedScenesModel = new DefaultListModel<Scene>();
+		m_ConnectedScenesJList = new JList<Scene>();
+		m_ConnectedScenesJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		m_ConnectedScenesJList.setFixedCellHeight(22);
 		m_ConnectedScenesJList.setModel(m_ConnectedScenesModel);
 		m_ConnectedScenesScrollPane.setViewportView(m_ConnectedScenesJList);
@@ -246,7 +249,7 @@ public class EditSceneWindow extends JFrame {
 		m_ConnectedScenesModel.removeAllElements();
 		
 		for (Scene o_Scene : m_Connections)
-			m_ConnectedScenesModel.addElement(o_Scene.getTitle());
+			m_ConnectedScenesModel.addElement(o_Scene);
 		
 		for (String o_Label : connectionLabels)
 		{
@@ -263,6 +266,18 @@ public class EditSceneWindow extends JFrame {
 		
 	}
 	
+
+	private void removeConnectionButtonClicked()
+	{
+		Scene connectionToRemove = m_ConnectedScenesJList.getSelectedValue();
+
+		if (connectionToRemove!= null)
+		{
+			m_Scene.removeConnection(connectionToRemove);
+			populateConnectedScenes();
+		}
+	}
+	
 	private void connectSceneButtonClicked()
 	{
 		btnConnectScene.setEnabled(false);
@@ -275,6 +290,9 @@ public class EditSceneWindow extends JFrame {
 	{
 		m_Scene.setTitle(m_TitleTextField.getText());
 		m_Scene.setDesc(m_DescTextArea.getText());
+		for (int i = 0; i < m_Scene.getConnections().size(); i++)
+			m_Scene.modifyLabelByIndex(i, m_ConnectionLabels[i].getText());
+				
 		if (m_Parent.saveEdittedScene( m_Scene ))
 			setVisible(false);
 		else
