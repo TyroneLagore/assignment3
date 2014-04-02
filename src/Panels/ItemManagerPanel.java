@@ -100,9 +100,8 @@ public class ItemManagerPanel extends JPanel {
 	 */
 	private void addItem( )
 	{
-		// m_WindowComm.displayMessage( "Add Item Button Clicked!" );
-		// TODO: program addItem functionality.
-		openEditItemWindow( null );
+		Item newItem = new Item("<New Item>", "<Description>" );
+		openEditItemWindow( newItem );
 	}
 	
 	private void removeItem( )
