@@ -61,9 +61,6 @@ public class EditSceneWindow extends JFrame {
 	private static final int NUM_JLABELS = 4;
 	private JLabel lblConnectionLabel;
 
-	
-	
-	
 	public class ButtonHandler implements ActionListener {
 		private EditSceneWindow window;
 
