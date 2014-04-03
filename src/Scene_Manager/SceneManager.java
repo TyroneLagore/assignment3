@@ -38,7 +38,7 @@ public class SceneManager
 	
 	public Scene addScene()
 	{
-		return new Scene("Enter a unique title", "Enter a description for your scene.");
+		return new Scene("<Enter a Unique Title>", "<Description>");
 	}
 	
 	

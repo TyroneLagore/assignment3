@@ -17,7 +17,8 @@ public class Scene
 {
 	private String m_Title;
 	private String m_Desc;
-	private Item m_ConnectedItem;
+	private Item m_UnlockItem;
+	private Item m_DropItem;
 	private ArrayList<Scene> m_Connections;
 	private ArrayList<String> m_ConnectionLabels;
 	private boolean m_NoConnectionsTo;
@@ -25,7 +26,8 @@ public class Scene
 	
 	public Scene(String title, String desc)
 	{
-		m_ConnectedItem = null;
+		m_UnlockItem = null;
+		m_DropItem = null;
 		m_Connections = new ArrayList<Scene>();
 		m_ConnectionLabels = new ArrayList<String>();
 		m_Title = title;
@@ -33,25 +35,6 @@ public class Scene
 		m_NoConnectionsTo = true;
 	}
 	
-	public void connectItem(Item toConnect)
-	{
-		m_ConnectedItem = toConnect;
-	}
-	
-	public Item getConnectedItem()
-	{
-		return m_ConnectedItem;
-	}
-	
-	public String getTitle()
-	{
-		return m_Title;
-	}
-	
-	public String getDesc()
-	{
-		return m_Desc;
-	}
 	
 	public void setSceneIsConnected(boolean bIsConnected)
 	{
@@ -73,14 +56,13 @@ public class Scene
 		}
 	}
 	
-	public void removeConnection ( Scene toRemove )
+	public void removeConnection ( int indexToRemove )
 	{
-		int index;
-		if (m_Connections.contains(toRemove))
+		
+		if (m_Connections.get(indexToRemove) != null)
 		{
-			index = m_Connections.indexOf(toRemove);
-			m_Connections.remove(index);
-			m_ConnectionLabels.remove(index);
+			m_Connections.remove(indexToRemove);
+			m_ConnectionLabels.remove(indexToRemove);
 		}
 	}
 	
@@ -88,6 +70,47 @@ public class Scene
 	{
 		m_ConnectionLabels.remove(indexOfScene);
 		m_ConnectionLabels.add(indexOfScene, newLabel);
+	}
+	
+	
+	public void connectDropItem(Item toConnect)
+	{
+		m_DropItem = toConnect;
+	}
+	
+	public Item getDropItem()
+	{
+		return m_DropItem;
+	}
+	
+	public void removeDropItem()
+	{
+		m_DropItem = null;
+	}
+	
+	public void connectUnlockItem(Item toConnect)
+	{
+		m_UnlockItem = toConnect;
+	}
+	
+	public void removeUnlockItem()
+	{
+		m_UnlockItem = null;
+	}
+	
+	public Item getUnlockItem()
+	{
+		return m_UnlockItem;
+	}
+	
+	public String getTitle()
+	{
+		return m_Title;
+	}
+	
+	public String getDesc()
+	{
+		return m_Desc;
 	}
 	
 	public ArrayList<String> getConnectionLabels()
