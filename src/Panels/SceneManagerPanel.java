@@ -101,7 +101,7 @@ public class SceneManagerPanel extends JPanel {
 	private void openEditSceneWindow(Scene toEdit)
 	{
 		toggleSaveEditEnabled(false);
-		EditSceneWindow esw = new EditSceneWindow (toEdit, this, m_SceneTableModel);
+		EditSceneWindow esw = new EditSceneWindow (toEdit, this, m_SceneManager);
 		esw.run();
 	}
 
@@ -148,20 +148,20 @@ public class SceneManagerPanel extends JPanel {
 		add(scrollPane);
 		scrollPane.setViewportView(m_SceneTable);	
 
-		m_AddScnBtn = new JButton("Add Scene");
+		m_AddScnBtn = new JButton("Add");
 		m_AddScnBtn.setToolTipText("Add a new scene.");
 		m_AddScnBtn.setBounds(456, 8, 103, 23);
 		m_AddScnBtn.addActionListener(btnHandler);
 		setLayout(null);
 		add(m_AddScnBtn);
 
-		m_RmvScnBtn = new JButton("Remove Scene");
+		m_RmvScnBtn = new JButton("Remove\r\n");
 		m_RmvScnBtn.setToolTipText("Remove the selected scene.");
 		m_RmvScnBtn.setBounds(456, 41, 103, 23);
 		m_RmvScnBtn.addActionListener(btnHandler);
 		add(m_RmvScnBtn);
 
-		m_EdtScnBtn = new JButton("Edit Scene");
+		m_EdtScnBtn = new JButton("Edit");
 		m_EdtScnBtn.setToolTipText("Edit the selected scene.");
 		m_EdtScnBtn.setBounds(456, 75, 103, 23);
 		m_EdtScnBtn.addActionListener(btnHandler);
