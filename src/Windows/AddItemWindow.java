@@ -37,7 +37,9 @@ public class AddItemWindow extends JFrame
 		public void actionPerformed(ActionEvent e) 
 		{
 			if (e.getSource().equals(btnConnectItem))
-				
+			{
+				// TODO: NOT MAKE FUCKING BROKEN CODE.
+			}
 			else if (e.getSource().equals(btnCancel))
 				closeWindow();
 		}

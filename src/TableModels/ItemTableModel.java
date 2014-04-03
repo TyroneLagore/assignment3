@@ -7,13 +7,13 @@ import Game_System.*;
 
 public class ItemTableModel extends AbstractTableModel
 {
-	private String[] headers = { "Name","Description","SceneConnectedTo" };
+	private String[] headers = { "Name","Does Drop","Unlocks a Scene" };
 	private ArrayList<Item> m_ItemList;
 	
 	// Constant Variables
 	private static final int NAME 		= 0;
-	private static final int DESC 		= 1;
-	private static final int CONNECTED 	= 2;
+	private static final int DROPS 		= 1;
+	private static final int UNLOCKS 	= 2;
 	
 	
 	public ItemTableModel( ArrayList<Item> itemList)
@@ -27,15 +27,56 @@ public class ItemTableModel extends AbstractTableModel
 		fireTableDataChanged( );
 	}
 	
-	public Item testGetItem()
+	public void removeItem( String sItemName )
 	{
-		return m_ItemList.get(0);
+		Item m_ItemToRemove = null;
+		
+		for( Item iIndex : m_ItemList )
+			if( iIndex.getName( ).equals( sItemName ) )
+				m_ItemToRemove = iIndex;
+		
+		if( null != m_ItemToRemove )
+		{
+			// TODO: Unlink From Scenes
+			
+			m_ItemList.remove( m_ItemToRemove );
+		}
+		
+		fireTableDataChanged( );
+	}
+
+	/**
+	 * Function to determine if a name passed in (String) is a unique name
+	 * in the list of items.
+	 * 
+	 * @param sItemName	The Name to check for.
+	 * @return			Returns true if the name is unique; otherwise, false.
+	 */
+	public boolean isNameUnique( String sItemName )
+	{
+		boolean bNameIsUnique = true;
+		
+		for( Item iIndex : m_ItemList )
+			bNameIsUnique &= !iIndex.getName( ).equals( sItemName );
+		
+		return bNameIsUnique;
 	}
 	
-	public void testPopulate ()
+	/** 
+	 * Returns the Item at the specified Index.
+	 * 
+	 * @param iIndex	The index of the item to grab.
+	 * @return			Returns null if the index is out of bounds.  Otherwise returns
+	 * 					the Item at the specified Index.
+	 */
+	public Item getItemAt( int iIndex )
 	{
-		for (int i = 0; i < 10; i ++)
-			addItem(new Item ("Test" + i, "Test" ));
+		Item m_ReturnItem = null;
+		
+		if( iIndex >= 0 && iIndex < getRowCount( ) )
+			m_ReturnItem = m_ItemList.get( iIndex );
+		
+		return m_ReturnItem;
 	}
 
 	@Override
@@ -59,6 +100,11 @@ public class ItemTableModel extends AbstractTableModel
 	public int getRowCount() {
 		return m_ItemList.size( );
 	}
+	
+	@Override
+	public Class getColumnClass(int c) {
+        return getValueAt(0, c).getClass();
+    }
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) 
@@ -75,11 +121,11 @@ public class ItemTableModel extends AbstractTableModel
 			case NAME:
 				oReturnObj = (Object) aIndexedItem.getName( );
 				break;
-			case DESC:
-				oReturnObj = (Object) aIndexedItem.getDesc( );
+			case DROPS:
+				oReturnObj = (Object) aIndexedItem.dropsInAScene( );
 				break;
-			case CONNECTED:
-				oReturnObj = (Object) new String( "Bitches!(" + rowIndex + ")" );
+			case UNLOCKS:
+				oReturnObj = (Object) aIndexedItem.unlocksAScene( );
 				break;
 			default:
 				break;

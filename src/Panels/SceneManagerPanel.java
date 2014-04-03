@@ -14,9 +14,6 @@ import Scene_Manager.Scene;
 import Scene_Manager.SceneManager;
 import TableModels.SceneTableModel;
 import UserIO.WindowComm;
-import Windows.AddConnectionWindow;
-import Windows.EditSceneWindow;
-import Windows.MainWindow;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.DropMode;
