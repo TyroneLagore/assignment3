@@ -38,7 +38,7 @@ public class SceneManager
 	
 	public Scene addScene()
 	{
-		return new Scene("Enter a unique title", "Enter a description for your scene.");
+		return new Scene("<Enter a Unique Title>", "<Description>");
 	}
 	
 	
@@ -59,13 +59,15 @@ public class SceneManager
 	{
 		boolean sceneAdded = false;
 		
-		if (!isSceneNameConflict(toSave.getTitle()))
+		if (m_SceneGraph.contains(toSave))
+			sceneAdded = true;
+		else if (!isSceneNameConflict(toSave))
 		{
 			m_SceneGraph.add(toSave);
 			sceneAdded = true;
-			m_SceneTableModel.fireTableDataChanged();
 		}
 		
+		m_SceneTableModel.fireTableDataChanged();
 		return sceneAdded;
 	}
 	
@@ -99,12 +101,12 @@ public class SceneManager
 	 * @param name
 	 * @return
 	 */
-	private boolean isSceneNameConflict(String name)
+	private boolean isSceneNameConflict(Scene scene)
 	{
 		boolean conflict = false;
 		for (Scene o_Scene : m_SceneGraph)
 		{
-			if (o_Scene.getTitle().toLowerCase().equals(name.toLowerCase()))
+			if (o_Scene.getTitle().toLowerCase().equals(scene.getTitle().toLowerCase()))
 				conflict = true;
 		}
 		
