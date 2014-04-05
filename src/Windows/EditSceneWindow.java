@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import Game_System.Item;
 import Panels.SceneManagerPanel;
 import Scene_Manager.Scene;
 import Scene_Manager.SceneManager;
@@ -94,7 +95,7 @@ public class EditSceneWindow extends JFrame {
 				removeConnectionButtonClicked();
 			
 			else if (e.getSource().equals(btnAddItem))
-				m_WindowComm.displayMessage("Add item");
+				addItemButtonClicked();
 			
 			else if (e.getSource().equals(btnRemoveDropItem))
 				m_WindowComm.displayMessage("Remove drop item");
@@ -349,6 +350,18 @@ public class EditSceneWindow extends JFrame {
 		else
 			m_WindowComm.displayMessage("Name conflict. Please enter a unique title for the scene.");
 	}
+	
+	public void addItemButtonClicked()
+	{
+		AddItemWindow aiw = new AddItemWindow(m_SceneManager.getItemModel(), this);
+		btnAddItem.setEnabled(false);
+		aiw.run();
+	}
+	
+	public void addItemWidnowHasClosed()
+	{
+		btnAddItem.setEnabled(true);
+	}
 
 	public void addConnectionWindowHasClosed()
 	{
@@ -365,5 +378,17 @@ public class EditSceneWindow extends JFrame {
 	{
 		m_Parent.editSceneWindowHasClosed();
 		dispose();
+	}
+
+
+	public int connectItem(Item toConnect, String type) 
+	{
+		// Need a function that returns an error code. Something like:
+		//
+		// 0 signifies that the item was added to the scene in the manner that it was requested
+		// 1 = trying to add an item that drops on a scene that already drops somewhere else
+		// 2 = trying to add an item that drops on a scene unlocked by it
+		// TODO continue this method return m_Scene.connectDropItem(toConnect);
+		return 0;
 	}
 }
