@@ -43,7 +43,7 @@ public class AddConnectionWindow extends JFrame
 		}
 	}
 	
-	public AddConnectionWindow( Scene scene, SceneTableModel sceneTable, EditSceneWindow parent)
+	public AddConnectionWindow( SceneTableModel sceneTable, EditSceneWindow parent)
 	{
 		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);

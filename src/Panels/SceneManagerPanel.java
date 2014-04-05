@@ -1,10 +1,13 @@
 package Panels;
 
 import java.awt.*;
+
 import Windows.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -14,13 +17,12 @@ import Scene_Manager.Scene;
 import Scene_Manager.SceneManager;
 import TableModels.SceneTableModel;
 import UserIO.WindowComm;
-import Windows.AddConnectionWindow;
-import Windows.EditSceneWindow;
-import Windows.MainWindow;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.DropMode;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Main Panel for Managing all the scenes in the game, allows the user the
@@ -39,7 +41,7 @@ public class SceneManagerPanel extends JPanel {
 	private SceneManager m_SceneManager;
 	private WindowComm m_WindowComm;
 	private SceneTableModel m_SceneTableModel;
-	
+
 
 	public class ButtonHandler implements ActionListener {
 		private SceneManagerPanel scenePanel;
@@ -101,7 +103,7 @@ public class SceneManagerPanel extends JPanel {
 	private void openEditSceneWindow(Scene toEdit)
 	{
 		toggleSaveEditEnabled(false);
-		EditSceneWindow esw = new EditSceneWindow (toEdit, this, m_SceneTableModel);
+		EditSceneWindow esw = new EditSceneWindow (toEdit, this, m_SceneManager);
 		esw.run();
 	}
 
@@ -148,20 +150,20 @@ public class SceneManagerPanel extends JPanel {
 		add(scrollPane);
 		scrollPane.setViewportView(m_SceneTable);	
 
-		m_AddScnBtn = new JButton("Add Scene");
+		m_AddScnBtn = new JButton("Add");
 		m_AddScnBtn.setToolTipText("Add a new scene.");
 		m_AddScnBtn.setBounds(456, 8, 103, 23);
 		m_AddScnBtn.addActionListener(btnHandler);
 		setLayout(null);
 		add(m_AddScnBtn);
 
-		m_RmvScnBtn = new JButton("Remove Scene");
+		m_RmvScnBtn = new JButton("Remove\r\n");
 		m_RmvScnBtn.setToolTipText("Remove the selected scene.");
 		m_RmvScnBtn.setBounds(456, 41, 103, 23);
 		m_RmvScnBtn.addActionListener(btnHandler);
 		add(m_RmvScnBtn);
 
-		m_EdtScnBtn = new JButton("Edit Scene");
+		m_EdtScnBtn = new JButton("Edit");
 		m_EdtScnBtn.setToolTipText("Edit the selected scene.");
 		m_EdtScnBtn.setBounds(456, 75, 103, 23);
 		m_EdtScnBtn.addActionListener(btnHandler);
