@@ -3,7 +3,13 @@
  */
 package Scene_Manager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 import Game_System.*;
 import TableModels.ItemTableModel;
@@ -127,5 +133,65 @@ public class SceneManager
 				if (!o_Connection.getSceneIsConnected())
 					findConnections(o_Connection);
 	}
+	
+	public boolean loadFromFile (String fileName)
+	{
+		boolean opened = true;
+		String sCurrentLine = "";
+		String sSceneGraphInput = "";
+		String sItemListInput = "";
+        try
+        {
+            XStream xstream = new XStream(new StaxDriver() );
+            Scanner input = new Scanner( new File( fileName ) );
+            
+            while( sCurrentLine.compareToIgnoreCase("Done Scene Graph") != 0)
+            {
+            	sCurrentLine = input.nextLine();
+            	if (sCurrentLine.compareToIgnoreCase("Done Scene Graph") != 0)
+            		sSceneGraphInput += sCurrentLine + "\n";
+            }
 
+            while (input.hasNext())
+            	sItemListInput += input.nextLine ( ) + "\n";
+            
+            input.close( );
+            
+            m_SceneGraph = ( ArrayList< Scene > ) xstream.fromXML( sSceneGraphInput );
+            m_ItemList = ( ArrayList<Item> ) xstream.fromXML (sItemListInput);
+            
+            m_StartScene = m_SceneGraph.get(0);
+            m_EndScene = m_SceneGraph.get(1);
+            
+            updateSceneConnections();
+            
+            m_SceneTableModel.setNewSceneGraph(m_SceneGraph);
+            m_ItemTableModel.setNewItemList(m_ItemList); 
+        }
+        catch(Exception ex) { opened = false; } 
+        
+        return opened;
+	}
+	
+	public boolean saveToFile (String fileName)
+	{
+		XStream xstream = new XStream( new StaxDriver() );
+		PrintStream outFile;
+		boolean saved = true;
+
+        try
+        {
+            outFile = new PrintStream( new FileOutputStream( fileName ) );  
+            outFile.print( xstream.toXML( m_SceneGraph ) );
+            
+            outFile.print ("\nDone Scene Graph\n");
+            
+            outFile.print (xstream.toXML (m_ItemList ));
+            
+            outFile.close();
+        }
+        catch(Exception ex) { saved = false; }
+        
+        return saved;
+	}
 }

@@ -25,6 +25,12 @@ import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Name: EditItemWindow
+ * 
+ * @author Tyrone Lagore
+ * @version April 4, 2014
+ */
 public class EditItemWindow extends JFrame {
 
 	private JLabel 				lblItemTitleLg;
@@ -74,7 +80,7 @@ public class EditItemWindow extends JFrame {
         public void mousePressed( MouseEvent e )	
 		{
 			if( e.getSource( ).equals( m_DropSceneLbl ) )
-				m_CommWindow.displayMessage( "Drop Scene Lable Clicked!" );
+				m_CommWindow.displayMessage( "Drop Scene Label Clicked!" );
 			else if( e.getSource( ).equals( m_UnlockSceneLbl ) )
 				m_CommWindow.displayMessage( "Unlock Scene Lable Clicked!" );
 		}

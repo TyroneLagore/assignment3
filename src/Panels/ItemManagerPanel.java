@@ -41,18 +41,9 @@ public class ItemManagerPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			if (e.getSource().equals(m_RmvItmBtn))
-			{
-				removeItem( );
-			}
-			else if( e.getSource( ).equals( m_AddItmBtn ) )
-			{
-				addItem( );
-			}
-			else if( e.getSource( ).equals( m_EdtItmBtn ) )
-			{
-				editItem( );
-			}
+			if (e.getSource().equals(m_RmvItmBtn))			 { removeItem( ); }
+			else if( e.getSource( ).equals( m_AddItmBtn ) )	 { addItem( );	  }
+			else if( e.getSource( ).equals( m_EdtItmBtn ) )  { editItem( );	  }
 		}
 	}
 
@@ -66,18 +57,18 @@ public class ItemManagerPanel extends JPanel {
 		m_SceneManager = sManager;
 		m_ItemTableModel = itemsTable;
 		
-		m_AddItmBtn = new JButton("Add Item");
+		m_AddItmBtn = new JButton("Add");
 		m_AddItmBtn.setBounds(456, 8, 103, 23);
 		m_AddItmBtn.addActionListener(btnHandler);
 		setLayout(null);
 		add(m_AddItmBtn);
 
-		m_RmvItmBtn = new JButton("Remove Item");
+		m_RmvItmBtn = new JButton("Remove");
 		m_RmvItmBtn.setBounds(456, 41, 103, 23);
 		m_RmvItmBtn.addActionListener(btnHandler);
 		add(m_RmvItmBtn);
 		
-		m_EdtItmBtn = new JButton("Edit Item");
+		m_EdtItmBtn = new JButton("Edit");
 		m_EdtItmBtn.setToolTipText("Edit the selected scene.");
 		m_EdtItmBtn.setBounds(456, 75, 103, 23);
 		m_EdtItmBtn.addActionListener(btnHandler);

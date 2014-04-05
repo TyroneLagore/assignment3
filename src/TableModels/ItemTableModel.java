@@ -1,19 +1,23 @@
 package TableModels;
 
 import java.util.ArrayList;
+
 import javax.swing.table.*;
+
 import Game_System.*;
+import Scene_Manager.Scene;
 
 
 public class ItemTableModel extends AbstractTableModel
 {
-	private String[] headers = { "Name","Does Drop","Unlocks a Scene" };
+	private String[] headers = { "Name","Drops In Scene", "Does Drop","Unlocks a Scene" };
 	private ArrayList<Item> m_ItemList;
 	
 	// Constant Variables
-	private static final int NAME 		= 0;
-	private static final int DROPS 		= 1;
-	private static final int UNLOCKS 	= 2;
+	private static final int NAME 			= 0;
+	private static final int DROPS_WHERE	= 1;
+	private static final int DROPS 			= 2;
+	private static final int UNLOCKS 		= 3;
 	
 	
 	public ItemTableModel( ArrayList<Item> itemList)
@@ -79,6 +83,11 @@ public class ItemTableModel extends AbstractTableModel
 		return m_ReturnItem;
 	}
 
+	public void setNewItemList(ArrayList<Item> itemList)
+	{
+		m_ItemList = itemList ;
+		fireTableDataChanged();
+	}
 	@Override
 	public String getColumnName( int iColumn )
 	{
@@ -120,6 +129,11 @@ public class ItemTableModel extends AbstractTableModel
 			{
 			case NAME:
 				oReturnObj = (Object) aIndexedItem.getName( );
+				break;
+			case DROPS_WHERE:
+				Scene sPlaceDropped = aIndexedItem.getDropScene();
+				oReturnObj = (Object) sPlaceDropped == null ? "None" :
+						sPlaceDropped.getTitle();
 				break;
 			case DROPS:
 				oReturnObj = (Object) aIndexedItem.dropsInAScene( );

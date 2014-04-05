@@ -21,9 +21,11 @@ public class SceneTableModel extends AbstractTableModel
 	public SceneTableModel ( ArrayList<Scene> sceneGraph)
 	{
 		m_SceneGraph = sceneGraph;
+		fireTableDataChanged();
 	}
 	
-	
+	public void setNewSceneGraph (ArrayList<Scene> sceneGraph )
+												{ m_SceneGraph = sceneGraph; }
 	public String getColumnName(int column)		{ return headers[column]; }
 	@Override
 	public int getColumnCount() 				{ return headers.length;  }

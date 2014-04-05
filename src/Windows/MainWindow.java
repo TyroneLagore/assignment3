@@ -131,9 +131,9 @@ public class MainWindow extends JFrame{
 	public void loadProject()
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
-		
-		/* XXX for testing purposes - remove later */
-		m_WindowComm.displayMessage("The selected file was " + fileName);
+		boolean fileOpened = m_MainSystem.loadSceneManager(fileName);
+		if ( !fileOpened )
+			m_WindowComm.displayMessage("Error loading file.");
 	}
 	
 	/**
@@ -145,10 +145,10 @@ public class MainWindow extends JFrame{
 	public void saveProject()
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.SAVE);
-		
-		/* XXX for testing purposes - remove later */
-		m_WindowComm.displayMessage("The selected file was " + fileName);
-		/* TODO Implement this: m_MainSystem.saveSceneManager( fileGetter.getFile() ); */
+		if ( m_MainSystem.saveSceneManager(fileName))
+			m_WindowComm.displayMessage("Successfully saved to \"" + fileName + "\".");
+		else 
+			m_WindowComm.displayMessage("Error saving file.");
 	}
 
 	/**

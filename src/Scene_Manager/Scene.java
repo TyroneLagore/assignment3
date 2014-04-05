@@ -33,14 +33,16 @@ public class Scene {
 		m_ConnectedTo = false;
 	}
 
-	public void addConnection(Scene toConnect, String connectionLabel) {
+	public void addConnection(Scene toConnect, String connectionLabel) 
+	{
 		if (m_Connections.size() < MAX_CONNECTIONS) {
 			m_Connections.add(toConnect);
 			m_ConnectionLabels.add(connectionLabel);
 		}
 	}
 
-	public void removeConnection(int indexToRemove) {
+	public void removeConnection(int indexToRemove) 
+	{
 
 		if (m_Connections.get(indexToRemove) != null) {
 			m_Connections.remove(indexToRemove);
@@ -53,30 +55,34 @@ public class Scene {
 		m_ConnectionLabels.add(indexOfScene, newLabel);
 		
 	}
-	public void setSceneIsConnected(boolean bIsConnected) { m_ConnectedTo = bIsConnected; }
-
+	
+	public void setSceneIsConnected(boolean bIsConnected) 
+													{ m_ConnectedTo = bIsConnected; }
 	public boolean getSceneIsConnected() 			{ return m_ConnectedTo; }
 
+	/**
+	 * Getters/setters for connecting an item that drops on this scene
+	 * @param toConnect the Item being connected
+	 */
 	public void connectDropItem(Item toConnect) 	{ m_DropItem = toConnect; 	}
 	public Item getDropItem() 						{	return m_DropItem; 		}
 	public void removeDropItem() 					{	m_DropItem = null; 		}
 
+	/**
+	 * Getters/setters for connecting an item that unlocks this scene
+	 * @param toConnect the Item being connected
+	 */
 	public void connectUnlockItem(Item toConnect) 	{ m_UnlockItem = toConnect; }
 	public void removeUnlockItem() 					{ m_UnlockItem = null; 		}
 	public Item getUnlockItem()			 			{ return m_UnlockItem; 		}
 
+	/* Getters/Setters */
 	public String getTitle() 						{ return m_Title; 			}
-
 	public String getDesc() 						{ return m_Desc; 			}
-
 	public ArrayList<String> getConnectionLabels() 	{ return m_ConnectionLabels;}
-
 	public ArrayList<Scene> getConnections() 		{ return m_Connections; 	}
-
 	public void setTitle(String m_Title) 			{ this.m_Title = m_Title;	}
-
 	public void setDesc(String m_Desc) 				{ this.m_Desc = m_Desc; 	}
-
 	public String toString() 						{ return getTitle(); 		}
 
 }
