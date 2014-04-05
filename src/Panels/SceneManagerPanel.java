@@ -1,10 +1,13 @@
 package Panels;
 
 import java.awt.*;
+
 import Windows.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,6 +21,8 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.DropMode;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Main Panel for Managing all the scenes in the game, allows the user the
@@ -36,7 +41,7 @@ public class SceneManagerPanel extends JPanel {
 	private SceneManager m_SceneManager;
 	private WindowComm m_WindowComm;
 	private SceneTableModel m_SceneTableModel;
-	
+
 
 	public class ButtonHandler implements ActionListener {
 		private SceneManagerPanel scenePanel;
