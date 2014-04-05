@@ -123,14 +123,13 @@ public class AddItemWindow extends JFrame
 			switch (connectFlag)
 			{
 			case 0:
-				m_WindowComm.displayMessage("Added to scene");
 				closeWindow();
 				break;
 			case 1:
-				m_WindowComm.displayMessage("That item is already dropped somewhere else!");
+				m_WindowComm.displayMessage("That item is already dropped somewhere else.");
 				break;
 			case 2:
-				m_WindowComm.displayMessage("You can't have an item drop and be found on the same scene.");
+				m_WindowComm.displayMessage("You can't have an item drop on the scene unlocked by it.");
 				break;
 			}
 		}

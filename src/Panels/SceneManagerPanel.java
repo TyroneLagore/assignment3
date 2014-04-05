@@ -72,13 +72,16 @@ public class SceneManagerPanel extends JPanel {
 		{
 			selectedSceneIndex = m_SceneTable.getSelectedRow();
 			toRemove = m_SceneTableModel.getSceneAt(selectedSceneIndex);
-		
-			if (m_WindowComm.getYesNo ("Are you sure you want to the Scene \"" + 
-					toRemove.getTitle() + "\"?", "Remove Scene") == 0)
+			if (toRemove != m_SceneManager.getStartScene() && toRemove != m_SceneManager.getEndScene())
 			{
-				m_SceneManager.removeScene(toRemove);
-				m_WindowComm.displayMessage("Scene Removed.");
-			}
+				if (m_WindowComm.getYesNo ("Are you sure you want to remove the Scene \"" + 
+						toRemove.getTitle() + "\"?", "Remove Scene") == 0)
+				{
+					m_SceneManager.removeScene(toRemove);
+					m_WindowComm.displayMessage("Scene Removed.");
+				}
+			}else
+				m_WindowComm.displayMessage("You cannot remove the start scene or the end scene.");
 		}
 	}
 
@@ -107,9 +110,9 @@ public class SceneManagerPanel extends JPanel {
 		esw.run();
 	}
 
-	public boolean saveEdittedScene(Scene toSave)
+	public boolean saveEdittedScene(Scene toSave, String newTitle)
 	{
-		boolean b_SceneAdded = m_SceneManager.saveScene(toSave);
+		boolean b_SceneAdded = m_SceneManager.saveScene(toSave, newTitle);
 		if (b_SceneAdded)
 			toggleSaveEditEnabled(true);
 	

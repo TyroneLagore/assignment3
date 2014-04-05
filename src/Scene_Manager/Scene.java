@@ -20,7 +20,7 @@ public class Scene {
 	private Item m_DropItem;
 	private ArrayList<Scene> m_Connections;
 	private ArrayList<String> m_ConnectionLabels;
-	private boolean m_NoConnectionsTo;
+	private boolean m_ConnectedTo;
 	private static final int MAX_CONNECTIONS = 4;
 
 	public Scene(String title, String desc) {
@@ -30,7 +30,7 @@ public class Scene {
 		m_ConnectionLabels = new ArrayList<String>();
 		m_Title = title;
 		m_Desc = desc;
-		m_NoConnectionsTo = true;
+		m_ConnectedTo = false;
 	}
 
 	public void addConnection(Scene toConnect, String connectionLabel) {
@@ -53,9 +53,9 @@ public class Scene {
 		m_ConnectionLabels.add(indexOfScene, newLabel);
 		
 	}
-	public void setSceneIsConnected(boolean bIsConnected) { m_NoConnectionsTo = bIsConnected; }
+	public void setSceneIsConnected(boolean bIsConnected) { m_ConnectedTo = bIsConnected; }
 
-	public boolean getSceneIsConnected() 			{ return m_NoConnectionsTo; }
+	public boolean getSceneIsConnected() 			{ return m_ConnectedTo; }
 
 	public void connectDropItem(Item toConnect) 	{ m_DropItem = toConnect; 	}
 	public Item getDropItem() 						{	return m_DropItem; 		}

@@ -9,7 +9,7 @@ import Scene_Manager.Scene;
 
 public class SceneTableModel extends AbstractTableModel
 { /* XXX isolated infers it has no connections, prior or post */
-	private String[] headers = { "Name","Item Drops", "Item Unlocks","# Connected","No path to" };
+	private String[] headers = { "Name","Item Drops", "Item Unlocks","# Connected","Reachable" };
 	private ArrayList<Scene> m_SceneGraph;
 	
 	private static final int NAME 				= 0;
@@ -24,28 +24,13 @@ public class SceneTableModel extends AbstractTableModel
 	}
 	
 	
-	public String getColumnName(int column)
-	{
-		return headers[column];
-	}
-	
-	
+	public String getColumnName(int column)		{ return headers[column]; }
 	@Override
-	public int getColumnCount() {
-		return headers.length;
-	}
-
+	public int getColumnCount() 				{ return headers.length;  }
 	@Override
-	public int getRowCount() {
-		// TODO Auto-generated method stub
-		return m_SceneGraph.size();
-	}
-	
+	public int getRowCount() 					{ return m_SceneGraph.size(); }
 	@Override
-	public Class getColumnClass(int arg0)
-	{
-		return getValueAt(0, arg0).getClass();
-	}
+	public Class getColumnClass(int arg0) 		{ return getValueAt(0, arg0).getClass(); }
 
 	@Override
 	public Object getValueAt(int row, int col) 
