@@ -157,7 +157,7 @@ public class EditSceneWindow extends JFrame {
 		
 		ButtonHandler btnHandler = new ButtonHandler(this);
 		
-		setBounds( 100, 100, 830, 400 );
+		setBounds( 100, 100, 830, 440 );
 		Point parentLocation = m_Parent.getLocation();
 		double parentX = parentLocation.getX();
 		double parentY = parentLocation.getY();
