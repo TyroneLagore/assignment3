@@ -108,9 +108,8 @@ public class AddItemWindow extends JFrame
 		lblConnectItemTo.setBounds(10, 11, 354, 14);
 		getContentPane().add(lblConnectItemTo);
 		
-		m_ItemTypeSelection.add("Item unlocks this scene");
 		m_ItemTypeSelection.add("Item drops on this scene");
-
+		m_ItemTypeSelection.add("Item unlocks this scene");
 	}
 	
 	public void connectItemButtonClicked() 

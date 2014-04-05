@@ -242,6 +242,9 @@ public class EditItemWindow extends JFrame {
 		m_CancelBtn.addActionListener( m_ItmBtnHndlr );
 		m_CancelBtn.setBounds(348, 219, 110, 23);
 		getContentPane().add(m_CancelBtn);
+		
+		m_NameTextArea.grabFocus();
+		m_NameTextArea.selectAll();
 	}
 	
 	public void run()

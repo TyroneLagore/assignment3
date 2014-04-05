@@ -43,6 +43,7 @@ public class SceneManager
 		updateSceneConnections();
 	}
 
+	public boolean contains (Scene checkScene)		{	return m_SceneGraph.contains(checkScene); }
 	
 	public Scene addScene() { return new Scene("<Enter a Unique Title>", "<Description>"); }
 	

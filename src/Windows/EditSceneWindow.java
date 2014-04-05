@@ -45,7 +45,7 @@ public class EditSceneWindow extends JFrame {
 	private SceneManagerPanel m_Parent;
 	private WindowComm m_WindowComm;
 	private JLabel lblLargeTitle;
-	private JButton btnCancel;
+	private JButton btnDiscard;
 	private JButton btnSaveScene;
 	private JButton btnRemoveConnection;
 	private JButton btnConnectScene;
@@ -62,13 +62,13 @@ public class EditSceneWindow extends JFrame {
 	private ArrayList<Scene> m_Connections;
 	private static final int NUM_JLABELS = 4;
 	private JLabel lblConnectionLabel;
+	private JTextField m_ItemDropsTextField;
 	private JTextField m_ItemUnlocksTextField;
-	private JTextField m_ItemDroppedTextField;
-	private JButton btnRmvUnlockItem;
+	private JButton btnRmvDropItem;
 	private JLabel lblItemRequiredTo;
 	private SceneManager m_SceneManager;
 	private JButton btnAddItem;
-	private JButton btnRmvDropItem;
+	private JButton btnRmvUnlockItem;
 	private static final String m_UnlockString = "Item unlocks this scene";
 	private static final String m_DropString = "Item drops on this scene";
 
@@ -85,7 +85,7 @@ public class EditSceneWindow extends JFrame {
 			if (e.getSource().equals(btnSaveScene))
 				saveScene();
 			
-			else if (e.getSource().equals(btnCancel))
+			else if (e.getSource().equals(btnDiscard))
 			{
 				setVisible(false);
 				m_Parent.editSceneWindowHasClosed();
@@ -99,10 +99,10 @@ public class EditSceneWindow extends JFrame {
 			else if (e.getSource().equals(btnAddItem))
 				addItemButtonClicked();
 			
-			else if (e.getSource().equals(btnRmvUnlockItem))
+			else if (e.getSource().equals(btnRmvDropItem))
 				removeUnlockItemButtonClicked();
 			
-			else if (e.getSource().equals(btnRmvDropItem))
+			else if (e.getSource().equals(btnRmvUnlockItem))
 				removeDropItemButtonClicked();
 		}
 	}
@@ -240,10 +240,12 @@ public class EditSceneWindow extends JFrame {
 		btnSaveScene.setBounds(578, 318, 208, 23);
 		getContentPane().add(btnSaveScene);
 		
-		btnCancel = new JButton("Cancel");
-		btnCancel.addActionListener(btnHandler);
-		btnCancel.setBounds(578, 354, 208, 23);
-		getContentPane().add(btnCancel);
+		btnDiscard = new JButton("Discard");
+		btnDiscard.addActionListener(btnHandler);
+		btnDiscard.setBounds(578, 354, 208, 23);
+		getContentPane().add(btnDiscard);
+		if (m_SceneManager.contains(m_Scene))
+			btnDiscard.setVisible(false);
 		
 		lblLargeTitle = new JLabel("");
 		lblLargeTitle.setText(m_Scene.getTitle());
@@ -260,37 +262,37 @@ public class EditSceneWindow extends JFrame {
 		lblItemConnectedTo.setBounds(578, 35, 153, 14);
 		getContentPane().add(lblItemConnectedTo);
 		
-		btnRmvDropItem = new JButton("X\r\n");
-		btnRmvDropItem.setFont(new Font("Courier New", Font.PLAIN, 10));
-		btnRmvDropItem.addActionListener(btnHandler);
-		btnRmvDropItem.setBounds(760, 94, 45, 23);
-		getContentPane().add(btnRmvDropItem);
-		btnRmvDropItem.setEnabled(false);
+		btnRmvUnlockItem = new JButton("X\r\n");
+		btnRmvUnlockItem.setFont(new Font("Courier New", Font.PLAIN, 10));
+		btnRmvUnlockItem.addActionListener(btnHandler);
+		btnRmvUnlockItem.setBounds(760, 94, 45, 23);
+		getContentPane().add(btnRmvUnlockItem);
+		btnRmvUnlockItem.setEnabled(false);
 		
 		btnAddItem = new JButton("Add Item");
 		btnAddItem.addActionListener(btnHandler);
 		btnAddItem.setBounds(578, 128, 109, 23);
 		getContentPane().add(btnAddItem);
 		
+		m_ItemDropsTextField = new JTextField();
+		m_ItemDropsTextField.setBounds(578, 50, 173, 23);
+		getContentPane().add(m_ItemDropsTextField);
+		m_ItemDropsTextField.setColumns(10);
+		m_ItemDropsTextField.setEditable(false);
+		
 		m_ItemUnlocksTextField = new JTextField();
-		m_ItemUnlocksTextField.setBounds(578, 50, 173, 23);
-		getContentPane().add(m_ItemUnlocksTextField);
 		m_ItemUnlocksTextField.setColumns(10);
+		m_ItemUnlocksTextField.setBounds(578, 94, 173, 23);
+		getContentPane().add(m_ItemUnlocksTextField);
 		m_ItemUnlocksTextField.setEditable(false);
 		
-		m_ItemDroppedTextField = new JTextField();
-		m_ItemDroppedTextField.setColumns(10);
-		m_ItemDroppedTextField.setBounds(578, 94, 173, 23);
-		getContentPane().add(m_ItemDroppedTextField);
-		m_ItemDroppedTextField.setEditable(false);
+		btnRmvDropItem = new JButton("X");
+		btnRmvDropItem.setFont(new Font("Courier New", Font.PLAIN, 10));
+		btnRmvDropItem.addActionListener(btnHandler);
+		btnRmvDropItem.setBounds(760, 50, 45, 23);
+		getContentPane().add(btnRmvDropItem);
 		
-		btnRmvUnlockItem = new JButton("X");
-		btnRmvUnlockItem.setFont(new Font("Courier New", Font.PLAIN, 10));
-		btnRmvUnlockItem.addActionListener(btnHandler);
-		btnRmvUnlockItem.setBounds(760, 50, 45, 23);
-		getContentPane().add(btnRmvUnlockItem);
-		
-		btnRmvUnlockItem.setEnabled(false);
+		btnRmvDropItem.setEnabled(false);
 		
 		lblItemRequiredTo = new JLabel("Item required to enter scene");
 		lblItemRequiredTo.setBounds(578, 79, 208, 14);
@@ -298,14 +300,14 @@ public class EditSceneWindow extends JFrame {
 		
 		if (m_Scene.getUnlockItem() != null)
 		{
-			m_ItemUnlocksTextField.setText(m_Scene.getUnlockItem().getName());
-			btnRmvDropItem.setEnabled(true);
+			m_ItemDropsTextField.setText(m_Scene.getUnlockItem().getName());
+			btnRmvUnlockItem.setEnabled(true);
 		}
 		
 		if (m_Scene.getDropItem() != null)
 		{
-			m_ItemDroppedTextField.setText(m_Scene.getDropItem().getName());
-			btnRmvUnlockItem.setEnabled(true);
+			m_ItemUnlocksTextField.setText(m_Scene.getDropItem().getName());
+			btnRmvDropItem.setEnabled(true);
 		}
 		
 		if (m_Scene.getTitle().compareToIgnoreCase("Beginning") == 0 ||
@@ -410,8 +412,8 @@ public class EditSceneWindow extends JFrame {
 		{
 			m_Scene.getDropItem().removeSceneDrop();
 			m_Scene.removeDropItem();
-			m_ItemDroppedTextField.setText("");
-			btnRmvDropItem.setEnabled(false);
+			m_ItemUnlocksTextField.setText("");
+			btnRmvUnlockItem.setEnabled(false);
 		}
 	}
 	
@@ -421,8 +423,8 @@ public class EditSceneWindow extends JFrame {
 		{
 			m_Scene.getUnlockItem().removeSceneUnlock();
 			m_Scene.removeUnlockItem();
-			m_ItemUnlocksTextField.setText("");
-			btnRmvUnlockItem.setEnabled(false);
+			m_ItemDropsTextField.setText("");
+			btnRmvDropItem.setEnabled(false);
 		}
 	}
 
@@ -450,7 +452,7 @@ public class EditSceneWindow extends JFrame {
 			{
 				m_Scene.connectDropItem(toConnect);			//else connect the item to drop at the scene
 				toConnect.setSceneDrop(m_Scene);
-				m_ItemDroppedTextField.setText(toConnect.getName());
+				m_ItemDropsTextField.setText(toConnect.getName());
 				btnRmvDropItem.setEnabled(true);
 			}
 			
