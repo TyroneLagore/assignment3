@@ -40,14 +40,12 @@ public class SceneInfoWindow extends JFrame {
 	private JLabel lblTitle;
 	private JTextArea m_DescTextArea;
 	private JScrollPane m_DescScrollPane;
-	private JLabel lblConnectedScenes;
 	private JScrollPane m_ConnectedScenesScrollPane;
 	private JList <Scene>m_ConnectedScenesJList;
 	private DefaultListModel<Scene> m_ConnectedScenesModel;
 	private JTextField []m_ConnectionLabels;
 	private ArrayList<Scene> m_Connections;
 	private static final int NUM_JLABELS = 4;
-	private JLabel lblConnectionLabel;
 	private JLabel m_ConnectedScenesLabel;
 	
 	/**
@@ -66,6 +64,7 @@ public class SceneInfoWindow extends JFrame {
 			if (e.getSource().equals(btnClose))
 			{
 				setVisible(false);
+				dispose();
 			}
 		}
 	}
@@ -75,6 +74,8 @@ public class SceneInfoWindow extends JFrame {
 	 */
 	public SceneInfoWindow( Scene scene)
 	{
+		
+		m_Connections = scene.getConnections();
 		m_Scene = scene;
 		initialize();
 	}
@@ -105,7 +106,7 @@ public class SceneInfoWindow extends JFrame {
 		
 		m_ConnectionLabels = new JTextField[NUM_JLABELS];
 		
-		setBounds( 100, 100, 640, 400 );
+		setBounds( 100, 100, 830, 500 );
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(btnHandler);
 		btnClose.setBounds(513, 356, 101, 34);
