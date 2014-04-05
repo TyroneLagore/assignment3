@@ -13,6 +13,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import Game_System.Item;
 import Panels.ItemManagerPanel;
+import Scene_Manager.Scene;
 import UserIO.WindowComm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -74,7 +75,20 @@ public class EditItemWindow extends JFrame {
         public void mousePressed( MouseEvent e )	
 		{
 			if( e.getSource( ).equals( m_DropSceneLbl ) )
-				m_CommWindow.displayMessage( "Drop Scene Lable Clicked!" );
+			{
+				Scene m_DropScene = new Scene( "Test Scene", "Some Description" );
+				
+				if( null == m_DropScene )
+				{
+					m_CommWindow.displayMessage( m_EditingItem.toString( ) + " doesn't drop in any scene yet!" );
+					
+				}
+				else
+				{
+					SceneInfoWindow m_SceneWindow = new SceneInfoWindow( m_EditingItem.getDropScene( ) );
+					m_SceneWindow.run( );
+				}
+			}
 			else if( e.getSource( ).equals( m_UnlockSceneLbl ) )
 				m_CommWindow.displayMessage( "Unlock Scene Lable Clicked!" );
 		}
