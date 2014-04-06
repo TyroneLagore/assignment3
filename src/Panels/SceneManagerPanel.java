@@ -14,6 +14,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.JTextArea;
 import javax.swing.JToolTip;
 
 import Scene_Manager.Scene;
@@ -29,6 +30,7 @@ import javax.swing.table.TableCellRenderer;
 
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.JTextPane;
@@ -52,7 +54,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 	private WindowComm m_WindowComm;
 	private SceneTableModel m_SceneTableModel;
 	private JTextField m_SceneTitleTextField;
-	private JTextField m_SceneDescriptionTextField;
+	private JTextArea m_SceneDescriptionTextArea;
 	private JTextField m_ItemDrops;
 	private JTextField m_ItemUnlocks;
 
@@ -204,12 +206,13 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		lblSceneTitle.setBounds(16, 29, 84, 14);
 		panel.add(lblSceneTitle);
 		
-		m_SceneDescriptionTextField = new JTextField();
-		m_SceneDescriptionTextField.setBackground(SystemColor.control);
-		m_SceneDescriptionTextField.setBounds(16, 93, 170, 145);
-		panel.add(m_SceneDescriptionTextField);
-		m_SceneDescriptionTextField.setColumns(10);
-		m_SceneDescriptionTextField.setEditable(false);
+		m_SceneDescriptionTextArea = new JTextArea();
+		m_SceneDescriptionTextArea.setLineWrap(true);
+		m_SceneDescriptionTextArea.setBackground(SystemColor.control);
+		m_SceneDescriptionTextArea.setBounds(16, 93, 170, 145);
+		panel.add(m_SceneDescriptionTextArea);
+		m_SceneDescriptionTextArea.setColumns(10);
+		m_SceneDescriptionTextArea.setEditable(false);
 		
 		JLabel lblDescription = new JLabel("Description");
 		lblDescription.setBounds(16, 79, 84, 14);
@@ -259,7 +262,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		{
 			Scene mouseOverScene = m_SceneTableModel.getSceneAt(row);
 			m_SceneTitleTextField.setText(mouseOverScene.getTitle());
-			m_SceneDescriptionTextField.setText(mouseOverScene.getDesc());
+			m_SceneDescriptionTextArea.setText(mouseOverScene.getDesc());
 			m_ItemDrops.setText(mouseOverScene.getDropItem() != null ? mouseOverScene.getDropItem().getName() : "None");
 			m_ItemUnlocks.setText(mouseOverScene.getUnlockItem() != null ? mouseOverScene.getUnlockItem().getName() : "None");
 		}else
@@ -269,7 +272,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 	public void clearSceneFields()
 	{
 		m_SceneTitleTextField.setText("");
-		m_SceneDescriptionTextField.setText("");
+		m_SceneDescriptionTextArea.setText("");
 		m_ItemDrops.setText("");
 		m_ItemUnlocks.setText("");
 	}
