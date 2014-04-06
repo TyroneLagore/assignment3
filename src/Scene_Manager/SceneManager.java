@@ -16,7 +16,12 @@ import TableModels.ItemTableModel;
 import TableModels.SceneTableModel;
 
 /**
- * Description
+ * Name: SceneManager
+ * 
+ * Handles all scene related inquiries and maintains the scene graph and item list
+ * for use by the main game.  Maintains the start scene, end scene, and current scene.
+ * 
+ *  For edit mode, the current scene and player remain unused.
  *
  * @author	Tyrone Lagore
  * @version v1.0 - Mar 25, 2014
@@ -49,10 +54,16 @@ public class SceneManager
 		updateSceneConnections();
 	}
 
-	public boolean contains (Scene checkScene)		{	return m_SceneGraph.contains(checkScene); }
-	
+	// Returns a new blank scene.
 	public Scene addScene() { return new Scene("<Enter a Unique Title>", "<Description>"); }
 	
+	/**
+	 * Name: removeScene
+	 * Purpose: Attempts to remove a given scene from the graph.  If it is the start scene
+	 * 		or end scene, it is not removed, as these are protected scenes.
+	 * 
+	 * @param toRemove The scene for which removal is being requested
+	 */
 	public void removeScene (Scene toRemove)
 	{
 		if (toRemove != m_StartScene && toRemove != m_EndScene)
@@ -86,9 +97,11 @@ public class SceneManager
 		return sceneAdded;
 	}
 	
-	/**
-	 * 
-	 * @return
+	/* Checks if the given scene is contained within the current graph */
+	public boolean contains (Scene checkScene)		{	return m_SceneGraph.contains(checkScene); }
+	
+	/*
+	 * Getters
 	 */
 	public ItemTableModel getItemModel () 		{	return m_ItemTableModel;  }
 	public SceneTableModel getSceneModel ()		{	return m_SceneTableModel; }
@@ -114,6 +127,11 @@ public class SceneManager
 		return conflict;
 	}
 	
+	/**
+	 * Name: updateSceneConnections
+	 * Purpose: Updates the scenes connections to inform the user of nodes that are
+	 * 		unreachable with the current scene connections.
+	 */
 	private void updateSceneConnections()
 	{
 		for (Scene o_CurrentScene : m_SceneGraph)
@@ -122,6 +140,15 @@ public class SceneManager
 		findConnections(m_StartScene);
 	}
 	
+	/**
+	 * Name: fineConnections
+	 * Purpose: Traverses the graph from the given node, finding all connections to it
+	 * 		and sets them as visited.
+	 * 
+	 *  - Recursive
+	 * 
+	 * @param root The Scene start node for the traversal
+	 */
 	public void findConnections(Scene root)
 	{
 		ArrayList<Scene> connections = root.getConnections();
@@ -132,66 +159,5 @@ public class SceneManager
 			for (Scene o_Connection : connections)
 				if (!o_Connection.getSceneIsConnected())
 					findConnections(o_Connection);
-	}
-	
-	public boolean loadFromFile (String fileName)
-	{
-		boolean opened = true;
-		String sCurrentLine = "";
-		String sSceneGraphInput = "";
-		String sItemListInput = "";
-        try
-        {
-            XStream xstream = new XStream(new StaxDriver() );
-            Scanner input = new Scanner( new File( fileName ) );
-            
-            while( sCurrentLine.compareToIgnoreCase("Done Scene Graph") != 0)
-            {
-            	sCurrentLine = input.nextLine();
-            	if (sCurrentLine.compareToIgnoreCase("Done Scene Graph") != 0)
-            		sSceneGraphInput += sCurrentLine + "\n";
-            }
-
-            while (input.hasNext())
-            	sItemListInput += input.nextLine ( ) + "\n";
-            
-            input.close( );
-            
-            m_SceneGraph = ( ArrayList< Scene > ) xstream.fromXML( sSceneGraphInput );
-            m_ItemList = ( ArrayList<Item> ) xstream.fromXML (sItemListInput);
-            
-            m_StartScene = m_SceneGraph.get(0);
-            m_EndScene = m_SceneGraph.get(1);
-            
-            updateSceneConnections();
-            
-            m_SceneTableModel.setNewSceneGraph(m_SceneGraph);
-            m_ItemTableModel.setNewItemList(m_ItemList); 
-        }
-        catch(Exception ex) { opened = false; } 
-        
-        return opened;
-	}
-	
-	public boolean saveToFile (String fileName)
-	{
-		XStream xstream = new XStream( new StaxDriver() );
-		PrintStream outFile;
-		boolean saved = true;
-
-        try
-        {
-            outFile = new PrintStream( new FileOutputStream( fileName ) );  
-            outFile.print( xstream.toXML( m_SceneGraph ) );
-            
-            outFile.print ("\nDone Scene Graph\n");
-            
-            outFile.print (xstream.toXML (m_ItemList ));
-            
-            outFile.close();
-        }
-        catch(Exception ex) { saved = false; }
-        
-        return saved;
 	}
 }

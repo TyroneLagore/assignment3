@@ -10,6 +10,7 @@ import Windows.MainWindow;
 import net.miginfocom.swing.MigLayout;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.border.TitledBorder;
 
 /**
  * Panel used for monitoring/managing Items.
@@ -17,7 +18,7 @@ import java.awt.event.*;
  * @author	Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
-public class ItemManagerPanel extends JPanel {
+public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 	/* Private Variables */
 	private JTable 			m_ItemTable;
 	private JButton 		m_AddItmBtn;
@@ -30,6 +31,11 @@ public class ItemManagerPanel extends JPanel {
 	
 	// Constants
 	private static final int YES	= 0;
+	private JTextField m_ItemTitleTextField;
+	private JTextField m_ItemDescriptionTextField;
+	private JTextField m_ItemUnlocksTextField;
+	private JTextField m_ItemDropsTextField;
+	private JLabel lblItemDropsAt;
 	
 	public class ItemManagerButtonHandler implements ActionListener {
 		private ItemManagerPanel parent;
@@ -81,13 +87,63 @@ public class ItemManagerPanel extends JPanel {
 		m_ItemTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		m_ItemTable.setFillsViewportHeight(true);
 		m_ItemTable.setColumnSelectionAllowed(false);
+		m_ItemTable.addMouseMotionListener(this);
 		
 		scrollPane = new JScrollPane(m_ItemTable);
 		scrollPane.setBounds(10, 11, 436, 432);
 		add(scrollPane);
 		scrollPane.setViewportView(m_ItemTable);	
-
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		panel.setBorder(new TitledBorder(null, "Scene Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(569, 12, 202, 359);
+		add(panel);
+		
+		m_ItemTitleTextField = new JTextField();
+		m_ItemTitleTextField.setEditable(false);
+		m_ItemTitleTextField.setColumns(10);
+		m_ItemTitleTextField.setBackground(SystemColor.menu);
+		m_ItemTitleTextField.setBounds(16, 45, 170, 23);
+		panel.add(m_ItemTitleTextField);
+		
+		JLabel lblItemTitle = new JLabel("Item Name");
+		lblItemTitle.setBounds(16, 29, 84, 14);
+		panel.add(lblItemTitle);
+		
+		m_ItemDescriptionTextField = new JTextField();
+		m_ItemDescriptionTextField.setEditable(false);
+		m_ItemDescriptionTextField.setColumns(10);
+		m_ItemDescriptionTextField.setBackground(SystemColor.menu);
+		m_ItemDescriptionTextField.setBounds(16, 93, 170, 145);
+		panel.add(m_ItemDescriptionTextField);
+		
+		JLabel m_DescriptionLabel = new JLabel("Description");
+		m_DescriptionLabel.setBounds(16, 79, 84, 14);
+		panel.add(m_DescriptionLabel);
+		
+		m_ItemUnlocksTextField = new JTextField();
+		m_ItemUnlocksTextField.setEditable(false);
+		m_ItemUnlocksTextField.setBackground(SystemColor.menu);
+		m_ItemUnlocksTextField.setBounds(16, 270, 170, 20);
+		panel.add(m_ItemUnlocksTextField);
+		
+		JLabel lblItemUnlocks = new JLabel("Item Unlocks");
+		lblItemUnlocks.setBounds(16, 249, 170, 14);
+		panel.add(lblItemUnlocks);
+		
+		m_ItemDropsTextField = new JTextField();
+		m_ItemDropsTextField.setEditable(false);
+		m_ItemDropsTextField.setColumns(10);
+		m_ItemDropsTextField.setBackground(SystemColor.menu);
+		m_ItemDropsTextField.setBounds(14, 322, 172, 20);
+		panel.add(m_ItemDropsTextField);
+		
+		lblItemDropsAt = new JLabel("Item Drops At");
+		lblItemDropsAt.setBounds(16, 301, 170, 14);
+		panel.add(lblItemDropsAt);
 	}
+	
 	
 	/*********************************************************************\
 	 * Contains all functionality of the Item Manager Panel				 *
@@ -202,5 +258,44 @@ public class ItemManagerPanel extends JPanel {
 		m_AddItmBtn.setEnabled(b_Toggle);
 		m_RmvItmBtn.setEnabled(b_Toggle);
 		m_EdtItmBtn.setEnabled(b_Toggle);
+	}
+	
+	public void loadSceneManager(SceneManager sceneManager)
+	{
+		m_SceneManager = sceneManager;
+		m_ItemTableModel = m_SceneManager.getItemModel();
+		m_ItemTable.setModel(m_ItemTableModel);
+		m_ItemTableModel.fireTableDataChanged();
+	}
+	
+	
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent event) 
+	{
+		Point p = event.getPoint();
+		int row = m_ItemTable.rowAtPoint(p);
+		if (row != -1)
+		{
+			Item mouseOverItem = m_ItemTableModel.getItemAt(row);
+			m_ItemTitleTextField.setText(mouseOverItem.getName());
+			m_ItemDescriptionTextField.setText(mouseOverItem.getDesc());
+			m_ItemDropsTextField.setText(mouseOverItem.getDropScene() != null ? mouseOverItem.getDropScene().getTitle() : "None");
+			m_ItemUnlocksTextField.setText(mouseOverItem.getUnlockScene() != null ? mouseOverItem.getUnlockScene().getTitle() : "None");
+		}else
+			clearSceneFields();
+	}
+	
+	private void clearSceneFields()
+	{
+		m_ItemTitleTextField.setText("");
+		m_ItemDescriptionTextField.setText("");
+		m_ItemDropsTextField.setText("");
+		m_ItemUnlocksTextField.setText("");
 	}
 }

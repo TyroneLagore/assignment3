@@ -35,8 +35,10 @@ import javax.swing.ListSelectionModel;
 
 /**
  * EditSceneWindow
- * Allows for the editting of an individual scene, passed in upon creation.
+ * Allows for the editing of an individual scene, passed in upon creation.
+ * 
  * @author Tyrone Lagore
+ * @version April 1, 2014
  */
 
 public class EditSceneWindow extends JFrame {
@@ -123,7 +125,7 @@ public class EditSceneWindow extends JFrame {
 	}
 	
 	/**
-	 * 
+	 *  Runs the window
 	 */
 	public void run()
 	{
@@ -349,10 +351,12 @@ public class EditSceneWindow extends JFrame {
 	}
 	
 
+	/**
+	 * Handles the event that a connection has been requested to be removed.
+	 */
 	private void removeConnectionButtonClicked()
 	{
 		int connectionToRemove = m_ConnectedScenesJList.getSelectedIndex();
-		//Scene connectionToRemove = m_ConnectedScenesJList.getSelectedValue();
 
 		if (connectionToRemove != -1)
 		{
@@ -361,6 +365,9 @@ public class EditSceneWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Handles the event that a connection has been requested to be added.
+	 */
 	private void connectSceneButtonClicked()
 	{
 		btnConnectScene.setEnabled(false);
@@ -369,6 +376,11 @@ public class EditSceneWindow extends JFrame {
 		acw.run();
 	}
 	
+	/**
+	 * Attempts to save the scene, grabbing each label associated to each connection and 
+	 * saving them into the scene.  Gives the scene to the scene manager along with the requested
+	 * new title.  If there is no name conflict, the scene is saved into the database.
+	 */
 	private void saveScene()
 	{
 		m_Scene.setDesc(m_DescTextArea.getText());
@@ -376,14 +388,14 @@ public class EditSceneWindow extends JFrame {
 			m_Scene.modifyLabelByIndex(i, m_ConnectionLabels[i].getText());
 				
 		if (m_Parent.saveEdittedScene( m_Scene, m_TitleTextField.getText() ))
-		{
-			m_Scene.setTitle(m_TitleTextField.getText());
 			closeWindow();
-		}
 		else
 			m_WindowComm.displayMessage("Name conflict. Please enter a unique title for the scene.");
 	}
 	
+	/**
+	 * Handles the event that an item has been requested to be added to the scene.
+	 */
 	public void addItemButtonClicked()
 	{
 		AddItemWindow aiw = new AddItemWindow(m_SceneManager.getItemModel(), this);
@@ -391,9 +403,16 @@ public class EditSceneWindow extends JFrame {
 		aiw.run();
 	}
 	
+	/*
+	 * Functions to inform the window that a child window has been closed
+	 */
 	public void addItemWidnowHasClosed() 		{ btnAddItem.setEnabled(true); 		}
 	public void addConnectionWindowHasClosed()	{ btnConnectScene.setEnabled(true); }
 	
+	/**
+	 * Connects another scene to the current scene.
+	 * @param selectedScene
+	 */
 	public void connectScene(Scene selectedScene) 
 	{
 		m_Scene.addConnection(selectedScene, "");
@@ -406,6 +425,9 @@ public class EditSceneWindow extends JFrame {
 		dispose();
 	}
 
+	/**
+	 * Handles the event that the user has requested to remove the current drop item from the scene
+	 */
 	public void removeDropItemButtonClicked()
 	{
 		if (m_WindowComm.getYesNo("Are you sure you want to remove " + m_Scene.getDropItem() + " from this scene?", "Remove Item") == 0)
@@ -417,6 +439,9 @@ public class EditSceneWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Handles the event that the user has requested to remove the current unlock item from the scene
+	 */
 	public void removeUnlockItemButtonClicked()
 	{
 		if (m_WindowComm.getYesNo("Are you sure you want to remove " + m_Scene.getUnlockItem() + " from this scene?", "Remove Item") == 0)

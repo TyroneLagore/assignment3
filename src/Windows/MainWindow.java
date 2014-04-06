@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import Game_System.GameSystem;
 import Panels.ItemManagerPanel;
 import Panels.SceneManagerPanel;
+import Scene_Manager.SceneManager;
 import TableModels.*;
 import UserIO.WindowComm;
 
@@ -21,14 +22,6 @@ import javax.swing.JPanel;
 /**
  * Main Window object for displaying the majority of the game editor
  * functionality.
- * 
- * 
- * Useful JFrame calls: 		
-		JOptionPane.showMessageDialog(Window calling, String);
- * 			- Displays the selected string, and halts the process of the calling window
- * 				until it is dealt with.
- * 
- * 		
  * 
  * @author Team Smart Water
  * @version v1.0 - Mar 25, 2014
@@ -46,9 +39,6 @@ public class MainWindow extends JFrame{
 	private JMenuItem mntmSave;
 	private JMenuItem mntmLoad;
 	private JMenuItem mntmQuit;
-	private JTable itemTable, sceneTable;
-	private ItemTableModel m_ItemTableModel;
-	private SceneTableModel m_SceneTableModel;
 
 	// ================== Inner Class ==============================
 	public class MenuHandler implements ActionListener {
@@ -107,19 +97,10 @@ public class MainWindow extends JFrame{
 	 */
 	public void verifyQuit()
 	{
-		switch (m_WindowComm.getYesNoCancel("Would you like to save before quitting?", "Quit"))
-		{
-			case 0:
-				saveProject();  // intentionally left out break
-			case 1:
+		if (m_WindowComm.getYesNo("Would you like to save before quitting?", "Quit") == 0)
+				saveProject();
+		else
 				closeWindow();
-				break;			// 0 = save
-			case 2:				// 1 = don't save
-				m_WindowComm.displayMessage("You clicked cancel!");
-				break;			// 2 = cancel
-			default:
-				break;
-		};
 	}
 	
 	/**
@@ -131,9 +112,9 @@ public class MainWindow extends JFrame{
 	public void loadProject()
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
-		boolean fileOpened = m_MainSystem.loadSceneManager(fileName);
-		if ( !fileOpened )
-			m_WindowComm.displayMessage("Error loading file.");
+		SceneManager m_SceneManager = m_MainSystem.loadSceneManager(fileName);
+		m_ItemMngrPnl.loadSceneManager(m_SceneManager);
+		m_SceneMngrPnl.loadSceneManager(m_SceneManager);
 	}
 	
 	/**
@@ -164,13 +145,9 @@ public class MainWindow extends JFrame{
 		
 		m_WindowComm = new WindowComm(this);
 		
-		itemTable = new JTable( m_MainSystem.getItemTableModel() );
-		itemTable.setLocation(341, 96);
-		sceneTable = new JTable( m_MainSystem.getSceneTableModel() );
-		
 		MenuHandler btnHandler = new MenuHandler(this);
 		
-		setBounds(100, 100, 600, 569);
+		setBounds(100, 100, 799, 569);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -203,6 +180,9 @@ public class MainWindow extends JFrame{
 		m_MainTabbedPane.addTab("Items", null, m_ItemMngrPnl, null);
 	}
 	
+	/**
+	 * Window closing override
+	 */
 	private void closeWindow()
 	{
 		setVisible(false);

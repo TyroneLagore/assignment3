@@ -3,6 +3,15 @@
  */
 package Game_System;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+
 import Scene_Manager.*;
 import TableModels.ItemTableModel;
 import Windows.*;
@@ -30,10 +39,47 @@ public class GameSystem
 	public ItemTableModel getItemTableModel() 	{ return m_SceneManager.getItemModel(); }
 	public SceneManager getSceneManager()		{ return m_SceneManager; }
 	
-	public boolean loadSceneManager( String fileName ) 
-												{ return m_SceneManager.loadFromFile( fileName ); }
+	public SceneManager loadSceneManager( String fileName ) 
+	{
+		boolean opened = true;
+		String sInput = "";
+        try
+        {
+            XStream xstream = new XStream(new StaxDriver() );
+            Scanner input = new Scanner( new File( fileName ) );
+            
+            while( input.hasNext())
+            	sInput += input.nextLine();
+            
+            m_SceneManager = ( SceneManager ) xstream.fromXML( sInput );
+
+            m_SceneManager.getItemModel().fireTableDataChanged();
+            m_SceneManager.getSceneModel().fireTableDataChanged();
+            
+
+            input.close( );
+        }
+        catch(Exception ex) { opened = false; } 
+        
+        return m_SceneManager;
+	}
+	
 	public boolean saveSceneManager( String fileName )
-												{ return m_SceneManager.saveToFile( fileName );   }
+	{
+		XStream xstream = new XStream( new StaxDriver() );
+		PrintStream outFile;
+		boolean saved = true;
+
+        try
+        {
+            outFile = new PrintStream( new FileOutputStream( fileName ) );  
+            outFile.print( xstream.toXML( m_SceneManager ) );           
+            outFile.close();
+        }
+        catch(Exception ex) { saved = false; }
+        
+        return saved;
+	}
 	
 
 }

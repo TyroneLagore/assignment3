@@ -6,12 +6,15 @@ import Windows.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.JToolTip;
 
 import Scene_Manager.Scene;
 import Scene_Manager.SceneManager;
@@ -24,6 +27,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.JTextPane;
+
 /**
  * Main Panel for Managing all the scenes in the game, allows the user the
  * ability to add, remove and edit any scene from the list of scenes in the
@@ -32,7 +41,8 @@ import javax.swing.table.TableCellRenderer;
  * @author Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
-public class SceneManagerPanel extends JPanel {
+public class SceneManagerPanel extends JPanel implements MouseMotionListener{
+	private int x, y;  // mouse x, y
 	private JButton m_RmvScnBtn;
 	private JButton m_AddScnBtn;
 	private JTable m_SceneTable;
@@ -41,6 +51,10 @@ public class SceneManagerPanel extends JPanel {
 	private SceneManager m_SceneManager;
 	private WindowComm m_WindowComm;
 	private SceneTableModel m_SceneTableModel;
+	private JTextField m_SceneTitleTextField;
+	private JTextField m_SceneDescriptionTextField;
+	private JTextField m_ItemDrops;
+	private JTextField m_ItemUnlocks;
 
 
 	public class ButtonHandler implements ActionListener {
@@ -141,6 +155,7 @@ public class SceneManagerPanel extends JPanel {
 
 		m_SceneTableModel = scenesTable;
 		m_SceneTable = new JTable (scenesTable);
+		m_SceneTable.addMouseMotionListener(this);
 		m_SceneTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		m_SceneTable.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		m_SceneTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -171,7 +186,91 @@ public class SceneManagerPanel extends JPanel {
 		m_EdtScnBtn.setBounds(456, 75, 103, 23);
 		m_EdtScnBtn.addActionListener(btnHandler);
 		add(m_EdtScnBtn);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Scene Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(569, 11, 202, 359);
+		add(panel);
+		panel.setLayout(null);
+		
+		m_SceneTitleTextField = new JTextField();
+		m_SceneTitleTextField.setBackground(SystemColor.control);
+		m_SceneTitleTextField.setBounds(16, 45, 170, 23);
+		panel.add(m_SceneTitleTextField);
+		m_SceneTitleTextField.setColumns(10);
+		m_SceneTitleTextField.setEditable(false);
+		
+		JLabel lblSceneTitle = new JLabel("Scene Title");
+		lblSceneTitle.setBounds(16, 29, 84, 14);
+		panel.add(lblSceneTitle);
+		
+		m_SceneDescriptionTextField = new JTextField();
+		m_SceneDescriptionTextField.setBackground(SystemColor.control);
+		m_SceneDescriptionTextField.setBounds(16, 93, 170, 145);
+		panel.add(m_SceneDescriptionTextField);
+		m_SceneDescriptionTextField.setColumns(10);
+		m_SceneDescriptionTextField.setEditable(false);
+		
+		JLabel lblDescription = new JLabel("Description");
+		lblDescription.setBounds(16, 79, 84, 14);
+		panel.add(lblDescription);
+		
+		m_ItemUnlocks = new JTextField();
+		m_ItemUnlocks.setBackground(SystemColor.control);
+		m_ItemUnlocks.setBounds(16, 270, 170, 20);
+		panel.add(m_ItemUnlocks);
+		m_ItemUnlocks.setEditable(false);
+		
+		JLabel lblItemUnlockingThis = new JLabel("Item unlocking this scene");
+		lblItemUnlockingThis.setBounds(16, 249, 170, 14);
+		panel.add(lblItemUnlockingThis);
+		
+		m_ItemDrops = new JTextField();
+		m_ItemDrops.setBackground(SystemColor.control);
+		m_ItemDrops.setBounds(14, 322, 172, 20);
+		panel.add(m_ItemDrops);
+		m_ItemDrops.setColumns(10);
+		m_ItemDrops.setEditable(false);
+		
+		JLabel lblItemDroppedOn = new JLabel("Item dropped on this scene");
+		lblItemDroppedOn.setBounds(16, 301, 170, 14);
+		panel.add(lblItemDroppedOn);
+	}
+	
+	public void loadSceneManager(SceneManager sceneManager)
+	{
+		m_SceneManager = sceneManager;
+		m_SceneTableModel = m_SceneManager.getSceneModel();
+		m_SceneTable.setModel(m_SceneTableModel);
+		m_SceneTableModel.fireTableDataChanged();
 	}
 
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		
+	}
 
+	@Override
+	public void mouseMoved(MouseEvent event) 
+	{
+		Point p = event.getPoint();
+		int row = m_SceneTable.rowAtPoint(p);
+		if (row != -1)
+		{
+			Scene mouseOverScene = m_SceneTableModel.getSceneAt(row);
+			m_SceneTitleTextField.setText(mouseOverScene.getTitle());
+			m_SceneDescriptionTextField.setText(mouseOverScene.getDesc());
+			m_ItemDrops.setText(mouseOverScene.getDropItem() != null ? mouseOverScene.getDropItem().getName() : "None");
+			m_ItemUnlocks.setText(mouseOverScene.getUnlockItem() != null ? mouseOverScene.getUnlockItem().getName() : "None");
+		}else
+			clearSceneFields();
+	}
+	
+	public void clearSceneFields()
+	{
+		m_SceneTitleTextField.setText("");
+		m_SceneDescriptionTextField.setText("");
+		m_ItemDrops.setText("");
+		m_ItemUnlocks.setText("");
+	}
 }
