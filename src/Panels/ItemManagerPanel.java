@@ -262,12 +262,9 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		m_EdtItmBtn.setEnabled(b_Toggle);
 	}
 	
-	public void loadSceneManager(SceneManager sceneManager)
+	public void loadSceneManager()
 	{
-		m_SceneManager = sceneManager;
-		m_ItemTableModel = m_SceneManager.getItemModel();
-		m_ItemTable.setModel(m_ItemTableModel);
-		m_ItemTableModel.fireTableDataChanged();
+		m_ItemTableModel.setNewItemList(m_SceneManager.getItemList());
 	}
 	
 

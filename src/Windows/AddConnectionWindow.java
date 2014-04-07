@@ -112,8 +112,12 @@ public class AddConnectionWindow extends JFrame
 	
 	private void connectSceneClicked()
 	{
-		m_Parent.connectScene(m_ScenesJList.getSelectedValue());
-		closeWindow();
+		Scene toConnect = m_ScenesJList.getSelectedValue();
+		if (toConnect != null)
+		{
+			m_Parent.connectScene(toConnect);
+			closeWindow();
+		}
 	}
 	
 	private void closeWindow()

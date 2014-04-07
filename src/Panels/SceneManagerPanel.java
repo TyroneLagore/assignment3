@@ -241,12 +241,9 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		panel.add(lblItemDroppedOn);
 	}
 	
-	public void loadSceneManager(SceneManager sceneManager)
+	public void loadSceneManager()
 	{
-		m_SceneManager = sceneManager;
-		m_SceneTableModel = m_SceneManager.getSceneModel();
-		m_SceneTable.setModel(m_SceneTableModel);
-		m_SceneTableModel.fireTableDataChanged();
+		m_SceneTableModel.setNewSceneGraph(m_SceneManager.getSceneGraph());
 	}
 
 	@Override

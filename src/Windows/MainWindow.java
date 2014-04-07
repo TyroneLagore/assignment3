@@ -116,8 +116,8 @@ public class MainWindow extends JFrame{
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
 		SceneManager m_SceneManager = m_MainSystem.loadSceneManager(fileName);
-		m_ItemMngrPnl.loadSceneManager(m_SceneManager);
-		m_SceneMngrPnl.loadSceneManager(m_SceneManager);
+		m_ItemMngrPnl.loadSceneManager();
+		m_SceneMngrPnl.loadSceneManager();
 	}
 	
 	/**
@@ -129,10 +129,13 @@ public class MainWindow extends JFrame{
 	public void saveProject()
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.SAVE);
-		if ( m_MainSystem.saveSceneManager(fileName))
-			m_WindowComm.displayMessage("Successfully saved to \"" + fileName + "\".");
-		else 
-			m_WindowComm.displayMessage("Error saving file.");
+		if (!fileName.matches("null") && !fileName.matches("nullnull"))
+		{
+			if ( m_MainSystem.saveSceneManager(fileName))
+				m_WindowComm.displayMessage("Successfully saved to \"" + fileName + "\".");
+			else 
+				m_WindowComm.displayMessage("Error saving file.");
+		}
 	}
 	
 	public void testWindowHasClosed()
@@ -148,7 +151,7 @@ public class MainWindow extends JFrame{
 			setVisible(false);
 			rgw.run();
 		}else
-			m_WindowComm.displayMessage("The Start scene must connect to the End scene.");
+			m_WindowComm.displayMessage("The \"Beginning\" scene must connect to the \"End\" scene.");
 	}
 	/**
 	 * Initialize the contents of the frame.

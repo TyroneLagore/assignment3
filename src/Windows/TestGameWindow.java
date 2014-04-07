@@ -88,6 +88,7 @@ public class TestGameWindow extends JFrame
 		m_SceneManager = sceneManager;
 		m_Player = m_SceneManager.getPlayer();
 		m_Parent = parent;
+		m_Player.clearPlayerInventory();
 		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
 		

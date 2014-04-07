@@ -26,6 +26,6 @@ public class Player
 	public int inventorySize()				{	return m_Inventory.size();	}	
 	public boolean inventoryContains( Item itemCheck )	
 											{	return m_Inventory.contains(itemCheck); }
-	
+	public void clearPlayerInventory()		{	m_Inventory.clear();		}
 	
 }

@@ -41,20 +41,26 @@ public class GameSystem
 	
 	public SceneManager loadSceneManager( String fileName ) 
 	{
-		String sInput = "";
+		String sXmlSceneInput = "";
+		String sXmlItemInput = "";
         try
         {
             XStream xstream = new XStream(new StaxDriver() );
             Scanner input = new Scanner( new File( fileName ) );
             
-            while( input.hasNext())
-            	sInput += input.nextLine();
+            if (input.hasNextLine())
+            	sXmlSceneInput += input.nextLine();
             
-            m_SceneManager = ( SceneManager ) xstream.fromXML( sInput );
-
+            if (input.hasNextLine())
+            	sXmlItemInput += input.nextLine();
+            
             input.close( );
+            
+            m_SceneManager.setSceneGraph(( ArrayList<Scene> ) xstream.fromXML(sXmlSceneInput));
+            m_SceneManager.setItemList((ArrayList<Item>) xstream.fromXML (sXmlItemInput));
+
         }
-        catch(Exception ex) { } 
+        catch(Exception ex) {} 
         
         return m_SceneManager;
 	}
@@ -68,7 +74,9 @@ public class GameSystem
         try
         {
             outFile = new PrintStream( new FileOutputStream( fileName ) );  
-            outFile.print( xstream.toXML( m_SceneManager ) );           
+            outFile.print( xstream.toXML( m_SceneManager.getSceneGraph() ) );  
+            outFile.println();
+            outFile.print (xstream.toXML(m_SceneManager.getItemList()));
             outFile.close();
         }
         catch(Exception ex) { saved = false; }

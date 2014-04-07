@@ -57,6 +57,16 @@ public class SceneManager
 	// Returns a new blank scene.
 	public Scene addScene() { return new Scene("<Enter a Unique Title>", "<Description>"); }
 	
+	public void setSceneGraph(ArrayList<Scene> toSet) 
+	{ 
+		m_SceneGraph = toSet; 
+		m_StartScene = m_SceneGraph.get(0);
+		m_EndScene = m_SceneGraph.get(1);
+		updateSceneConnections();
+	}
+	public void setItemList (ArrayList<Item> toSet)
+							{ m_ItemList = toSet; 	}
+	
 	/**
 	 * Name: removeScene
 	 * Purpose: Attempts to remove a given scene from the graph.  If it is the start scene
@@ -110,6 +120,8 @@ public class SceneManager
 	public Scene getStartScene()				{	return m_StartScene;	  }
 	public Scene getEndScene()					{	return m_EndScene;		  }
 	public Scene getCurrentScene()				{ 	return m_CurrentScene;	  }
+	public ArrayList<Scene> getSceneGraph()		{ 	return m_SceneGraph;	  }
+	public ArrayList<Item>	getItemList()		{	return m_ItemList;		  }
 	
 	/**
 	 * Validates that a chosen name for a scene does not already within the scene graph.

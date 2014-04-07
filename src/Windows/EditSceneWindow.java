@@ -75,13 +75,11 @@ public class EditSceneWindow extends JFrame {
 	private static final String m_DropString = "Item drops on this scene";
 	
 	private static final int NUM_JLABELS = 4;
+	private JLabel lblStartOrEnd;
 
 	public class ButtonHandler implements ActionListener {
-		private EditSceneWindow window;
 
-		public ButtonHandler(EditSceneWindow window) {
-			this.window = window;
-		}
+		public ButtonHandler() {}
 
 		@Override
 		public void actionPerformed(ActionEvent e) 
@@ -103,10 +101,10 @@ public class EditSceneWindow extends JFrame {
 			else if (e.getSource().equals(btnAddItem))
 				addItemButtonClicked();
 			
-			else if (e.getSource().equals(btnRmvDropItem))
+			else if (e.getSource().equals(btnRmvUnlockItem))
 				removeUnlockItemButtonClicked();
 			
-			else if (e.getSource().equals(btnRmvUnlockItem))
+			else if (e.getSource().equals(btnRmvDropItem))
 				removeDropItemButtonClicked();
 		}
 	}
@@ -163,7 +161,7 @@ public class EditSceneWindow extends JFrame {
 			}
 		});
 		
-		ButtonHandler btnHandler = new ButtonHandler(this);
+		ButtonHandler btnHandler = new ButtonHandler();
 		
 		setBounds( 100, 100, 830, 440 );
 		Point parentLocation = m_Parent.getLocation();
@@ -304,23 +302,36 @@ public class EditSceneWindow extends JFrame {
 		lblItemRequiredTo.setBounds(578, 79, 208, 14);
 		getContentPane().add(lblItemRequiredTo);
 		
+		lblStartOrEnd = new JLabel("");
+		lblStartOrEnd.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStartOrEnd.setBounds(308, 63, 208, 14);
+		getContentPane().add(lblStartOrEnd);
+		
 		if (m_Scene.getUnlockItem() != null)
 		{
-			m_ItemDropsTextField.setText(m_Scene.getUnlockItem().getName());
+			m_ItemUnlocksTextField.setText(m_Scene.getUnlockItem().getName());
 			btnRmvUnlockItem.setEnabled(true);
 		}
 		
 		if (m_Scene.getDropItem() != null)
 		{
-			m_ItemUnlocksTextField.setText(m_Scene.getDropItem().getName());
+			m_ItemDropsTextField.setText(m_Scene.getDropItem().getName());
 			btnRmvDropItem.setEnabled(true);
 		}
 		
-		if (m_Scene.getTitle().compareToIgnoreCase("Beginning") == 0 ||
-			m_Scene.getTitle().compareToIgnoreCase("End") == 0)
-			m_TitleTextField.setEditable(false);
+		if (m_Scene.equals(m_SceneManager.getEndScene()))
+		{
+			lblStartOrEnd.setText("End Scene");
+			lblStartOrEnd.setToolTipText("This scene is the end scene.  It must be reachable from the beginning scene to play.");
+		}
+		else if (m_Scene.equals(m_SceneManager.getStartScene()))
+		{
+			lblStartOrEnd.setText("Beginning Scene");
+			lblStartOrEnd.setToolTipText("This scene is the beginning scene.  It must eventually lead to the end scene to play.");
+		}
 		else
 		{
+			lblStartOrEnd.setVisible(false);
 			m_TitleTextField.grabFocus();
 			m_TitleTextField.selectAll();
 		}
@@ -438,8 +449,8 @@ public class EditSceneWindow extends JFrame {
 		{
 			m_Scene.getDropItem().removeSceneDrop();
 			m_Scene.removeDropItem();
-			m_ItemUnlocksTextField.setText("");
-			btnRmvUnlockItem.setEnabled(false);
+			m_ItemDropsTextField.setText("");
+			btnRmvDropItem.setEnabled(false);
 		}
 	}
 	
@@ -452,8 +463,8 @@ public class EditSceneWindow extends JFrame {
 		{
 			m_Scene.getUnlockItem().removeSceneUnlock();
 			m_Scene.removeUnlockItem();
-			m_ItemDropsTextField.setText("");
-			btnRmvDropItem.setEnabled(false);
+			m_ItemUnlocksTextField.setText("");
+			btnRmvUnlockItem.setEnabled(false);
 		}
 	}
 
