@@ -87,6 +87,7 @@ public class SceneManager
 		
 		if (!isSceneNameConflict(toSave, newTitle))
 		{
+			toSave.setTitle(newTitle);
 			if (!m_SceneGraph.contains(toSave))
 				m_SceneGraph.add(toSave);
 			sceneAdded = true;

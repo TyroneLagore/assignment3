@@ -32,7 +32,7 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 	// Constants
 	private static final int YES	= 0;
 	private JTextField m_ItemTitleTextField;
-	private JTextField m_ItemDescriptionTextField;
+	private JTextArea m_ItemDescriptionTextArea;
 	private JTextField m_ItemUnlocksTextField;
 	private JTextField m_ItemDropsTextField;
 	private JLabel lblItemDropsAt;
@@ -111,12 +111,14 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		lblItemTitle.setBounds(16, 29, 84, 14);
 		panel.add(lblItemTitle);
 		
-		m_ItemDescriptionTextField = new JTextField();
-		m_ItemDescriptionTextField.setEditable(false);
-		m_ItemDescriptionTextField.setColumns(10);
-		m_ItemDescriptionTextField.setBackground(SystemColor.menu);
-		m_ItemDescriptionTextField.setBounds(16, 93, 170, 145);
-		panel.add(m_ItemDescriptionTextField);
+		m_ItemDescriptionTextArea = new JTextArea();
+		m_ItemDescriptionTextArea.setWrapStyleWord(true);
+		m_ItemDescriptionTextArea.setLineWrap(true);
+		m_ItemDescriptionTextArea.setEditable(false);
+		m_ItemDescriptionTextArea.setColumns(10);
+		m_ItemDescriptionTextArea.setBackground(SystemColor.menu);
+		m_ItemDescriptionTextArea.setBounds(16, 93, 170, 145);
+		panel.add(m_ItemDescriptionTextArea);
 		
 		JLabel m_DescriptionLabel = new JLabel("Description");
 		m_DescriptionLabel.setBounds(16, 79, 84, 14);
@@ -284,7 +286,7 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		{
 			Item mouseOverItem = m_ItemTableModel.getItemAt(row);
 			m_ItemTitleTextField.setText(mouseOverItem.getName());
-			m_ItemDescriptionTextField.setText(mouseOverItem.getDesc());
+			m_ItemDescriptionTextArea.setText(mouseOverItem.getDesc());
 			m_ItemDropsTextField.setText(mouseOverItem.getDropScene() != null ? mouseOverItem.getDropScene().getTitle() : "None");
 			m_ItemUnlocksTextField.setText(mouseOverItem.getUnlockScene() != null ? mouseOverItem.getUnlockScene().getTitle() : "None");
 		}else
@@ -294,7 +296,7 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 	private void clearSceneFields()
 	{
 		m_ItemTitleTextField.setText("");
-		m_ItemDescriptionTextField.setText("");
+		m_ItemDescriptionTextArea.setText("");
 		m_ItemDropsTextField.setText("");
 		m_ItemUnlocksTextField.setText("");
 	}
