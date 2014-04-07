@@ -35,7 +35,7 @@ public class SceneManager
 	private Scene m_StartScene;
 	private Scene m_CurrentScene;
 	private Scene m_EndScene;
-	private Player player;
+	private Player m_Player;
 	
 	public SceneManager()
 	{
@@ -49,7 +49,7 @@ public class SceneManager
 		m_ItemList = new ArrayList<Item>();
 		m_ItemTableModel = new ItemTableModel ( m_ItemList );
 		m_SceneTableModel = new SceneTableModel ( m_SceneGraph );
-		player = new Player();
+		m_Player = new Player();
 		
 		updateSceneConnections();
 	}
@@ -104,10 +104,12 @@ public class SceneManager
 	/*
 	 * Getters
 	 */
+	public Player getPlayer()					{ 	return m_Player;		  }
 	public ItemTableModel getItemModel () 		{	return m_ItemTableModel;  }
 	public SceneTableModel getSceneModel ()		{	return m_SceneTableModel; }
 	public Scene getStartScene()				{	return m_StartScene;	  }
 	public Scene getEndScene()					{	return m_EndScene;		  }
+	public Scene getCurrentScene()				{ 	return m_CurrentScene;	  }
 	
 	/**
 	 * Validates that a chosen name for a scene does not already within the scene graph.

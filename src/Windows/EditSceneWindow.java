@@ -62,7 +62,6 @@ public class EditSceneWindow extends JFrame {
 	private JTextField m_TitleTextField;
 	private JTextField []m_ConnectionLabels;
 	private ArrayList<Scene> m_Connections;
-	private static final int NUM_JLABELS = 4;
 	private JLabel lblConnectionLabel;
 	private JTextField m_ItemDropsTextField;
 	private JTextField m_ItemUnlocksTextField;
@@ -71,8 +70,11 @@ public class EditSceneWindow extends JFrame {
 	private SceneManager m_SceneManager;
 	private JButton btnAddItem;
 	private JButton btnRmvUnlockItem;
+	
 	private static final String m_UnlockString = "Item unlocks this scene";
 	private static final String m_DropString = "Item drops on this scene";
+	
+	private static final int NUM_JLABELS = 4;
 
 	public class ButtonHandler implements ActionListener {
 		private EditSceneWindow window;

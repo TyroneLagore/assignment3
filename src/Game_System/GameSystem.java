@@ -41,7 +41,6 @@ public class GameSystem
 	
 	public SceneManager loadSceneManager( String fileName ) 
 	{
-		boolean opened = true;
 		String sInput = "";
         try
         {
@@ -53,13 +52,9 @@ public class GameSystem
             
             m_SceneManager = ( SceneManager ) xstream.fromXML( sInput );
 
-            m_SceneManager.getItemModel().fireTableDataChanged();
-            m_SceneManager.getSceneModel().fireTableDataChanged();
-            
-
             input.close( );
         }
-        catch(Exception ex) { opened = false; } 
+        catch(Exception ex) { } 
         
         return m_SceneManager;
 	}

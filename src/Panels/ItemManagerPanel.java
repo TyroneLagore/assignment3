@@ -96,8 +96,8 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setBorder(new TitledBorder(null, "Scene Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(569, 12, 202, 359);
+		panel.setBorder(new TitledBorder(null, "Item Details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(569, 11, 202, 359);
 		add(panel);
 		
 		m_ItemTitleTextField = new JTextField();
@@ -269,7 +269,6 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		m_ItemTable.setModel(m_ItemTableModel);
 		m_ItemTableModel.fireTableDataChanged();
 	}
-	
 	
 
 	@Override

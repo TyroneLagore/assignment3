@@ -39,6 +39,7 @@ public class MainWindow extends JFrame{
 	private JMenuItem mntmSave;
 	private JMenuItem mntmLoad;
 	private JMenuItem mntmQuit;
+	private JMenuItem mntmTest;
 
 	// ================== Inner Class ==============================
 	public class MenuHandler implements ActionListener {
@@ -53,13 +54,15 @@ public class MainWindow extends JFrame{
 		{
 			if (e.getSource().equals(mntmSave))
 				saveProject();
-				/* TODO add save functionality */
+
 			else if (e.getSource().equals(mntmLoad))
 				loadProject();
 			
 			else if (e.getSource().equals(mntmQuit))
 				verifyQuit();
-				/* TODO add quit functionality */
+			
+			else if (e.getSource().equals(mntmTest))
+				runTestGame();
 		}
 	}
 
@@ -131,7 +134,22 @@ public class MainWindow extends JFrame{
 		else 
 			m_WindowComm.displayMessage("Error saving file.");
 	}
+	
+	public void testWindowHasClosed()
+	{
+		setVisible(true);
+	}
 
+	public void runTestGame()
+	{
+		if (m_MainSystem.getSceneManager().getEndScene().getSceneIsConnected())
+		{
+			TestGameWindow rgw = new TestGameWindow (this, m_MainSystem.getSceneManager());
+			setVisible(false);
+			rgw.run();
+		}else
+			m_WindowComm.displayMessage("The Start scene must connect to the End scene.");
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -162,10 +180,15 @@ public class MainWindow extends JFrame{
 		mntmLoad = new JMenuItem("Load");
 		mntmLoad.addActionListener(btnHandler);
 		mnFile.add(mntmLoad);
+		
+		mntmTest = new JMenuItem("Test");
+		mntmTest.addActionListener(btnHandler);
+		mnFile.add(mntmTest);
 
 		mntmQuit = new JMenuItem("Quit");
 		mntmQuit.addActionListener(btnHandler);
 		mnFile.add(mntmQuit);
+		
 
 		m_MainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(m_MainTabbedPane, BorderLayout.CENTER);
