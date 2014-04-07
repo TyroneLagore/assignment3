@@ -112,6 +112,7 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		panel.add(lblItemTitle);
 		
 		m_ItemDescriptionTextArea = new JTextArea();
+		m_ItemDescriptionTextArea.setWrapStyleWord(true);
 		m_ItemDescriptionTextArea.setLineWrap(true);
 		m_ItemDescriptionTextArea.setEditable(false);
 		m_ItemDescriptionTextArea.setColumns(10);

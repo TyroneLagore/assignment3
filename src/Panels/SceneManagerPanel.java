@@ -208,6 +208,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		
 		m_SceneDescriptionTextArea = new JTextArea();
 		m_SceneDescriptionTextArea.setLineWrap(true);
+		m_SceneDescriptionTextArea.setWrapStyleWord(true);
 		m_SceneDescriptionTextArea.setBackground(SystemColor.control);
 		m_SceneDescriptionTextArea.setBounds(16, 93, 170, 145);
 		panel.add(m_SceneDescriptionTextArea);

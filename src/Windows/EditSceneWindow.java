@@ -216,6 +216,7 @@ public class EditSceneWindow extends JFrame {
 		getContentPane().add(m_DescScrollPane);
 		
 		m_DescTextArea = new JTextArea();
+		m_DescTextArea.setWrapStyleWord(true);
 		m_DescTextArea.setLineWrap(true);
 		m_DescTextArea.setText(m_Scene.getDesc());
 		m_DescScrollPane.setViewportView(m_DescTextArea);
