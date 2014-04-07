@@ -79,10 +79,18 @@ public class EditItemWindow extends JFrame {
 		@Override
         public void mousePressed( MouseEvent e )	
 		{
-			if( e.getSource( ).equals( m_DropSceneLbl ) )
-				m_CommWindow.displayMessage( "Drop Scene Label Clicked!" );
-			else if( e.getSource( ).equals( m_UnlockSceneLbl ) )
-				m_CommWindow.displayMessage( "Unlock Scene Lable Clicked!" );
+			if( null != m_EditingItem.getDropScene( ) && e.getSource( ).equals( m_DropSceneLbl ) )
+			{
+				setVisibility( false );
+				SceneInfoWindow m_DropSceneWindow = new SceneInfoWindow( m_EditingItem.getDropScene( ) );
+				m_DropSceneWindow.run( );
+			}
+			else if( null != m_EditingItem.getUnlockScene( ) && e.getSource( ).equals( m_UnlockSceneLbl ) )
+			{
+				setVisibility( false );
+				SceneInfoWindow m_UnlockSceneWindow = new SceneInfoWindow( m_EditingItem.getUnlockScene( ) );
+				m_UnlockSceneWindow.run( );
+			}
 		}
 
 		/* Unimplemented, but inherited events as required by MouseListener children. */
@@ -152,15 +160,45 @@ public class EditItemWindow extends JFrame {
 		closeWindow( );
 	}
 	
+	/**
+	 * Contains window closing functionality.
+	 * Disposes window to unload it from memory.
+	 */
 	private void closeWindow()
 	{
 		m_ItmMngrParent.editItemWindowHasClosed();
 		dispose( );
 	}
 	
+	/**
+	 * Public function to set the visibility to true so functionality is given back to
+	 * Edit Item Window.
+	 */
+	public void sceneInfoWindowHasClosed( )
+	{
+		setVisibility( true );
+	}
+	
+	/**
+	 * Sets the visibility of all the action handled areas of Edit Item window based
+	 * on the based in boolean variable.  Used for when a new scene loads from Edit Item
+	 * window and takes control.
+	 * 
+	 * @param bVisible	Boolean variable to set the visibility to.
+	 */
+	private void setVisibility( boolean bVisible )
+	{
+		m_DropSceneLbl.setVisible( bVisible );
+		m_UnlockSceneLbl.setVisible( bVisible );
+		m_SaveItemBtn.setVisible( bVisible );
+		m_CancelBtn.setVisible( bVisible );
+	}
+	
 	/****************************************************************\
 	 * End Edit Item Window Function Block							*
 	\****************************************************************/
+	
+	
 	/**
 	 * Create the application.
 	 */
@@ -219,18 +257,18 @@ public class EditItemWindow extends JFrame {
 		sceneDroppedLbl.setBounds(348, 42, 199, 14);
 		getContentPane().add(sceneDroppedLbl);
 		
-		m_DropSceneLbl = new JTextField();
+		m_DropSceneLbl = new JTextField( m_EditingItem.getDropScene( ) == null ? "" : m_EditingItem.getDropScene( ).toString( ) );
 		m_DropSceneLbl.addMouseListener( m_ItmMouseHndlr );
 		m_DropSceneLbl.setEditable(false);
+		m_DropSceneLbl.setColumns(10);
 		m_DropSceneLbl.setBounds(348, 67, 199, 20);
 		getContentPane().add(m_DropSceneLbl);
-		m_DropSceneLbl.setColumns(10);
 		
 		JLabel sceneUnLockTitleLbl = new JLabel("Item Unlocks:");
 		sceneUnLockTitleLbl.setBounds(348, 98, 199, 14);
 		getContentPane().add(sceneUnLockTitleLbl);
 		
-		m_UnlockSceneLbl = new JTextField();
+		m_UnlockSceneLbl = new JTextField( m_EditingItem.getUnlockScene( ) == null ? "" : m_EditingItem.getUnlockScene( ).toString( ) );
 		m_UnlockSceneLbl.addMouseListener( m_ItmMouseHndlr );
 		m_UnlockSceneLbl.setEditable(false);
 		m_UnlockSceneLbl.setColumns(10);
