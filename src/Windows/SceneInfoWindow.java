@@ -62,10 +62,7 @@ public class SceneInfoWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) 
 		{
 			if (e.getSource().equals(btnClose))
-			{
-				setVisible(false);
-				dispose();
-			}
+				closeWindow();
 		}
 	}
 
@@ -176,6 +173,7 @@ public class SceneInfoWindow extends JFrame {
 		populateConnectedScenes();
 	}
 	
+	
 	private void populateConnectedScenes()
 	{	
 		ArrayList<String> connectionLabels = m_Scene.getConnectionLabels();
@@ -189,7 +187,7 @@ public class SceneInfoWindow extends JFrame {
 		for (String o_Label : connectionLabels)
 		{
 			m_ConnectionLabels[i].setText(o_Label);
-			m_ConnectionLabels[i].setEditable(true);
+			m_ConnectionLabels[i].setEditable(false);
 			i++;
 		}
 		
@@ -200,5 +198,11 @@ public class SceneInfoWindow extends JFrame {
 			i++;
 		}
 		
+	}
+	
+	public void closeWindow()
+	{	
+		setVisible(false);
+		dispose();
 	}
 }
