@@ -42,7 +42,10 @@ public class Item
 	public final Scene getUnlockScene( )				{ return m_Unlocks; }
 	public boolean unlocksAScene( )						{ return null != m_Unlocks; }
 	
-	public String toString ( )							{ return m_sName; }
+	public void removeSceneUnlock ()					{ m_Unlocks = null; 	}
+	public void removeSceneDrop ()						{ m_DroppedIn = null; 	}
+	
+	public String toString ( )							{ return m_sName; 		}
 	
 }
 

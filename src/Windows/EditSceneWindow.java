@@ -35,8 +35,10 @@ import javax.swing.ListSelectionModel;
 
 /**
  * EditSceneWindow
- * Allows for the editting of an individual scene, passed in upon creation.
+ * Allows for the editing of an individual scene, passed in upon creation.
+ * 
  * @author Tyrone Lagore
+ * @version April 1, 2014
  */
 
 public class EditSceneWindow extends JFrame {
@@ -45,7 +47,7 @@ public class EditSceneWindow extends JFrame {
 	private SceneManagerPanel m_Parent;
 	private WindowComm m_WindowComm;
 	private JLabel lblLargeTitle;
-	private JButton btnCancel;
+	private JButton btnDiscard;
 	private JButton btnSaveScene;
 	private JButton btnRemoveConnection;
 	private JButton btnConnectScene;
@@ -62,13 +64,15 @@ public class EditSceneWindow extends JFrame {
 	private ArrayList<Scene> m_Connections;
 	private static final int NUM_JLABELS = 4;
 	private JLabel lblConnectionLabel;
-	private JTextField m_ItemUnlocsTextField;
-	private JTextField m_ItemDroppedTextField;
-	private JButton btnRemoveDropItem;
+	private JTextField m_ItemDropsTextField;
+	private JTextField m_ItemUnlocksTextField;
+	private JButton btnRmvDropItem;
 	private JLabel lblItemRequiredTo;
 	private SceneManager m_SceneManager;
 	private JButton btnAddItem;
 	private JButton btnRmvUnlockItem;
+	private static final String m_UnlockString = "Item unlocks this scene";
+	private static final String m_DropString = "Item drops on this scene";
 
 	public class ButtonHandler implements ActionListener {
 		private EditSceneWindow window;
@@ -83,7 +87,7 @@ public class EditSceneWindow extends JFrame {
 			if (e.getSource().equals(btnSaveScene))
 				saveScene();
 			
-			else if (e.getSource().equals(btnCancel))
+			else if (e.getSource().equals(btnDiscard))
 			{
 				setVisible(false);
 				m_Parent.editSceneWindowHasClosed();
@@ -97,11 +101,11 @@ public class EditSceneWindow extends JFrame {
 			else if (e.getSource().equals(btnAddItem))
 				addItemButtonClicked();
 			
-			else if (e.getSource().equals(btnRemoveDropItem))
-				m_WindowComm.displayMessage("Remove drop item");
+			else if (e.getSource().equals(btnRmvDropItem))
+				removeUnlockItemButtonClicked();
 			
 			else if (e.getSource().equals(btnRmvUnlockItem))
-				m_WindowComm.displayMessage("Remove unlock item");
+				removeDropItemButtonClicked();
 		}
 	}
 	
@@ -120,7 +124,9 @@ public class EditSceneWindow extends JFrame {
 		initialize( );
 	}
 	
-	
+	/**
+	 *  Runs the window
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
@@ -210,6 +216,8 @@ public class EditSceneWindow extends JFrame {
 		getContentPane().add(m_DescScrollPane);
 		
 		m_DescTextArea = new JTextArea();
+		m_DescTextArea.setWrapStyleWord(true);
+		m_DescTextArea.setLineWrap(true);
 		m_DescTextArea.setText(m_Scene.getDesc());
 		m_DescScrollPane.setViewportView(m_DescTextArea);
 		
@@ -236,10 +244,12 @@ public class EditSceneWindow extends JFrame {
 		btnSaveScene.setBounds(578, 318, 208, 23);
 		getContentPane().add(btnSaveScene);
 		
-		btnCancel = new JButton("Cancel");
-		btnCancel.addActionListener(btnHandler);
-		btnCancel.setBounds(578, 354, 208, 23);
-		getContentPane().add(btnCancel);
+		btnDiscard = new JButton("Discard");
+		btnDiscard.addActionListener(btnHandler);
+		btnDiscard.setBounds(578, 354, 208, 23);
+		getContentPane().add(btnDiscard);
+		if (m_SceneManager.contains(m_Scene))
+			btnDiscard.setVisible(false);
 		
 		lblLargeTitle = new JLabel("");
 		lblLargeTitle.setText(m_Scene.getTitle());
@@ -261,34 +271,59 @@ public class EditSceneWindow extends JFrame {
 		btnRmvUnlockItem.addActionListener(btnHandler);
 		btnRmvUnlockItem.setBounds(760, 94, 45, 23);
 		getContentPane().add(btnRmvUnlockItem);
+		btnRmvUnlockItem.setEnabled(false);
 		
 		btnAddItem = new JButton("Add Item");
 		btnAddItem.addActionListener(btnHandler);
 		btnAddItem.setBounds(578, 128, 109, 23);
 		getContentPane().add(btnAddItem);
 		
-		m_ItemUnlocsTextField = new JTextField();
-		m_ItemUnlocsTextField.setBounds(578, 50, 173, 23);
-		getContentPane().add(m_ItemUnlocsTextField);
-		m_ItemUnlocsTextField.setColumns(10);
+		m_ItemDropsTextField = new JTextField();
+		m_ItemDropsTextField.setBounds(578, 50, 173, 23);
+		getContentPane().add(m_ItemDropsTextField);
+		m_ItemDropsTextField.setColumns(10);
+		m_ItemDropsTextField.setEditable(false);
 		
-		m_ItemDroppedTextField = new JTextField();
-		m_ItemDroppedTextField.setColumns(10);
-		m_ItemDroppedTextField.setBounds(578, 94, 173, 23);
-		getContentPane().add(m_ItemDroppedTextField);
+		m_ItemUnlocksTextField = new JTextField();
+		m_ItemUnlocksTextField.setColumns(10);
+		m_ItemUnlocksTextField.setBounds(578, 94, 173, 23);
+		getContentPane().add(m_ItemUnlocksTextField);
+		m_ItemUnlocksTextField.setEditable(false);
 		
-		btnRemoveDropItem = new JButton("X");
-		btnRemoveDropItem.setFont(new Font("Courier New", Font.PLAIN, 10));
-		btnRemoveDropItem.addActionListener(btnHandler);
-		btnRemoveDropItem.setBounds(760, 50, 45, 23);
-		getContentPane().add(btnRemoveDropItem);
+		btnRmvDropItem = new JButton("X");
+		btnRmvDropItem.setFont(new Font("Courier New", Font.PLAIN, 10));
+		btnRmvDropItem.addActionListener(btnHandler);
+		btnRmvDropItem.setBounds(760, 50, 45, 23);
+		getContentPane().add(btnRmvDropItem);
+		
+		btnRmvDropItem.setEnabled(false);
 		
 		lblItemRequiredTo = new JLabel("Item required to enter scene");
 		lblItemRequiredTo.setBounds(578, 79, 208, 14);
 		getContentPane().add(lblItemRequiredTo);
 		
-		m_TitleTextField.grabFocus();
-		m_TitleTextField.selectAll();
+		if (m_Scene.getUnlockItem() != null)
+		{
+			m_ItemDropsTextField.setText(m_Scene.getUnlockItem().getName());
+			btnRmvUnlockItem.setEnabled(true);
+		}
+		
+		if (m_Scene.getDropItem() != null)
+		{
+			m_ItemUnlocksTextField.setText(m_Scene.getDropItem().getName());
+			btnRmvDropItem.setEnabled(true);
+		}
+		
+		if (m_Scene.getTitle().compareToIgnoreCase("Beginning") == 0 ||
+			m_Scene.getTitle().compareToIgnoreCase("End") == 0)
+			m_TitleTextField.setEditable(false);
+		else
+		{
+			m_TitleTextField.grabFocus();
+			m_TitleTextField.selectAll();
+		}
+		
+
 	}
 	
 	private void populateConnectedScenes()
@@ -318,10 +353,12 @@ public class EditSceneWindow extends JFrame {
 	}
 	
 
+	/**
+	 * Handles the event that a connection has been requested to be removed.
+	 */
 	private void removeConnectionButtonClicked()
 	{
 		int connectionToRemove = m_ConnectedScenesJList.getSelectedIndex();
-		//Scene connectionToRemove = m_ConnectedScenesJList.getSelectedValue();
 
 		if (connectionToRemove != -1)
 		{
@@ -330,6 +367,9 @@ public class EditSceneWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Handles the event that a connection has been requested to be added.
+	 */
 	private void connectSceneButtonClicked()
 	{
 		btnConnectScene.setEnabled(false);
@@ -338,19 +378,26 @@ public class EditSceneWindow extends JFrame {
 		acw.run();
 	}
 	
+	/**
+	 * Attempts to save the scene, grabbing each label associated to each connection and 
+	 * saving them into the scene.  Gives the scene to the scene manager along with the requested
+	 * new title.  If there is no name conflict, the scene is saved into the database.
+	 */
 	private void saveScene()
 	{
-		m_Scene.setTitle(m_TitleTextField.getText());
 		m_Scene.setDesc(m_DescTextArea.getText());
 		for (int i = 0; i < m_Scene.getConnections().size(); i++)
 			m_Scene.modifyLabelByIndex(i, m_ConnectionLabels[i].getText());
 				
-		if (m_Parent.saveEdittedScene( m_Scene ))
+		if (m_Parent.saveEdittedScene( m_Scene, m_TitleTextField.getText() ))
 			closeWindow();
 		else
 			m_WindowComm.displayMessage("Name conflict. Please enter a unique title for the scene.");
 	}
 	
+	/**
+	 * Handles the event that an item has been requested to be added to the scene.
+	 */
 	public void addItemButtonClicked()
 	{
 		AddItemWindow aiw = new AddItemWindow(m_SceneManager.getItemModel(), this);
@@ -358,16 +405,16 @@ public class EditSceneWindow extends JFrame {
 		aiw.run();
 	}
 	
-	public void addItemWidnowHasClosed()
-	{
-		btnAddItem.setEnabled(true);
-	}
-
-	public void addConnectionWindowHasClosed()
-	{
-		btnConnectScene.setEnabled(true);
-	}
+	/*
+	 * Functions to inform the window that a child window has been closed
+	 */
+	public void addItemWidnowHasClosed() 		{ btnAddItem.setEnabled(true); 		}
+	public void addConnectionWindowHasClosed()	{ btnConnectScene.setEnabled(true); }
 	
+	/**
+	 * Connects another scene to the current scene.
+	 * @param selectedScene
+	 */
 	public void connectScene(Scene selectedScene) 
 	{
 		m_Scene.addConnection(selectedScene, "");
@@ -380,15 +427,64 @@ public class EditSceneWindow extends JFrame {
 		dispose();
 	}
 
+	/**
+	 * Handles the event that the user has requested to remove the current drop item from the scene
+	 */
+	public void removeDropItemButtonClicked()
+	{
+		if (m_WindowComm.getYesNo("Are you sure you want to remove " + m_Scene.getDropItem() + " from this scene?", "Remove Item") == 0)
+		{
+			m_Scene.getDropItem().removeSceneDrop();
+			m_Scene.removeDropItem();
+			m_ItemUnlocksTextField.setText("");
+			btnRmvUnlockItem.setEnabled(false);
+		}
+	}
+	
+	/**
+	 * Handles the event that the user has requested to remove the current unlock item from the scene
+	 */
+	public void removeUnlockItemButtonClicked()
+	{
+		if (m_WindowComm.getYesNo("Are you sure you want to remove " + m_Scene.getUnlockItem() + " from this scene?", "Remove Item") == 0)
+		{
+			m_Scene.getUnlockItem().removeSceneUnlock();
+			m_Scene.removeUnlockItem();
+			m_ItemDropsTextField.setText("");
+			btnRmvDropItem.setEnabled(false);
+		}
+	}
 
 	public int connectItem(Item toConnect, String type) 
 	{
-		// Need a function that returns an error code. Something like:
-		//
-		// 0 signifies that the item was added to the scene in the manner that it was requested
-		// 1 = trying to add an item that drops on a scene that already drops somewhere else
-		// 2 = trying to add an item that drops on a scene unlocked by it
-		// TODO continue this method return m_Scene.connectDropItem(toConnect);
-		return 0;
+		int connectFlag = 0;
+		if (type.matches(m_UnlockString))
+		{
+			if (toConnect.equals(m_Scene.getDropItem()))	//If trying to set an unlock
+				connectFlag = 2;							//and the scene current drops the item, inform caller
+			else
+			{
+				m_Scene.connectUnlockItem(toConnect);		//else add the item to unlock, as items can unlock multiple scenes
+				toConnect.setSceneUnlock(m_Scene);			//and connect the item to the scene
+				m_ItemUnlocksTextField.setText(toConnect.getName());
+				btnRmvUnlockItem.setEnabled(true);
+			}
+		}else
+		{
+			if (toConnect.equals(m_Scene.getUnlockItem()))	//If trying to set a drop and the item currently drops
+				connectFlag = 2;							// on the scene, inform caller
+			else if (toConnect.getDropScene() != null)		//If the item already has a connected scene to drop at,
+				connectFlag = 1;							//inform caller.  Items can only drop once.
+			else
+			{
+				m_Scene.connectDropItem(toConnect);			//else connect the item to drop at the scene
+				toConnect.setSceneDrop(m_Scene);
+				m_ItemDropsTextField.setText(toConnect.getName());
+				btnRmvDropItem.setEnabled(true);
+			}
+			
+		}
+
+		return connectFlag;
 	}
 }

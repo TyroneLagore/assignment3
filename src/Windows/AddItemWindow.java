@@ -20,7 +20,24 @@ import java.awt.Rectangle;
 import java.awt.Checkbox;
 import java.awt.Choice;
 import java.awt.Font;
-
+/**
+ * Name: AddItemWindow
+ * Purpose: Handles the connecting of items to the scene that is currently being edited.
+ * 		A scene may hold a single item that can be dropped on it, and a single item may be
+ * 		required to unlock it.  These may not be the same item for a single scene.  An item
+ * 		may only be dropped on one scene.
+ * 
+ * Known bugs:
+ * 		None
+ * 
+ * Assumptions: Error checking for the addition of items to the scene is done outside of 
+ * 		this window.  This window is simply a tool to return a selected item to the EditSceneWindow.
+ * 		The error message for a given error, however, is displayed within this window.
+ *
+ * 
+ * @author Tyrone Lagore
+ * @version April 5, 2014
+ */
 public class AddItemWindow extends JFrame
 {
 	private WindowComm m_WindowComm;
@@ -108,9 +125,8 @@ public class AddItemWindow extends JFrame
 		lblConnectItemTo.setBounds(10, 11, 354, 14);
 		getContentPane().add(lblConnectItemTo);
 		
-		m_ItemTypeSelection.add("Item unlocks this scene");
 		m_ItemTypeSelection.add("Item drops on this scene");
-
+		m_ItemTypeSelection.add("Item unlocks this scene");
 	}
 	
 	public void connectItemButtonClicked() 
@@ -123,14 +139,13 @@ public class AddItemWindow extends JFrame
 			switch (connectFlag)
 			{
 			case 0:
-				m_WindowComm.displayMessage("Added to scene");
 				closeWindow();
 				break;
 			case 1:
-				m_WindowComm.displayMessage("That item is already dropped somewhere else!");
+				m_WindowComm.displayMessage("That item is already dropped somewhere else.");
 				break;
 			case 2:
-				m_WindowComm.displayMessage("You can't have an item drop and be found on the same scene.");
+				m_WindowComm.displayMessage("You can't have an item drop on the scene unlocked by it.");
 				break;
 			}
 		}

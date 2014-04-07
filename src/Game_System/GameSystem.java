@@ -3,7 +3,14 @@
  */
 package Game_System;
 
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 import Scene_Manager.*;
 import TableModels.ItemTableModel;
@@ -13,8 +20,8 @@ import TableModels.*;
 /**
  * Description
  *
- * @author	James C. Coté
- * @version v1.0 - Mar 25, 2014
+ * @author	Tyrone Lagore
+ * @version v1.2 - April 4, 2014
  */
 public class GameSystem 
 {
@@ -27,34 +34,52 @@ public class GameSystem
 		m_MainWindow = new MainWindow(this);
 	}
 	
-	public void run()
+	public void run() 							{ m_MainWindow.run(); }
+	public SceneTableModel getSceneTableModel() { return m_SceneManager.getSceneModel(); }
+	public ItemTableModel getItemTableModel() 	{ return m_SceneManager.getItemModel(); }
+	public SceneManager getSceneManager()		{ return m_SceneManager; }
+	
+	public SceneManager loadSceneManager( String fileName ) 
 	{
-		m_MainWindow.run();
+		boolean opened = true;
+		String sInput = "";
+        try
+        {
+            XStream xstream = new XStream(new StaxDriver() );
+            Scanner input = new Scanner( new File( fileName ) );
+            
+            while( input.hasNext())
+            	sInput += input.nextLine();
+            
+            m_SceneManager = ( SceneManager ) xstream.fromXML( sInput );
+
+            m_SceneManager.getItemModel().fireTableDataChanged();
+            m_SceneManager.getSceneModel().fireTableDataChanged();
+            
+
+            input.close( );
+        }
+        catch(Exception ex) { opened = false; } 
+        
+        return m_SceneManager;
 	}
 	
-	public SceneTableModel getSceneTableModel()
+	public boolean saveSceneManager( String fileName )
 	{
-		return m_SceneManager.getSceneModel();
+		XStream xstream = new XStream( new StaxDriver() );
+		PrintStream outFile;
+		boolean saved = true;
+
+        try
+        {
+            outFile = new PrintStream( new FileOutputStream( fileName ) );  
+            outFile.print( xstream.toXML( m_SceneManager ) );           
+            outFile.close();
+        }
+        catch(Exception ex) { saved = false; }
+        
+        return saved;
 	}
 	
-	public ItemTableModel getItemTableModel()
-	{
-		return m_SceneManager.getItemModel();
-	}
-	
-	public boolean loadSceneManager( String fileName )
-	{
-		
-		return false;
-	}
-	
-	public void saveSceneManager( String fileName )
-	{
-		
-	}
-	
-	public SceneManager getSceneManager()
-	{
-		return m_SceneManager;
-	}
+
 }
