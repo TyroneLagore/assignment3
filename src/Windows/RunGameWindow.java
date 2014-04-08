@@ -31,7 +31,7 @@ import java.awt.Font;
  * @version April 6, 2014
  */
 
-public class TestGameWindow extends JFrame
+public class RunGameWindow extends JFrame
 {
 	private MainWindow m_Parent;
 	private Player m_Player;
@@ -45,12 +45,15 @@ public class TestGameWindow extends JFrame
 	private static final int NUM_CHOICES = 4;
 	private JButton btnGo;
 	private JButton btnInventory;
+	private JButton btnJournal;
+	private JButton btnBacktrack;
+	private JTextArea m_NoteTextArea;
 	
 	public class ButtonHandler implements ActionListener 
 	{
-		private TestGameWindow window;
+		private RunGameWindow window;
 
-		public ButtonHandler(TestGameWindow window) {
+		public ButtonHandler(RunGameWindow window) {
 			this.window = window;
 		}
 		
@@ -60,9 +63,12 @@ public class TestGameWindow extends JFrame
 			if (e.getSource().equals(btnGo))
 				getNextScene();
 			else if (e.getSource().equals(btnInventory))
-			{
-				//TODO open inventory
-			}
+				openInventory();
+			else if (e.getSource().equals(btnJournal))
+				openJournal();
+			else if (e.getSource().equals(btnBacktrack))
+				backTrackSelected();
+
 		}
 	}
 	
@@ -83,12 +89,13 @@ public class TestGameWindow extends JFrame
 	}
 	
 	
-	public TestGameWindow (MainWindow parent, SceneManager sceneManager)
+	public RunGameWindow (MainWindow parent, SceneManager sceneManager)
 	{
 		m_SceneManager = sceneManager;
 		m_Player = m_SceneManager.getPlayer();
 		m_Parent = parent;
 		m_Player.clearPlayerInventory();
+		m_SceneManager.clearVisitedScenes();
 		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
 		
@@ -115,13 +122,13 @@ public class TestGameWindow extends JFrame
 		
 		JPanel m_DescriptionBorderPanel = new JPanel();
 		m_DescriptionBorderPanel.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 0, 0)));
-		m_DescriptionBorderPanel.setBounds(26, 81, 468, 133);
+		m_DescriptionBorderPanel.setBounds(26, 81, 370, 133);
 		getContentPane().add(m_DescriptionBorderPanel);
 		m_DescriptionBorderPanel.setLayout(null);
 		
 		m_SceneDescTextArea = new JTextArea();
 		m_SceneDescTextArea.setEditable(false);
-		m_SceneDescTextArea.setBounds(10, 16, 447, 110);
+		m_SceneDescTextArea.setBounds(10, 16, 350, 110);
 		m_DescriptionBorderPanel.add(m_SceneDescTextArea);
 		m_SceneDescTextArea.setBackground(SystemColor.control);
 		m_SceneDescTextArea.setWrapStyleWord(true);
@@ -129,14 +136,34 @@ public class TestGameWindow extends JFrame
 		
 		btnInventory = new JButton("Inventory");
 		btnInventory.addActionListener(btnHandler);
-		btnInventory.setBounds(378, 335, 136, 23);
+		btnInventory.setBounds(406, 301, 108, 23);
 		getContentPane().add(btnInventory);
 		
 		btnGo = new JButton("Go");
 		btnGo.addActionListener(btnHandler);
-		btnGo.setBounds(10, 335, 136, 23);
+		btnGo.setBounds(10, 335, 115, 23);
 		getContentPane().add(btnGo);
 		
+		m_NoteTextArea = new JTextArea();
+		m_NoteTextArea.setText("");
+		m_NoteTextArea.setBounds(406, 81, 108, 133);
+		getContentPane().add(m_NoteTextArea);
+		
+		JLabel lblNote = new JLabel("Note");
+		lblNote.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNote.setBounds(406, 56, 108, 14);
+		getContentPane().add(lblNote);
+		
+		btnJournal = new JButton("Journal");
+		btnJournal.addActionListener(btnHandler);
+		btnJournal.setBounds(406, 267, 108, 23);
+		getContentPane().add(btnJournal);
+		
+		btnBacktrack = new JButton("Backtrack");
+		btnBacktrack.addActionListener(btnHandler);
+		btnBacktrack.setBounds(406, 335, 108, 23);
+		getContentPane().add(btnBacktrack);
+		m_CurrentScene = m_SceneManager.getStartScene();
 		loadSceneInfo (m_SceneManager.getStartScene());
 	}
 	
@@ -147,8 +174,21 @@ public class TestGameWindow extends JFrame
 		dispose();
 	}
 	
+	private void openInventory(){}
+	
+	private void openJournal()
+	{
+		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes());
+		toggleButtons(false);
+		jw.run();
+		
+	}
+	
 	private void getNextScene()
 	{
+		if (m_CurrentScene.equals(m_SceneManager.getEndScene()))
+			closeWindow();
+		
 		int selected = -1;
 		for (int i = 0; i < m_CurrentScene.getConnections().size(); i++)
 			if (m_Choices[i].isSelected())
@@ -158,16 +198,28 @@ public class TestGameWindow extends JFrame
 			loadSceneInfo(  m_CurrentScene.getConnections().get( selected) );
 	}
 	
+	private void backTrackSelected()
+	{
+		BacktrackWindow btw = new BacktrackWindow(this, m_SceneManager.getVisitedScenes());
+		toggleButtons(false);
+		btw.run();
+	}
+	
 	private void loadSceneInfo( Scene nextScene )
 	{
 		Item unlockItem = nextScene.getUnlockItem();
 		String addedText = nextScene.getDropItem() != null ? 
-				"You found a " + nextScene.getDropItem().getName() + "\n\n" : "";
+				"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
 		
 
 		if (unlockItem == null || m_Player.inventoryContains(unlockItem))
 		{
+			m_CurrentScene.setNote(m_NoteTextArea.getText());
+			
 			m_CurrentScene = nextScene;
+			m_SceneManager.addVisitedScene(m_CurrentScene);
+			
+			m_NoteTextArea.setText(m_CurrentScene.getNote());
 			
 			if (addedText.length() > 0)
 				m_Player.addItem(nextScene.getDropItem());
@@ -177,10 +229,10 @@ public class TestGameWindow extends JFrame
 			generateChoices();
 			
 			if (m_CurrentScene.equals(m_SceneManager.getEndScene()))
-			{
-				m_WindowComm.displayMessage ("You've reached the end!");
-				closeWindow();
-			}
+				btnGo.setText("Exit");
+			else
+				btnGo.setText("Go");
+				
 		}else
 			m_WindowComm.displayMessage("You require a " + unlockItem.getName() + " to enter that"
 					+ " scene!.");
@@ -190,7 +242,7 @@ public class TestGameWindow extends JFrame
 	{
 		int x = 15;
 		int y = 230;
-		int width = 494;
+		int width = 380;
 		int height = 20;
 		int numButtons = m_ButtonGroup.getButtonCount();
 		
@@ -219,4 +271,26 @@ public class TestGameWindow extends JFrame
 		if (m_CurrentScene.getConnections().size() > 0)
 			m_Choices[0].setSelected(true);
 	}
+
+
+	public void aWindowHasClosed() 
+	{
+		toggleButtons(true);
+	}
+	
+	public void toggleButtons(boolean bToggle)
+	{
+		btnBacktrack.setEnabled(bToggle);
+		btnGo.setEnabled(bToggle);
+		btnInventory.setEnabled(bToggle);
+		btnJournal.setEnabled(bToggle);
+	}
+
+
+	public void goToScene(Scene whereToGo) 
+	{
+		loadSceneInfo ( whereToGo );
+		
+	}
+
 }

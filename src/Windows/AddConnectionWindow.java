@@ -43,7 +43,7 @@ public class AddConnectionWindow extends JFrame
 		}
 	}
 	
-	public AddConnectionWindow( SceneTableModel sceneTable, EditSceneWindow parent)
+	public AddConnectionWindow( SceneTableModel sceneTable, EditSceneWindow parent, String buttonName)
 	{
 		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
@@ -81,7 +81,7 @@ public class AddConnectionWindow extends JFrame
 		m_ScenesJList.setModel(m_SceneListModel);
 		m_ScenesScrollPane.setViewportView(m_ScenesJList);
 		
-		btnConnectScene = new JButton("Connect Scene");
+		btnConnectScene = new JButton(buttonName);
 		btnConnectScene.addActionListener(btnHandler);
 		btnConnectScene.setBounds(230, 32, 130, 23);
 		getContentPane().add(btnConnectScene);
@@ -122,7 +122,7 @@ public class AddConnectionWindow extends JFrame
 	
 	private void closeWindow()
 	{
-		setVisible(false);
 		m_Parent.addConnectionWindowHasClosed();
+		dispose();
 	}
 }

@@ -387,7 +387,7 @@ public class EditSceneWindow extends JFrame {
 	{
 		btnConnectScene.setEnabled(false);
 		
-		AddConnectionWindow acw = new AddConnectionWindow(m_SceneManager.getSceneModel(), this);
+		AddConnectionWindow acw = new AddConnectionWindow(m_SceneManager.getSceneModel(), this, "Connect Scene");
 		acw.run();
 	}
 	

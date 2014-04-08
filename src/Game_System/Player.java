@@ -15,6 +15,7 @@ import java.util.*;
 public class Player 
 {
 	private ArrayList<Item> m_Inventory;
+	private ArrayList<String> m_Notes;
 	
 	public Player()
 	{
@@ -27,5 +28,6 @@ public class Player
 	public boolean inventoryContains( Item itemCheck )	
 											{	return m_Inventory.contains(itemCheck); }
 	public void clearPlayerInventory()		{	m_Inventory.clear();		}
-	
+	public void addNote(String note)		{   m_Notes.add(note);			}
+	public ArrayList<String> getNotes()		{ 	return m_Notes;				}
 }

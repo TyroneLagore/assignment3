@@ -39,7 +39,7 @@ public class MainWindow extends JFrame{
 	private JMenuItem mntmSave;
 	private JMenuItem mntmLoad;
 	private JMenuItem mntmQuit;
-	private JMenuItem mntmTest;
+	private JMenuItem mntmRun;
 
 	// ================== Inner Class ==============================
 	public class MenuHandler implements ActionListener {
@@ -61,8 +61,8 @@ public class MainWindow extends JFrame{
 			else if (e.getSource().equals(mntmQuit))
 				verifyQuit();
 			
-			else if (e.getSource().equals(mntmTest))
-				runTestGame();
+			else if (e.getSource().equals(mntmRun))
+				runGame();
 		}
 	}
 
@@ -143,11 +143,11 @@ public class MainWindow extends JFrame{
 		setVisible(true);
 	}
 
-	public void runTestGame()
+	public void runGame()
 	{
 		if (m_MainSystem.getSceneManager().getEndScene().getSceneIsConnected())
 		{
-			TestGameWindow rgw = new TestGameWindow (this, m_MainSystem.getSceneManager());
+			RunGameWindow rgw = new RunGameWindow (this, m_MainSystem.getSceneManager());
 			setVisible(false);
 			rgw.run();
 		}else
@@ -184,9 +184,9 @@ public class MainWindow extends JFrame{
 		mntmLoad.addActionListener(btnHandler);
 		mnFile.add(mntmLoad);
 		
-		mntmTest = new JMenuItem("Test");
-		mntmTest.addActionListener(btnHandler);
-		mnFile.add(mntmTest);
+		mntmRun = new JMenuItem("Run");
+		mntmRun.addActionListener(btnHandler);
+		mnFile.add(mntmRun);
 
 		mntmQuit = new JMenuItem("Quit");
 		mntmQuit.addActionListener(btnHandler);
