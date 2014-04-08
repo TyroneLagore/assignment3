@@ -22,6 +22,7 @@ public class Scene {
 	private ArrayList<String> m_ConnectionLabels;
 	private boolean m_ConnectedTo;
 	private static final int MAX_CONNECTIONS = 4;
+	private String m_Note;
 
 	public Scene(String title, String desc) {
 		m_UnlockItem = null;
@@ -31,6 +32,7 @@ public class Scene {
 		m_Title = title;
 		m_Desc = desc;
 		m_ConnectedTo = false;
+		m_Note = "";
 	}
 
 	public void addConnection(Scene toConnect, String connectionLabel) 
@@ -77,6 +79,8 @@ public class Scene {
 	public Item getUnlockItem()			 			{ return m_UnlockItem; 		}
 
 	/* Getters/Setters */
+	public void setNote(String note)				{ m_Note = note;			}
+	public String getNote()							{ return m_Note;			}
 	public String getTitle() 						{ return m_Title; 			}
 	public String getDesc() 						{ return m_Desc; 			}
 	public ArrayList<String> getConnectionLabels() 	{ return m_ConnectionLabels;}
@@ -84,5 +88,4 @@ public class Scene {
 	public void setTitle(String m_Title) 			{ this.m_Title = m_Title;	}
 	public void setDesc(String m_Desc) 				{ this.m_Desc = m_Desc; 	}
 	public String toString() 						{ return getTitle(); 		}
-
 }

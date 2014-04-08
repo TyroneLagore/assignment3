@@ -32,10 +32,12 @@ public class SceneManager
 	private SceneTableModel m_SceneTableModel;
 	private ArrayList<Scene> m_SceneGraph;
 	private ArrayList<Item> m_ItemList;
+	private ArrayList<Scene> m_ScenesVisited;
 	private Scene m_StartScene;
 	private Scene m_CurrentScene;
 	private Scene m_EndScene;
-	private Player player;
+	private Player m_Player;
+
 	
 	public SceneManager()
 	{
@@ -49,13 +51,31 @@ public class SceneManager
 		m_ItemList = new ArrayList<Item>();
 		m_ItemTableModel = new ItemTableModel ( m_ItemList );
 		m_SceneTableModel = new SceneTableModel ( m_SceneGraph );
-		player = new Player();
+		m_Player = new Player();
+		
+		m_ScenesVisited = new ArrayList<Scene>();
 		
 		updateSceneConnections();
 	}
 
 	// Returns a new blank scene.
 	public Scene addScene() { return new Scene("<Enter a Unique Title>", "<Description>"); }
+	
+	public void addVisitedScene (Scene toAdd)
+	{
+		if (!m_ScenesVisited.contains(toAdd))
+			m_ScenesVisited.add(toAdd);
+	}
+	
+	public void setSceneGraph(ArrayList<Scene> toSet) 
+	{ 
+		m_SceneGraph = toSet; 
+		m_StartScene = m_SceneGraph.get(0);
+		m_EndScene = m_SceneGraph.get(1);
+		updateSceneConnections();
+	}
+	public void setItemList (ArrayList<Item> toSet)
+							{ m_ItemList = toSet; 	}
 	
 	/**
 	 * Name: removeScene
@@ -101,13 +121,35 @@ public class SceneManager
 	/* Checks if the given scene is contained within the current graph */
 	public boolean contains (Scene checkScene)		{	return m_SceneGraph.contains(checkScene); }
 	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getNotes()
+	{
+		String notes = "";
+		for ( Scene o_Scene : m_ScenesVisited )
+			if (o_Scene.getNote().length() > 0)
+				notes += o_Scene.getTitle() + " - " + o_Scene.getNote() + "\n";
+		
+		return notes;
+	}
+	
+	public void clearVisitedScenes()			{ m_ScenesVisited.clear();	  }
+	
 	/*
 	 * Getters
 	 */
+	public Player getPlayer()					{ 	return m_Player;		  }
 	public ItemTableModel getItemModel () 		{	return m_ItemTableModel;  }
 	public SceneTableModel getSceneModel ()		{	return m_SceneTableModel; }
 	public Scene getStartScene()				{	return m_StartScene;	  }
 	public Scene getEndScene()					{	return m_EndScene;		  }
+	public Scene getCurrentScene()				{ 	return m_CurrentScene;	  }
+	public ArrayList<Scene> getSceneGraph()		{ 	return m_SceneGraph;	  }
+	public ArrayList<Scene> getVisitedScenes()	{	return m_ScenesVisited;	  }
+	public ArrayList<Item>	getItemList()		{	return m_ItemList;		  }
 	
 	/**
 	 * Validates that a chosen name for a scene does not already within the scene graph.

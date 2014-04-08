@@ -1,51 +1,51 @@
 package Windows;
 
 import java.awt.EventQueue;
-
-import javax.swing.*;
-
-import Panels.SceneManagerPanel;
-import Scene_Manager.*;
-import TableModels.SceneTableModel;
-import UserIO.*;
-
-import java.awt.*;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
-public class AddConnectionWindow extends JFrame 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
+import Scene_Manager.*;
+
+public class BacktrackWindow extends JFrame 
 {
-	private WindowComm m_WindowComm;
-	private EditSceneWindow m_Parent;
+	private RunGameWindow m_Parent;
 	private JList <Scene>m_ScenesJList;
 	private JScrollPane m_ScenesScrollPane;
 	private JButton btnCancel;
 	private DefaultListModel<Scene> m_SceneListModel;
-	private JButton btnConnectScene;
+	private JButton btnGoToScene;
 	
 	
 	public class ButtonHandler implements ActionListener {
-		private AddConnectionWindow window;
+		private BacktrackWindow window;
 
-		public ButtonHandler(AddConnectionWindow addConnectionWindow) {
-			this.window = addConnectionWindow;
+		public ButtonHandler(BacktrackWindow backtrackWindow) {
+			this.window = backtrackWindow;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			if (e.getSource().equals(btnConnectScene))
-				connectSceneClicked();
+			if (e.getSource().equals(btnGoToScene))
+				goToScene();
 			else if (e.getSource().equals(btnCancel))
 				closeWindow();
 		}
 	}
 	
-	public AddConnectionWindow( SceneTableModel sceneTable, EditSceneWindow parent, String buttonName)
+	public BacktrackWindow ( RunGameWindow parent, ArrayList<Scene> visitedScenes )
 	{
-		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
 
 		m_Parent = parent;
@@ -69,8 +69,8 @@ public class AddConnectionWindow extends JFrame
 		
 		m_SceneListModel = new DefaultListModel<Scene>();
 		
-		for (int i = 0; i < sceneTable.getRowCount(); i++)
-			m_SceneListModel.addElement(sceneTable.getSceneAt(i));
+		for (Scene o_Scene : visitedScenes )
+			m_SceneListModel.addElement(o_Scene);
 		
 		m_ScenesScrollPane = new JScrollPane();
 		m_ScenesScrollPane.setBounds(10, 34, 210, 415);
@@ -81,10 +81,10 @@ public class AddConnectionWindow extends JFrame
 		m_ScenesJList.setModel(m_SceneListModel);
 		m_ScenesScrollPane.setViewportView(m_ScenesJList);
 		
-		btnConnectScene = new JButton(buttonName);
-		btnConnectScene.addActionListener(btnHandler);
-		btnConnectScene.setBounds(230, 32, 130, 23);
-		getContentPane().add(btnConnectScene);
+		btnGoToScene = new JButton("Go to scene");
+		btnGoToScene.addActionListener(btnHandler);
+		btnGoToScene.setBounds(230, 32, 130, 23);
+		getContentPane().add(btnGoToScene);
 		
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(btnHandler);
@@ -110,19 +110,19 @@ public class AddConnectionWindow extends JFrame
 		});
 	}
 	
-	private void connectSceneClicked()
+	private void goToScene()
 	{
-		Scene toConnect = m_ScenesJList.getSelectedValue();
-		if (toConnect != null)
+		Scene whereToGo = m_ScenesJList.getSelectedValue();
+		if (whereToGo != null)
 		{
-			m_Parent.connectScene(toConnect);
+			m_Parent.goToScene(whereToGo);
 			closeWindow();
 		}
 	}
 	
 	private void closeWindow()
 	{
-		m_Parent.addConnectionWindowHasClosed();
+		m_Parent.aWindowHasClosed();
 		dispose();
 	}
 }

@@ -39,6 +39,7 @@ public class MainWindow extends JFrame{
 	private JMenuItem mntmSave;
 	private JMenuItem mntmLoad;
 	private JMenuItem mntmQuit;
+	private JMenuItem mntmRun;
 
 	// ================== Inner Class ==============================
 	public class MenuHandler implements ActionListener {
@@ -53,13 +54,15 @@ public class MainWindow extends JFrame{
 		{
 			if (e.getSource().equals(mntmSave))
 				saveProject();
-				/* TODO add save functionality */
+
 			else if (e.getSource().equals(mntmLoad))
 				loadProject();
 			
 			else if (e.getSource().equals(mntmQuit))
 				verifyQuit();
-				/* TODO add quit functionality */
+			
+			else if (e.getSource().equals(mntmRun))
+				runGame();
 		}
 	}
 
@@ -113,8 +116,8 @@ public class MainWindow extends JFrame{
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
 		SceneManager m_SceneManager = m_MainSystem.loadSceneManager(fileName);
-		m_ItemMngrPnl.loadSceneManager(m_SceneManager);
-		m_SceneMngrPnl.loadSceneManager(m_SceneManager);
+		m_ItemMngrPnl.loadSceneManager();
+		m_SceneMngrPnl.loadSceneManager();
 	}
 	
 	/**
@@ -126,12 +129,30 @@ public class MainWindow extends JFrame{
 	public void saveProject()
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.SAVE);
-		if ( m_MainSystem.saveSceneManager(fileName))
-			m_WindowComm.displayMessage("Successfully saved to \"" + fileName + "\".");
-		else 
-			m_WindowComm.displayMessage("Error saving file.");
+		if (!fileName.matches("null") && !fileName.matches("nullnull"))
+		{
+			if ( m_MainSystem.saveSceneManager(fileName))
+				m_WindowComm.displayMessage("Successfully saved to \"" + fileName + "\".");
+			else 
+				m_WindowComm.displayMessage("Error saving file.");
+		}
+	}
+	
+	public void testWindowHasClosed()
+	{
+		setVisible(true);
 	}
 
+	public void runGame()
+	{
+		if (m_MainSystem.getSceneManager().getEndScene().getSceneIsConnected())
+		{
+			RunGameWindow rgw = new RunGameWindow (this, m_MainSystem.getSceneManager());
+			setVisible(false);
+			rgw.run();
+		}else
+			m_WindowComm.displayMessage("The \"Beginning\" scene must connect to the \"End\" scene.");
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -162,10 +183,15 @@ public class MainWindow extends JFrame{
 		mntmLoad = new JMenuItem("Load");
 		mntmLoad.addActionListener(btnHandler);
 		mnFile.add(mntmLoad);
+		
+		mntmRun = new JMenuItem("Run");
+		mntmRun.addActionListener(btnHandler);
+		mnFile.add(mntmRun);
 
 		mntmQuit = new JMenuItem("Quit");
 		mntmQuit.addActionListener(btnHandler);
 		mnFile.add(mntmQuit);
+		
 
 		m_MainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(m_MainTabbedPane, BorderLayout.CENTER);
