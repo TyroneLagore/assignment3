@@ -33,7 +33,7 @@ import java.awt.Font;
 
 public class RunGameWindow extends JFrame
 {
-	private MainWindow m_Parent;
+	private JFrame m_Parent;
 	private Player m_Player;
 	private SceneManager m_SceneManager;
 	private WindowComm m_WindowComm;
@@ -48,6 +48,8 @@ public class RunGameWindow extends JFrame
 	private JButton btnJournal;
 	private JButton btnBacktrack;
 	private JTextArea m_NoteTextArea;
+	private boolean m_bDebug;
+	private JLabel m_lblNote;
 	
 	public class ButtonHandler implements ActionListener 
 	{
@@ -61,7 +63,12 @@ public class RunGameWindow extends JFrame
 		public void actionPerformed(ActionEvent e) 
 		{
 			if (e.getSource().equals(btnGo))
-				getNextScene();
+			{
+				if( !m_bDebug )
+					getNextScene();
+				else
+					closeWindow( );
+			}
 			else if (e.getSource().equals(btnInventory))
 				openInventory();
 			else if (e.getSource().equals(btnJournal))
@@ -88,16 +95,14 @@ public class RunGameWindow extends JFrame
 		});
 	}
 	
-	
-	public RunGameWindow (MainWindow parent, SceneManager sceneManager)
+	private void initStatics( )
 	{
-		m_SceneManager = sceneManager;
-		m_Player = m_SceneManager.getPlayer();
-		m_Parent = parent;
-		m_Player.clearPlayerInventory();
-		m_SceneManager.clearVisitedScenes();
-		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
+		m_ButtonGroup = new ButtonGroup();
+		m_Choices = new JRadioButton[NUM_CHOICES];
+		m_WindowComm = new WindowComm(this);
+		ButtonHandler btnHandler = new ButtonHandler(this);
+		setBounds(100, 100, 540, 407);
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -106,13 +111,10 @@ public class RunGameWindow extends JFrame
 			}
 		});
 		
-		m_ButtonGroup = new ButtonGroup();
-		
-		m_Choices = new JRadioButton[NUM_CHOICES];
-		
-		m_WindowComm = new WindowComm(this);
-		ButtonHandler btnHandler = new ButtonHandler(this);
-		setBounds(100, 100, 540, 407);
+		btnBacktrack = new JButton("Backtrack");
+		btnBacktrack.addActionListener(btnHandler);
+		btnBacktrack.setBounds(406, 335, 108, 23);
+		getContentPane().add(btnBacktrack);
 		
 		m_lblTitle = new JLabel();
 		m_lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 23));
@@ -149,28 +151,66 @@ public class RunGameWindow extends JFrame
 		m_NoteTextArea.setBounds(406, 81, 108, 133);
 		getContentPane().add(m_NoteTextArea);
 		
-		JLabel lblNote = new JLabel("Note");
-		lblNote.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNote.setBounds(406, 56, 108, 14);
-		getContentPane().add(lblNote);
+		m_lblNote = new JLabel("Note");
+		m_lblNote.setHorizontalAlignment(SwingConstants.CENTER);
+		m_lblNote.setBounds(406, 56, 108, 14);
+		getContentPane().add(m_lblNote);
 		
 		btnJournal = new JButton("Journal");
 		btnJournal.addActionListener(btnHandler);
 		btnJournal.setBounds(406, 267, 108, 23);
 		getContentPane().add(btnJournal);
 		
-		btnBacktrack = new JButton("Backtrack");
-		btnBacktrack.addActionListener(btnHandler);
-		btnBacktrack.setBounds(406, 335, 108, 23);
-		getContentPane().add(btnBacktrack);
+		generateChoices( );
+	}
+	
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public RunGameWindow( EditItemWindow parent, Scene sceneToLoad )
+	{
+		m_Parent = parent;
+		m_bDebug = true;
+		m_CurrentScene = sceneToLoad;
+		
+		initStatics( );
+		
+		m_NoteTextArea.setVisible( false );
+		
+		btnGo.setText( "Exit" );
+		btnJournal.setEnabled( false );
+		btnInventory.setEnabled( false );
+		btnBacktrack.setEnabled( false );
+		m_lblNote.setVisible( false );
+		
+		loadSceneInfo( m_CurrentScene );
+		
+		for( int i = 0; i < m_ButtonGroup.getButtonCount( ); ++i )
+			m_Choices[ i ].setEnabled( false );
+	}
+	
+	public RunGameWindow (MainWindow parent, SceneManager sceneManager )
+	{
+		m_SceneManager = sceneManager;
+		m_Player = m_SceneManager.getPlayer();
+		m_Parent = parent;
+		m_Player.clearPlayerInventory();
+		m_SceneManager.clearVisitedScenes();
+		m_bDebug = false;		
 		m_CurrentScene = m_SceneManager.getStartScene();
-		loadSceneInfo (m_SceneManager.getStartScene());
+		
+		initStatics( );
+		
+		loadSceneInfo (m_CurrentScene);
 	}
 	
 
 	private void closeWindow()
 	{
-		m_Parent.testWindowHasClosed();
+		if( !m_bDebug )
+			( (MainWindow)m_Parent ).runWindowHasClosed( );
+		else
+			( (EditItemWindow)m_Parent ).runWindowHasClosed( );
 		dispose();
 	}
 	
@@ -212,26 +252,30 @@ public class RunGameWindow extends JFrame
 				"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
 		
 
-		if (unlockItem == null || m_Player.inventoryContains(unlockItem))
+		if(unlockItem == null || m_bDebug || m_Player.inventoryContains(unlockItem))
 		{
 			m_CurrentScene.setNote(m_NoteTextArea.getText());
 			
 			m_CurrentScene = nextScene;
-			m_SceneManager.addVisitedScene(m_CurrentScene);
+			if( null != m_SceneManager )
+				m_SceneManager.addVisitedScene(m_CurrentScene);
 			
 			m_NoteTextArea.setText(m_CurrentScene.getNote());
 			
-			if (addedText.length() > 0)
+			if (null != m_Player && addedText.length() > 0)
 				m_Player.addItem(nextScene.getDropItem());
 			
 			m_lblTitle.setText(m_CurrentScene.getTitle());
 			m_SceneDescTextArea.setText(addedText + m_CurrentScene.getDesc());
 			generateChoices();
 			
-			if (m_CurrentScene.equals(m_SceneManager.getEndScene()))
-				btnGo.setText("Exit");
-			else
-				btnGo.setText("Go");
+			if( !m_bDebug )
+			{
+				if (m_CurrentScene.equals(m_SceneManager.getEndScene()))
+					btnGo.setText("Exit");
+				else
+					btnGo.setText("Go");
+			}
 				
 		}else
 			m_WindowComm.displayMessage("You require a " + unlockItem.getName() + " to enter that"
@@ -290,7 +334,5 @@ public class RunGameWindow extends JFrame
 	public void goToScene(Scene whereToGo) 
 	{
 		loadSceneInfo ( whereToGo );
-		
 	}
-
 }
