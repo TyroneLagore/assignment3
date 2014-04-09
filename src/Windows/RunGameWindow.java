@@ -27,11 +27,16 @@ import java.util.ArrayList;
 import java.awt.Font;
 
 /**
+ * Runs the game.  The user can run through their created game through this window.
+ * 
+ * This window also doubles as a debug option for the user, where they can view what the
+ * scene will look like before they decide to run it.
  * 
  * @author Tyrone Lagore
  * @version April 6, 2014
  */
 
+@SuppressWarnings("serial")
 public class RunGameWindow extends JFrame
 {
 	private JFrame m_Parent;
@@ -54,14 +59,12 @@ public class RunGameWindow extends JFrame
 	private JScrollPane scrollPane;
 	private JLabel m_ImageLabel;
 	
+	/**
+	 * ButtonHandler
+	 * Handles the button interaction for this window
+	 */
 	public class ButtonHandler implements ActionListener 
 	{
-		private RunGameWindow window;
-
-		public ButtonHandler(RunGameWindow window) {
-			this.window = window;
-		}
-		
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
@@ -82,6 +85,9 @@ public class RunGameWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Runs this instance of the RunGameWindow
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
@@ -98,13 +104,19 @@ public class RunGameWindow extends JFrame
 		});
 	}
 	
+	/**
+	 * Name: initStatics
+	 * Purpose: initializes the statics of this window. These are the parts of the window that need
+	 * 		to be instantiated regardless of whether the user is using it to run the game
+	 * 		or simply view a scene.
+	 */
 	private void initStatics( )
 	{
 		getContentPane().setLayout(null);
 		m_ButtonGroup = new ButtonGroup();
 		m_Choices = new JRadioButton[NUM_CHOICES];
 		m_WindowComm = new WindowComm(this);
-		ButtonHandler btnHandler = new ButtonHandler(this);
+		ButtonHandler btnHandler = new ButtonHandler();
 		setBounds(100, 100, 592, 607);
 		
 		addWindowListener(new WindowAdapter() {
@@ -132,6 +144,7 @@ public class RunGameWindow extends JFrame
 		m_DescriptionBorderPanel.setLayout(null);
 		
 		m_SceneDescTextArea = new JTextArea();
+		m_SceneDescTextArea.setFont(new Font("Andalus", Font.PLAIN, 14));
 		m_SceneDescTextArea.setEditable(false);
 		m_SceneDescTextArea.setBounds(10, 11, 182, 225);
 		m_DescriptionBorderPanel.add(m_SceneDescTextArea);
@@ -154,12 +167,14 @@ public class RunGameWindow extends JFrame
 		getContentPane().add(scrollPane);
 		
 		m_NoteTextArea = new JTextArea();
+		m_NoteTextArea.setFont(new Font("Andalus", Font.PLAIN, 14));
 		scrollPane.setViewportView(m_NoteTextArea);
 		m_NoteTextArea.setWrapStyleWord(true);
 		m_NoteTextArea.setLineWrap(true);
 		m_NoteTextArea.setText("");
 		
 		m_lblNote = new JLabel("Note");
+		m_lblNote.setFont(new Font("Andalus", Font.PLAIN, 14));
 		m_lblNote.setHorizontalAlignment(SwingConstants.CENTER);
 		m_lblNote.setBounds(393, 308, 108, 14);
 		getContentPane().add(m_lblNote);
@@ -178,7 +193,13 @@ public class RunGameWindow extends JFrame
 	}
 	
 	/**
+	 * Debug constructor.
+	 * Used when viewing a scene.
 	 * @wbp.parser.constructor
+	 * 
+	 * @param parent The EditItemWindow that is calling the window
+	 * @param sceneToLoad The scene to view.
+	 * 
 	 */
 	public RunGameWindow( EditItemWindow parent, Scene sceneToLoad )
 	{
@@ -201,6 +222,12 @@ public class RunGameWindow extends JFrame
 			m_Choices[ i ].setEnabled( false );
 	}
 	
+	/**
+	 * Constructor for running the game
+	 * @param parent The MainWindow that is calling this window
+	 * @param sceneManager The SceneManager that contains the scene info for running the game
+	 * 
+	 */
 	public RunGameWindow (MainWindow parent, SceneManager sceneManager )
 	{
 		m_SceneManager = sceneManager;
@@ -216,7 +243,9 @@ public class RunGameWindow extends JFrame
 		loadSceneInfo (m_CurrentScene);
 	}
 	
-
+	/**
+	 * The overridden close operation calls this function uponn exitting.
+	 */
 	private void closeWindow()
 	{
 		if( !m_bDebug )
@@ -226,26 +255,39 @@ public class RunGameWindow extends JFrame
 		dispose();
 	}
 	
+	/**
+	 * Retrieves the inventory from the player and formats it into a String for display
+	 * 
+	 * Uses the JournalWindow functionality instead of creating a whole other window
+	 */
 	private void openInventory()
 	{
 		String inventory = "";
 		for (Item o_Item : m_Player.getInventory())
-			inventory += o_Item.getName() + "\n";
+			inventory += o_Item.getName().toUpperCase() + "\n";
 			
 		
-		JournalWindow jw = new JournalWindow(this, inventory, "Comic Sans");
+		JournalWindow jw = new JournalWindow(this, inventory, "Andalus", 20);
 		toggleButtons(false);
 		jw.run();
 	}
 	
+	/**
+	 * Retrieves a formatted String of journal entries from the SceneManager for display
+	 */
 	private void openJournal()
 	{
-		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes(), "Lucida Handwriting");
+		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes(), "Lucida Handwriting", 13);
 		toggleButtons(false);
 		jw.run();
 		
 	}
 	
+	/**
+	 * Name: getNextScene
+	 * Purpose: Gets the selected scene connection and calls loadSceneInfo on the window to ensure
+	 * 		the user is allowed to enter and update details if they are.
+	 */
 	private void getNextScene()
 	{
 		if (m_CurrentScene.equals(m_SceneManager.getEndScene()))
@@ -260,6 +302,11 @@ public class RunGameWindow extends JFrame
 			loadSceneInfo(  m_CurrentScene.getConnections().get( selected) );
 	}
 	
+	/**
+	 * The backtrack button allows the player to return to scenes that have already been visited
+	 * 
+	 * This allows the user to have more flexibility in their design choices (dead ends are allowed)
+	 */
 	private void backTrackSelected()
 	{
 		BacktrackWindow btw = new BacktrackWindow(this, m_SceneManager.getVisitedScenes());
@@ -267,6 +314,15 @@ public class RunGameWindow extends JFrame
 		btw.run();
 	}
 	
+	/**
+	 * Name: loadSceneInfo
+	 * Purpose: Attempts to load the next scene's details into the window.
+	 * 		If the user requires an item, they will be informed of the item required and a note
+	 * 		will be automatically generated for the scene.  The user can choose to remove this note,
+	 * 		but for larger game systems, it would be wise to maintain the note for future backtracks.
+	 * 
+	 * @param nextScene The scene that the game is attempting to move to
+	 */
 	private void loadSceneInfo( Scene nextScene )
 	{
 		Item unlockItem = nextScene.getUnlockItem();
@@ -315,6 +371,10 @@ public class RunGameWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Name: generateChoices
+	 * Purpose: Generates a ButtonGroup of RadioButtons that the user can select and attempt to move to
+	 */
 	private void generateChoices()
 	{
 		int x = 15;
@@ -325,16 +385,18 @@ public class RunGameWindow extends JFrame
 		
 		ArrayList<String> connectionLabels = m_CurrentScene.getConnectionLabels();
 
-		
+		//Remove all current buttons
 		for (int i = 0; i < numButtons; i++)
 		{
 			getContentPane().remove(m_Choices[i]);
 			m_ButtonGroup.remove(m_Choices[i]);
 		}
 		
+		//Clear any removed buttons from display
 		revalidate();
 		repaint();
 		
+		//Add a button corresponding to each connection
 		for(int i = 0; i < m_CurrentScene.getConnections().size(); i++)
 		{
 			m_Choices[i] = new JRadioButton(connectionLabels.get(i));
@@ -345,16 +407,24 @@ public class RunGameWindow extends JFrame
 			y+= 25;
 		}	
 		
+		//If there is an available choice, select 
 		if (m_CurrentScene.getConnections().size() > 0)
 			m_Choices[0].setSelected(true);
 	}
 
-
+	/**
+	 * Informs the RunGameWindow that a window that was opened by the current RunGameWindow(this)
+	 * 		has closed, and buttons must be toggled back to usable.
+	 */
 	public void aWindowHasClosed() 
 	{
 		toggleButtons(true);
 	}
 	
+	/**
+	 * When a window is opened from the RunGameWindow, buttons are disabled until the window closes
+	 * @param bToggle true for enabled false for disabled
+	 */
 	public void toggleButtons(boolean bToggle)
 	{
 		btnBacktrack.setEnabled(bToggle);
@@ -363,7 +433,10 @@ public class RunGameWindow extends JFrame
 		btnJournal.setEnabled(bToggle);
 	}
 
-
+	/**
+	 * Used in backtracking to go to a scene that was previously visited
+	 * @param whereToGo The scene to go to
+	 */
 	public void goToScene(Scene whereToGo) 
 	{
 		loadSceneInfo ( whereToGo );

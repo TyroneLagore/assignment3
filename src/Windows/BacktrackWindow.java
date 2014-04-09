@@ -16,10 +16,17 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import Scene_Manager.*;
-
+/**
+ * Allows the user to backtrack through a list of visited scenes.
+ * 
+ * @author Tyrone
+ * @version April 8, 2014
+ *
+ */
 public class BacktrackWindow extends JFrame 
 {
 	private RunGameWindow m_Parent;
+	
 	private JList <Scene>m_ScenesJList;
 	private JScrollPane m_ScenesScrollPane;
 	private JButton btnCancel;
@@ -43,7 +50,12 @@ public class BacktrackWindow extends JFrame
 				closeWindow();
 		}
 	}
-	
+	/**
+	 * Constructor of the window
+	 * 
+	 * @param parent RunGameWindow - The window that instantiated this window 
+	 * @param visitedScenes The list of visited scenes.
+	 */
 	public BacktrackWindow ( RunGameWindow parent, ArrayList<Scene> visitedScenes )
 	{
 		getContentPane().setLayout(null);
@@ -93,7 +105,9 @@ public class BacktrackWindow extends JFrame
 
 	}
 	
-	
+	/**
+	 * runs this instance
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
@@ -110,6 +124,10 @@ public class BacktrackWindow extends JFrame
 		});
 	}
 	
+	/**
+	 * Name: goToScene
+	 * Purpose: Returns the selected scene to the parent window
+	 */
 	private void goToScene()
 	{
 		Scene whereToGo = m_ScenesJList.getSelectedValue();
@@ -120,6 +138,9 @@ public class BacktrackWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Overridden close operation for when the window closes
+	 */
 	private void closeWindow()
 	{
 		m_Parent.aWindowHasClosed();

@@ -1,7 +1,14 @@
 package Scene_Manager;
 
 import javax.swing.ImageIcon;
-
+/**
+ * SceneImage
+ * 
+ * Stores an ImageIcon and the name of the image.
+ * 
+ * @author Tyrone Lagore
+ * @version April 8, 2014, 9:29 PM >_<
+ */
 public class SceneImage 
 {
 	private String m_ImageName;
@@ -13,17 +20,7 @@ public class SceneImage
 		m_ImageName = imageName;
 	}
 
-	public String getImageName() {
-		return m_ImageName;
-	}
-
-	public ImageIcon getImage() {
-		return m_Image;
-	}
-	
-	public String toString()
-	{
-		return m_ImageName;
-	}
-
+	/* getters */
+	public String getImageName() 	{	return m_ImageName;		}
+	public ImageIcon getImage() 	{	return m_Image;			}
 }

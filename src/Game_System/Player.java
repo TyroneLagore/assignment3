@@ -15,24 +15,24 @@ import java.util.*;
 public class Player 
 {
 	private ArrayList<Item> m_Inventory;
-	private ArrayList<String> m_Notes;
 	
-	public Player()
-	{
-		m_Inventory = new ArrayList<Item>();
-	}
+	public Player() {	m_Inventory = new ArrayList<Item>();	}
 
+	/**
+	 * Adds an item to the players inventory if they do not already have it.
+	 * @param toAdd The item to add
+	 */
 	public void addItem( Item toAdd )
 	{   
 		if (!m_Inventory.contains(toAdd))
 			m_Inventory.add(toAdd); 	
 	}
 	
-	public ArrayList<Item> getInventory() 	{	return m_Inventory;			}	
-	public int inventorySize()				{	return m_Inventory.size();	}	
+	/* Getters/Setters */
+	public ArrayList<Item> getInventory() 	{	return m_Inventory;			}		
 	public boolean inventoryContains( Item itemCheck )	
 											{	return m_Inventory.contains(itemCheck); }
+	
+	/*  Clears the players inventory for a fresh run through of the game. */
 	public void clearPlayerInventory()		{	m_Inventory.clear();		}
-	public void addNote(String note)		{   m_Notes.add(note);			}
-	public ArrayList<String> getNotes()		{ 	return m_Notes;				}
 }

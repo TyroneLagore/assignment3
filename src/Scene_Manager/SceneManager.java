@@ -16,6 +16,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 import Game_System.*;
 import TableModels.ItemTableModel;
 import TableModels.SceneTableModel;
+import Windows.MainWindow;
 
 /**
  * Name: SceneManager
@@ -30,6 +31,7 @@ import TableModels.SceneTableModel;
  */
 public class SceneManager 
 {
+	private MainWindow m_MainWindow;
 	private ItemTableModel m_ItemTableModel;
 	private SceneTableModel m_SceneTableModel;
 	private ArrayList<Scene> m_SceneGraph;
@@ -60,28 +62,28 @@ public class SceneManager
 		
 		m_ScenesVisited = new ArrayList<Scene>();
 		
+		m_MainWindow = new MainWindow(this);
+		
 		parseImages();
 		updateSceneConnections();
 	}
+	
+	public void run() 				{ m_MainWindow.run(); }
 
 	// Returns a new blank scene.
 	public Scene addScene() { return new Scene("<Enter a Unique Title>", "<Description>"); }
 	
+	/**
+	 * Name: addVisitedScene
+	 * 
+	 * Adds a scene to the visited list.  Used in run mode.
+	 * @param toAdd The scene to add
+	 */
 	public void addVisitedScene (Scene toAdd)
 	{
 		if (!m_ScenesVisited.contains(toAdd))
 			m_ScenesVisited.add(toAdd);
 	}
-	
-	public void setSceneGraph(ArrayList<Scene> toSet) 
-	{ 
-		m_SceneGraph = toSet; 
-		m_StartScene = m_SceneGraph.get(0);
-		m_EndScene = m_SceneGraph.get(1);
-		updateSceneConnections();
-	}
-	public void setItemList (ArrayList<Item> toSet)
-							{ m_ItemList = toSet; 	}
 	
 	/**
 	 * Name: removeScene
@@ -124,26 +126,42 @@ public class SceneManager
 		return sceneAdded;
 	}
 	
-	/* Checks if the given scene is contained within the current graph */
+	/***
+	 * Name: constains
+	 * Purpose: checks to see if a given scene is already kept within the graph
+	 * 
+	 * @param checkScene The scene being checked if it is within the graph
+	 * @return boolean True if the scene is contained within the graph, false if not.
+	 */
 	public boolean contains (Scene checkScene)		{	return m_SceneGraph.contains(checkScene); }
 	
 
 	/**
+	 * Name: getNotes
+	 * Purpose: Returns the entirety of the notes in a formatted string.
+	 * 		Used for journal display while the game is running.
 	 * 
-	 * @return
+	 * @return notes A formatted String containing all the notes
 	 */
 	public String getNotes()
 	{
 		String notes = "";
 		for ( Scene o_Scene : m_ScenesVisited )
 			if (o_Scene.getNote().length() > 0)
-				notes += o_Scene.getTitle() + "</b>" + " - " + o_Scene.getNote() + "\n";
+				notes += o_Scene.getTitle() + " - " + o_Scene.getNote() + "\n";
 		
 		return notes;
 	}
 	
-	/*
-	 * Getters
+	/**
+	 * Name: getImageByName
+	 * Purpose: Returns the ImageIcon kept within the list of ImageIcon's that 
+	 * 		corresponds to that name.  It is assumed that the maker of the image
+	 * 		file being read has not duplicated names.  If this happens, the last
+	 * 		occurrence of the ImageIcon will be returned.
+	 * 
+	 * @param name The name of the ImageIcon being looked for
+	 * @return toReturn The imageIcon associated with the name.  Null if none found.
 	 */
 	public ImageIcon getImageByName(String name)
 	{
@@ -155,6 +173,8 @@ public class SceneManager
 		return toReturn;
 	}
 	
+	
+	/* Getters */
 	public ArrayList<SceneImage> getImages()	{ 	return m_Images;		  }
 	public Player getPlayer()					{ 	return m_Player;		  }
 	public ItemTableModel getItemModel () 		{	return m_ItemTableModel;  }
@@ -165,6 +185,7 @@ public class SceneManager
 	public ArrayList<Scene> getSceneGraph()		{ 	return m_SceneGraph;	  }
 	public ArrayList<Scene> getVisitedScenes()	{	return m_ScenesVisited;	  }
 	public ArrayList<Item>	getItemList()		{	return m_ItemList;		  }
+	
 	
 	/**
 	 * Validates that a chosen name for a scene does not already within the scene graph.
@@ -219,6 +240,16 @@ public class SceneManager
 					findConnections(o_Connection);
 	}
 	
+	/**
+	 * Name: parseImages
+	 * Purpose: Parses the images found within the file ~/images/images.txt
+	 * 		Assumed to be in the format:
+	 * 		
+	 * 		"Unique Image Name" (Can be whatever the user chooses)
+	 * 		"imageName.extension" (Must match the image exactly)
+	 * 
+	 * Creates a list of SceneImage's to be attached to each scene.
+	 */
 	public void parseImages()
 	{
 		Scanner inFile;
@@ -236,7 +267,74 @@ public class SceneManager
         	
         }catch(Exception ex){}
 	}
+	
+	/**
+	 * Name: loadSceneManager
+	 * Purpose: Loads a SceneManager from a specified file
+	 * 
+	 * @param fileName The name of the file to load from
+	 */
+	public void loadSceneManager( String fileName ) 
+	{
+		String sXmlSceneInput = "";
+		String sXmlItemInput = "";
+        try
+        {
+            XStream xstream = new XStream(new StaxDriver() );
+            Scanner input = new Scanner( new File( fileName ) );
+            
+            if (input.hasNextLine())
+            	sXmlSceneInput += input.nextLine();
+            
+            if (input.hasNextLine())
+            	sXmlItemInput += input.nextLine();
+            
+            input.close( );
+            
+            m_SceneGraph = ( ArrayList<Scene> ) xstream.fromXML(sXmlSceneInput);
+            m_ItemList = (ArrayList<Item>) xstream.fromXML (sXmlItemInput);
+            
+    		m_StartScene = m_SceneGraph.get(0); // A SceneManager is instantiated with beginning and end
+    		m_EndScene = m_SceneGraph.get(1);	// at 0 and 1.  These scenes are not removable.
+            
+            m_SceneTableModel.setNewSceneGraph(m_SceneGraph);
+            m_ItemTableModel.setNewItemList(m_ItemList);
 
+        }
+        catch(Exception ex) {} 
+	}
+	
+	/**
+	 * Name: saveSceneManager
+	 * Purpose: Attempts to save the SceneManager's details (SceneGraph and ItemList) to file.
+	 * 
+	 * @param fileName The name of the file to save to
+	 * @return boolean True if the file saved, false if an exception was caught
+	 */
+	public boolean saveSceneManager( String fileName )
+	{
+		XStream xstream = new XStream( new StaxDriver() );
+		PrintStream outFile;
+		boolean saved = true;
+
+        try
+        {
+            outFile = new PrintStream( new FileOutputStream( fileName ) );  
+            outFile.print( xstream.toXML( m_SceneGraph ) );  
+            outFile.println();
+            outFile.print (xstream.toXML( m_ItemList ));
+            outFile.close();
+        }
+        catch(Exception ex) { saved = false; }
+        
+        return saved;
+	}
+
+	/**
+	 * Name: resetGame
+	 * Purpose: Resets the game state for run through by clearing the players inventory, 
+	 * 		scenes visited, and all notes attached to scenes.
+	 */
 	public void resetGame() 
 	{
 		m_Player.clearPlayerInventory();

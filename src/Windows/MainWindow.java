@@ -3,7 +3,6 @@ package Windows;
 import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import Game_System.GameSystem;
 import Panels.ItemManagerPanel;
 import Panels.SceneManagerPanel;
 import Scene_Manager.SceneManager;
@@ -25,7 +24,7 @@ public class MainWindow extends JFrame{
 
 	/* Private Variables for Main Window */
 	
-	private GameSystem m_MainSystem;
+	private SceneManager m_MainSystem;
 	private SceneManagerPanel m_SceneMngrPnl;
 	private ItemManagerPanel m_ItemMngrPnl;
 	private WindowComm m_WindowComm;
@@ -84,7 +83,7 @@ public class MainWindow extends JFrame{
 	/**
 	 * Create the application.
 	 */
-	public MainWindow( GameSystem mainSystem ) {
+	public MainWindow( SceneManager mainSystem ) {
 		m_MainSystem = mainSystem;
 		initialize();
 	}
@@ -112,9 +111,7 @@ public class MainWindow extends JFrame{
 	public void loadProject()
 	{
 		String fileName = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
-		SceneManager m_SceneManager = m_MainSystem.loadSceneManager(fileName);
-		m_ItemMngrPnl.loadSceneManager();
-		m_SceneMngrPnl.loadSceneManager();
+		m_MainSystem.loadSceneManager(fileName);
 	}
 	
 	/**
@@ -142,9 +139,9 @@ public class MainWindow extends JFrame{
 
 	public void runGame()
 	{
-		if (m_MainSystem.getSceneManager().getEndScene().getSceneIsConnected())
+		if (m_MainSystem.getEndScene().getSceneIsConnected())
 		{
-			RunGameWindow rgw = new RunGameWindow (this, m_MainSystem.getSceneManager() );
+			RunGameWindow rgw = new RunGameWindow (this, m_MainSystem );
 			setVisible(false);
 			rgw.run();
 		}else
@@ -196,13 +193,13 @@ public class MainWindow extends JFrame{
 		m_MainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(m_MainTabbedPane, BorderLayout.CENTER);
 		
-		m_SceneMngrPnl = new SceneManagerPanel(m_MainSystem.getSceneTableModel(), this,
-													m_MainSystem.getSceneManager());
+		m_SceneMngrPnl = new SceneManagerPanel(m_MainSystem.getSceneModel(), this,
+													m_MainSystem);
 		
 		m_MainTabbedPane.addTab("Scenes", null, m_SceneMngrPnl, null);
 
-		m_ItemMngrPnl = new ItemManagerPanel(m_MainSystem.getItemTableModel(), this,
-												m_MainSystem.getSceneManager());
+		m_ItemMngrPnl = new ItemManagerPanel(m_MainSystem.getItemModel(), this,
+												m_MainSystem);
 		m_MainTabbedPane.addTab("Items", null, m_ItemMngrPnl, null);
 	}
 	

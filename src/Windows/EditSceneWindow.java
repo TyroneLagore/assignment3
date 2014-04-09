@@ -46,7 +46,7 @@ import java.awt.event.ItemEvent;
  * Allows for the editing of an individual scene, passed in upon creation.
  * 
  * @author Tyrone Lagore
- * @version April 1, 2014
+ * @version April 4, 2014
  */
 
 public class EditSceneWindow extends JFrame {
@@ -87,6 +87,9 @@ public class EditSceneWindow extends JFrame {
 	private JLabel m_ImageLabel;
 	
 	
+	/**
+	 * Handles all button interaction for this window
+	 */
 	public class ButtonHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) 
@@ -107,7 +110,9 @@ public class EditSceneWindow extends JFrame {
 		}
 	}
 
-	
+	/**
+	 * Handles all item interaction for this scene
+	 */
 	public class ItemHandler implements ItemListener 
 	{
 		@Override
@@ -185,8 +190,9 @@ public class EditSceneWindow extends JFrame {
 		int height = 20;
 		int width = 238;
 		
-		
-		for (int i = 0; i < 4; i++)
+		// Used to allow for individual manipulation of text fields for variable number
+		// of connected scenes
+		for (int i = 0; i < NUM_JLABELS; i++)
 		{
 			m_ConnectionLabels[i] = new JTextField();
 			m_ConnectionLabels[i].setBounds(x, y, width, height);
@@ -251,7 +257,7 @@ public class EditSceneWindow extends JFrame {
 		
 		btnSaveScene = new JButton("Save Scene");
 		btnSaveScene.addActionListener(btnHandler);
-		btnSaveScene.setBounds(592, 442, 209, 23);
+		btnSaveScene.setBounds(592, 476, 209, 23);
 		getContentPane().add(btnSaveScene);
 		
 		lblLargeTitle = new JLabel("");
@@ -278,7 +284,7 @@ public class EditSceneWindow extends JFrame {
 		
 		btnAddItem = new JButton("Add Item");
 		btnAddItem.addActionListener(btnHandler);
-		btnAddItem.setBounds(592, 476, 209, 23);
+		btnAddItem.setBounds(592, 442, 209, 23);
 		getContentPane().add(btnAddItem);
 		
 		m_ItemDropsTextField = new JTextField();
@@ -330,12 +336,16 @@ public class EditSceneWindow extends JFrame {
 		for (SceneImage o_SceneImage : m_SceneManager.getImages())
 			m_ImageOnScene.add(o_SceneImage.getImageName());
 		
+		
+		// If there is no image connected to the selected image and the image file was not empty
+		// set the image to the first image within the image list.
 		if (m_SceneManager.getImages().size() > 0 && m_Scene.getImage() == null)
 			m_Scene.addImageToScene(m_SceneManager.getImages().get(0).getImage());
 		
 		
 		if (m_Scene.getUnlockItem() != null)
 		{
+			//If there is an item on the scene already, set the visible text of it
 			m_ItemUnlocksTextField.setText(m_Scene.getUnlockItem().getName());
 			btnRmvUnlockItem.setEnabled(true);
 		}
@@ -346,6 +356,8 @@ public class EditSceneWindow extends JFrame {
 			btnRmvDropItem.setEnabled(true);
 		}
 		
+		
+		/* End and beginning scenes may not be removed, but they may be eddited */
 		if (m_Scene.equals(m_SceneManager.getEndScene()))
 		{
 			lblStartOrEnd.setText("End Scene");
@@ -357,25 +369,35 @@ public class EditSceneWindow extends JFrame {
 			lblStartOrEnd.setToolTipText("This scene is the beginning scene.  It must eventually lead to the end scene to play.");
 		}
 		else
-		{
 			lblStartOrEnd.setVisible(false);
-			m_TitleTextField.grabFocus();
-			m_TitleTextField.selectAll();
-		}
+		
+		m_TitleTextField.grabFocus();
+		m_TitleTextField.selectAll();
 		
 
 	}
 	
+	/**
+	 * Name: populateConnectedScenes
+	 * Purpose: When new scenes are connected or removed from the current scene, the JList 
+	 * 		displaying the connections is updated to show it and the corresponding labels that
+	 * 		lead to the scenes are made to be editable.
+	 * 
+	 * 
+	 */
 	private void populateConnectedScenes()
 	{	
 		ArrayList<String> connectionLabels = m_Scene.getConnectionLabels();
 		int i = 0;
 		
+		//Remove all instances from model
 		m_ConnectedScenesModel.removeAllElements();
 		
+		//Add only the ones found within the connections
 		for (Scene o_Scene : m_Connections)
 			m_ConnectedScenesModel.addElement(o_Scene);
 		
+		//Allow for edditing of the same number of labels
 		for (String o_Label : connectionLabels)
 		{
 			m_ConnectionLabels[i].setText(o_Label);
@@ -383,6 +405,7 @@ public class EditSceneWindow extends JFrame {
 			i++;
 		}
 		
+		//Disable all remaining and clear text (in case one was removed)
 		while (i < NUM_JLABELS)
 		{
 			m_ConnectionLabels[i].setEditable(false);
@@ -418,6 +441,10 @@ public class EditSceneWindow extends JFrame {
 		acw.run();
 	}
 	
+	/**
+	 * A new image has been selected from the dropdown menu of images.  Image is obtained and
+	 * set as the new image for the scene.
+	 */
 	private void setImageToSelected()
 	{
 		ImageIcon imageToAdd = m_SceneManager.getImageByName(m_ImageOnScene.getSelectedItem());
@@ -460,7 +487,7 @@ public class EditSceneWindow extends JFrame {
 	
 	/**
 	 * Connects another scene to the current scene.
-	 * @param selectedScene
+	 * @param selectedScene The scene that has been requested to be added as a connection
 	 */
 	public void connectScene(Scene selectedScene) 
 	{
@@ -468,6 +495,9 @@ public class EditSceneWindow extends JFrame {
 		populateConnectedScenes();
 	}
 	
+	/**
+	 * Overridden close method 
+	 */
 	private void closeWindow()
 	{
 		m_Parent.editSceneWindowHasClosed();
@@ -502,6 +532,18 @@ public class EditSceneWindow extends JFrame {
 		}
 	}
 
+	/**
+	 * Connects an item to the scene.
+	 * 		The error flag returned corresponds as such:
+	 * 		0 = item added
+	 * 		1 = Requesting item to drop in two places,
+	 *		2 = Item drops on same scene it unlocks
+	 * 
+	 * @param toConnect The item being requested to be added to the scene
+	 * @param type Whether the item is an unlock item or a dropped item
+	 * 
+	 * @return An error flag for the caller.  
+	 */
 	public int connectItem(Item toConnect, String type) 
 	{
 		int connectFlag = 0;

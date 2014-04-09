@@ -15,11 +15,19 @@ import javax.swing.JScrollPane;
 import java.awt.SystemColor;
 import javax.swing.JButton;
 import java.awt.Font;
-
+/**
+ * Allows for the viewing of all notes within the system
+ * Also doubles as a simple display of a formatted string to the user.
+ * 
+ * @author Tyrone
+ * @version April 4, 2014
+ */
 public class JournalWindow extends JFrame
 {
 	private RunGameWindow m_Parent;
-	
+	/**
+	 * Handles all button related actions to this scene
+	 */
 	public class ButtonHandler implements ActionListener 
 	{
 		private JournalWindow window;
@@ -35,6 +43,9 @@ public class JournalWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Runs this instance
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
@@ -52,7 +63,7 @@ public class JournalWindow extends JFrame
 	}
 	
 	
-	public JournalWindow (RunGameWindow parent, String notes, String font)
+	public JournalWindow (RunGameWindow parent, String notes, String font, int fontSize)
 	{
 		m_Parent = parent;
 		
@@ -76,7 +87,7 @@ public class JournalWindow extends JFrame
 		JTextArea m_NoteTextArea = new JTextArea();
 		m_NoteTextArea.setLineWrap(true);
 		m_NoteTextArea.setWrapStyleWord(true);
-		m_NoteTextArea.setFont(new Font(font, Font.PLAIN, 13));
+		m_NoteTextArea.setFont(new Font(font, Font.PLAIN, fontSize));
 		m_NoteTextArea.setBackground(SystemColor.control);
 		scrollPane.setViewportView(m_NoteTextArea);
 		m_NoteTextArea.setEditable(false);
@@ -89,6 +100,10 @@ public class JournalWindow extends JFrame
 		getContentPane().add(btnReturn);
 
 	}
+	
+	/**
+	 * Overridden close operation
+	 */
 	public void closeWindow() 
 	{
 		m_Parent.aWindowHasClosed();

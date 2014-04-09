@@ -30,7 +30,16 @@ public class WindowComm extends JFrame
 		return fileGetter.getDirectory() + fileGetter.getFile();
 	}
 	
-	
+	/**
+	 * Name: getYesNo
+	 * Purpose: Asks the user a specified prompt and returns the value of their response
+	 * 		0 - Yes
+	 * 		1 - No
+	 * 
+	 * @param prompt What to prompt the user with
+	 * @param title The name of the poppup window
+	 * @return int 0 for Yes, 1 for No
+	 */
 	public int getYesNo(String prompt, String title)
 	{
 		Object[] options = {"Yes", "No"};
@@ -39,6 +48,16 @@ public class WindowComm extends JFrame
 				options, options[0]);
 	}
 	
+	/**
+	 * Name: getYesNoCancel
+	 * Purpose: Asks the user a specified prompt and returns the value of their response
+	 * 		0 - Yes
+	 * 		1 - No
+	 * 		2 - Cancel
+	 * @param prompt What to prompt the user with
+	 * @param title The name of the poppup window
+	 * @return int 0 for Yes, 1 for No, 2 for Cancel
+	 */
 	public int getYesNoCancel (String prompt, String title)
 	{
 		Object[] options = {"Yes", "No", "Cancel"};
@@ -50,6 +69,11 @@ public class WindowComm extends JFrame
 				options, options[0]);
 	}
 	
+	/**
+	 * Name: displayMessage
+	 * Purpose: Displays a given message to the user
+	 * @param message The message to display
+	 */
 	public void displayMessage(String message)
 	{
 		JOptionPane.showMessageDialog(parent , message);
