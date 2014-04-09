@@ -1,22 +1,17 @@
 package Windows;
 
 import java.awt.*;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import Game_System.GameSystem;
 import Panels.ItemManagerPanel;
 import Panels.SceneManagerPanel;
 import Scene_Manager.SceneManager;
 import TableModels.*;
 import UserIO.WindowComm;
-
 import javax.swing.*;
-
 import java.awt.BorderLayout;
 import java.awt.event.*;
-
 import javax.swing.JPanel;
 
 /**
@@ -41,7 +36,7 @@ public class MainWindow extends JFrame{
 	private JMenuItem mntmQuit;
 	private JMenuItem mntmRun;
 
-	// ================== Inner Class ==============================
+	// ================== Inner Classes ==============================
 	public class MenuHandler implements ActionListener {
 		private MainWindow window;
 
@@ -65,6 +60,8 @@ public class MainWindow extends JFrame{
 				runGame();
 		}
 	}
+	
+
 
 	// =============================================================
 	public void run()
@@ -138,7 +135,7 @@ public class MainWindow extends JFrame{
 		}
 	}
 	
-	public void testWindowHasClosed()
+	public void runWindowHasClosed()
 	{
 		setVisible(true);
 	}
@@ -147,7 +144,7 @@ public class MainWindow extends JFrame{
 	{
 		if (m_MainSystem.getSceneManager().getEndScene().getSceneIsConnected())
 		{
-			RunGameWindow rgw = new RunGameWindow (this, m_MainSystem.getSceneManager());
+			RunGameWindow rgw = new RunGameWindow (this, m_MainSystem.getSceneManager() );
 			setVisible(false);
 			rgw.run();
 		}else
@@ -177,14 +174,17 @@ public class MainWindow extends JFrame{
 		menuBar.add(mnFile);
 
 		mntmSave = new JMenuItem("Save");
+		mntmSave.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, ActionEvent.CTRL_MASK ) );
 		mntmSave.addActionListener(btnHandler);
 		mnFile.add(mntmSave);
 
 		mntmLoad = new JMenuItem("Load");
+		mntmLoad.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_L, ActionEvent.CTRL_MASK ) );
 		mntmLoad.addActionListener(btnHandler);
 		mnFile.add(mntmLoad);
 		
 		mntmRun = new JMenuItem("Run");
+		mntmRun.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_R, ActionEvent.CTRL_MASK ) );
 		mntmRun.addActionListener(btnHandler);
 		mnFile.add(mntmRun);
 

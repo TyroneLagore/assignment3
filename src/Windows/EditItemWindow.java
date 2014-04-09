@@ -82,13 +82,13 @@ public class EditItemWindow extends JFrame {
 			if( null != m_EditingItem.getDropScene( ) && e.getSource( ).equals( m_DropSceneLbl ) )
 			{
 				setVisibility( false );
-				SceneInfoWindow m_DropSceneWindow = new SceneInfoWindow( m_EditingItem.getDropScene( ) );
+				RunGameWindow m_DropSceneWindow = new RunGameWindow( this.m_Window, m_EditingItem.getDropScene( ) );
 				m_DropSceneWindow.run( );
 			}
 			else if( null != m_EditingItem.getUnlockScene( ) && e.getSource( ).equals( m_UnlockSceneLbl ) )
 			{
 				setVisibility( false );
-				SceneInfoWindow m_UnlockSceneWindow = new SceneInfoWindow( m_EditingItem.getUnlockScene( ) );
+				RunGameWindow m_UnlockSceneWindow = new RunGameWindow( this.m_Window, m_EditingItem.getUnlockScene( ) );
 				m_UnlockSceneWindow.run( );
 			}
 		}
@@ -194,6 +194,11 @@ public class EditItemWindow extends JFrame {
 		m_CancelBtn.setVisible( bVisible );
 	}
 	
+	public void runWindowHasClosed()
+	{
+		setVisibility(true);
+	}
+	
 	/****************************************************************\
 	 * End Edit Item Window Function Block							*
 	\****************************************************************/
@@ -240,7 +245,7 @@ public class EditItemWindow extends JFrame {
 		m_NameTextArea.setColumns(10);
 		
 		JLabel lblItemName = new JLabel( "Item Name:" );
-		lblItemName.setBounds(10, 47, 63, 14);
+		lblItemName.setBounds(10, 47, 110, 14);
 		getContentPane().add(lblItemName);
 		
 		m_DescTextArea = new JTextArea( m_EditingItem.getDesc( ) );
