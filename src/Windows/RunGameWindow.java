@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 import Game_System.Item;
 import Game_System.Player;
@@ -50,6 +51,8 @@ public class RunGameWindow extends JFrame
 	private JTextArea m_NoteTextArea;
 	private boolean m_bDebug;
 	private JLabel m_lblNote;
+	private JScrollPane scrollPane;
+	private JLabel m_ImageLabel;
 	
 	public class ButtonHandler implements ActionListener 
 	{
@@ -102,7 +105,7 @@ public class RunGameWindow extends JFrame
 		m_Choices = new JRadioButton[NUM_CHOICES];
 		m_WindowComm = new WindowComm(this);
 		ButtonHandler btnHandler = new ButtonHandler(this);
-		setBounds(100, 100, 540, 407);
+		setBounds(100, 100, 592, 607);
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -113,24 +116,24 @@ public class RunGameWindow extends JFrame
 		
 		btnBacktrack = new JButton("Backtrack");
 		btnBacktrack.addActionListener(btnHandler);
-		btnBacktrack.setBounds(406, 335, 108, 23);
+		btnBacktrack.setBounds(447, 535, 108, 23);
 		getContentPane().add(btnBacktrack);
 		
 		m_lblTitle = new JLabel();
 		m_lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		m_lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		m_lblTitle.setBounds(10, 31, 504, 39);
+		m_lblTitle.setBounds(10, 11, 504, 39);
 		getContentPane().add(m_lblTitle);
 		
 		JPanel m_DescriptionBorderPanel = new JPanel();
 		m_DescriptionBorderPanel.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 0, 0)));
-		m_DescriptionBorderPanel.setBounds(26, 81, 370, 133);
+		m_DescriptionBorderPanel.setBounds(353, 50, 202, 247);
 		getContentPane().add(m_DescriptionBorderPanel);
 		m_DescriptionBorderPanel.setLayout(null);
 		
 		m_SceneDescTextArea = new JTextArea();
 		m_SceneDescTextArea.setEditable(false);
-		m_SceneDescTextArea.setBounds(10, 16, 350, 110);
+		m_SceneDescTextArea.setBounds(10, 11, 182, 225);
 		m_DescriptionBorderPanel.add(m_SceneDescTextArea);
 		m_SceneDescTextArea.setBackground(SystemColor.control);
 		m_SceneDescTextArea.setWrapStyleWord(true);
@@ -138,28 +141,38 @@ public class RunGameWindow extends JFrame
 		
 		btnInventory = new JButton("Inventory");
 		btnInventory.addActionListener(btnHandler);
-		btnInventory.setBounds(406, 301, 108, 23);
+		btnInventory.setBounds(447, 501, 108, 23);
 		getContentPane().add(btnInventory);
 		
 		btnGo = new JButton("Go");
 		btnGo.addActionListener(btnHandler);
-		btnGo.setBounds(10, 335, 115, 23);
+		btnGo.setBounds(10, 535, 115, 23);
 		getContentPane().add(btnGo);
 		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(353, 330, 202, 82);
+		getContentPane().add(scrollPane);
+		
 		m_NoteTextArea = new JTextArea();
+		scrollPane.setViewportView(m_NoteTextArea);
+		m_NoteTextArea.setWrapStyleWord(true);
+		m_NoteTextArea.setLineWrap(true);
 		m_NoteTextArea.setText("");
-		m_NoteTextArea.setBounds(406, 81, 108, 133);
-		getContentPane().add(m_NoteTextArea);
 		
 		m_lblNote = new JLabel("Note");
 		m_lblNote.setHorizontalAlignment(SwingConstants.CENTER);
-		m_lblNote.setBounds(406, 56, 108, 14);
+		m_lblNote.setBounds(393, 308, 108, 14);
 		getContentPane().add(m_lblNote);
 		
 		btnJournal = new JButton("Journal");
 		btnJournal.addActionListener(btnHandler);
-		btnJournal.setBounds(406, 267, 108, 23);
+		btnJournal.setBounds(447, 468, 108, 23);
 		getContentPane().add(btnJournal);
+		
+		m_ImageLabel = new JLabel("\r\n");
+		m_ImageLabel.setBounds(10, 50, 325, 362);
+		getContentPane().add(m_ImageLabel);
+		m_lblNote.setVisible( false );
 		
 		generateChoices( );
 	}
@@ -181,7 +194,6 @@ public class RunGameWindow extends JFrame
 		btnJournal.setEnabled( false );
 		btnInventory.setEnabled( false );
 		btnBacktrack.setEnabled( false );
-		m_lblNote.setVisible( false );
 		
 		loadSceneInfo( m_CurrentScene );
 		
@@ -194,12 +206,12 @@ public class RunGameWindow extends JFrame
 		m_SceneManager = sceneManager;
 		m_Player = m_SceneManager.getPlayer();
 		m_Parent = parent;
-		m_Player.clearPlayerInventory();
-		m_SceneManager.clearVisitedScenes();
 		m_bDebug = false;		
 		m_CurrentScene = m_SceneManager.getStartScene();
 		
 		initStatics( );
+		
+		m_lblNote.setVisible(true);
 		
 		loadSceneInfo (m_CurrentScene);
 	}
@@ -214,11 +226,21 @@ public class RunGameWindow extends JFrame
 		dispose();
 	}
 	
-	private void openInventory(){}
+	private void openInventory()
+	{
+		String inventory = "";
+		for (Item o_Item : m_Player.getInventory())
+			inventory += o_Item.getName() + "\n";
+			
+		
+		JournalWindow jw = new JournalWindow(this, inventory, "Comic Sans");
+		toggleButtons(false);
+		jw.run();
+	}
 	
 	private void openJournal()
 	{
-		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes());
+		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes(), "Lucida Handwriting");
 		toggleButtons(false);
 		jw.run();
 		
@@ -248,9 +270,10 @@ public class RunGameWindow extends JFrame
 	private void loadSceneInfo( Scene nextScene )
 	{
 		Item unlockItem = nextScene.getUnlockItem();
-		String addedText = nextScene.getDropItem() != null ? 
-				"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
-		
+		String addedText = "";
+		if (!m_bDebug)
+			addedText = nextScene.getDropItem() != null && !m_Player.inventoryContains(nextScene.getDropItem()) ? 
+					"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
 
 		if(unlockItem == null || m_bDebug || m_Player.inventoryContains(unlockItem))
 		{
@@ -262,8 +285,12 @@ public class RunGameWindow extends JFrame
 			
 			m_NoteTextArea.setText(m_CurrentScene.getNote());
 			
+			if (m_CurrentScene.getImage() != null)
+				m_ImageLabel.setIcon (m_CurrentScene.getImage());
+
 			if (null != m_Player && addedText.length() > 0)
 				m_Player.addItem(nextScene.getDropItem());
+
 			
 			m_lblTitle.setText(m_CurrentScene.getTitle());
 			m_SceneDescTextArea.setText(addedText + m_CurrentScene.getDesc());
@@ -278,14 +305,20 @@ public class RunGameWindow extends JFrame
 			}
 				
 		}else
+		{
+			m_CurrentScene.setNote("Needed item: " + unlockItem.getName() 
+					+ " to enter " + nextScene.getTitle() + "\n\n" + m_NoteTextArea.getText());
+			
+			m_NoteTextArea.setText(m_CurrentScene.getNote());
 			m_WindowComm.displayMessage("You require a " + unlockItem.getName() + " to enter that"
 					+ " scene!.");
+		}
 	}
 	
 	private void generateChoices()
 	{
 		int x = 15;
-		int y = 230;
+		int y = 417;
 		int width = 380;
 		int height = 20;
 		int numButtons = m_ButtonGroup.getButtonCount();

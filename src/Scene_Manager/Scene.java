@@ -5,6 +5,8 @@ package Scene_Manager;
 
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+
 import Game_System.Item;
 
 /**
@@ -23,6 +25,7 @@ public class Scene {
 	private boolean m_ConnectedTo;
 	private static final int MAX_CONNECTIONS = 4;
 	private String m_Note;
+	private ImageIcon m_Image;
 
 	public Scene(String title, String desc) {
 		m_UnlockItem = null;
@@ -33,6 +36,7 @@ public class Scene {
 		m_Desc = desc;
 		m_ConnectedTo = false;
 		m_Note = "";
+		m_Image = null;
 	}
 
 	public void addConnection(Scene toConnect, String connectionLabel) 
@@ -58,6 +62,8 @@ public class Scene {
 		
 	}
 	
+	
+	public void addImageToScene(ImageIcon image)	{ m_Image = image;		}
 	public void setSceneIsConnected(boolean bIsConnected) 
 													{ m_ConnectedTo = bIsConnected; }
 	public boolean getSceneIsConnected() 			{ return m_ConnectedTo; }
@@ -79,6 +85,7 @@ public class Scene {
 	public Item getUnlockItem()			 			{ return m_UnlockItem; 		}
 
 	/* Getters/Setters */
+	public ImageIcon getImage()						{ return m_Image;			}
 	public void setNote(String note)				{ m_Note = note;			}
 	public String getNote()							{ return m_Note;			}
 	public String getTitle() 						{ return m_Title; 			}
