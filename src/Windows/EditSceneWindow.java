@@ -1,6 +1,9 @@
 package Windows;
 
+import java.awt.Choice;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -10,11 +13,13 @@ import javax.swing.JFrame;
 import Game_System.Item;
 import Panels.SceneManagerPanel;
 import Scene_Manager.Scene;
+import Scene_Manager.SceneImage;
 import Scene_Manager.SceneManager;
 import TableModels.SceneTableModel;
 import UserIO.WindowComm;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,6 +38,9 @@ import javax.swing.JComboBox;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ListSelectionModel;
 
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+
 /**
  * EditSceneWindow
  * Allows for the editing of an individual scene, passed in upon creation.
@@ -47,7 +55,6 @@ public class EditSceneWindow extends JFrame {
 	private SceneManagerPanel m_Parent;
 	private WindowComm m_WindowComm;
 	private JLabel lblLargeTitle;
-	private JButton btnDiscard;
 	private JButton btnSaveScene;
 	private JButton btnRemoveConnection;
 	private JButton btnConnectScene;
@@ -70,42 +77,44 @@ public class EditSceneWindow extends JFrame {
 	private SceneManager m_SceneManager;
 	private JButton btnAddItem;
 	private JButton btnRmvUnlockItem;
+	private Choice m_ImageOnScene;
 	
 	private static final String m_UnlockString = "Item unlocks this scene";
 	private static final String m_DropString = "Item drops on this scene";
 	
 	private static final int NUM_JLABELS = 4;
 	private JLabel lblStartOrEnd;
-
+	private JLabel m_ImageLabel;
+	
+	
 	public class ButtonHandler implements ActionListener {
-
-		public ButtonHandler() {}
-
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			if (e.getSource().equals(btnSaveScene))
-				saveScene();
-			
-			else if (e.getSource().equals(btnDiscard))
-			{
-				setVisible(false);
-				m_Parent.editSceneWindowHasClosed();
-			}
-			else if (e.getSource().equals(btnConnectScene))
+			if( e.getSource( ).equals( btnAddItem ) )
+				addItemButtonClicked();
+			else if( e.getSource( ).equals( btnConnectScene ) )
 				connectSceneButtonClicked();
-
 			else if (e.getSource().equals(btnRemoveConnection))
 				removeConnectionButtonClicked();
-			
-			else if (e.getSource().equals(btnAddItem))
-				addItemButtonClicked();
-			
-			else if (e.getSource().equals(btnRmvUnlockItem))
-				removeUnlockItemButtonClicked();
-			
 			else if (e.getSource().equals(btnRmvDropItem))
 				removeDropItemButtonClicked();
+			else if (e.getSource().equals(btnRmvUnlockItem))
+				removeUnlockItemButtonClicked();
+			else if (e.getSource().equals(btnSaveScene))
+				saveScene();
+				
+		}
+	}
+
+	
+	public class ItemHandler implements ItemListener 
+	{
+		@Override
+		public void itemStateChanged(ItemEvent e) 
+		{
+			if (e.getSource().equals(m_ImageOnScene))
+				setImageToSelected();
 		}
 	}
 	
@@ -162,8 +171,9 @@ public class EditSceneWindow extends JFrame {
 		});
 		
 		ButtonHandler btnHandler = new ButtonHandler();
+		ItemHandler itemHandler = new ItemHandler();
 		
-		setBounds( 100, 100, 830, 440 );
+		setBounds( 100, 100, 830, 548 );
 		Point parentLocation = m_Parent.getLocation();
 		double parentX = parentLocation.getX();
 		double parentY = parentLocation.getY();
@@ -171,7 +181,7 @@ public class EditSceneWindow extends JFrame {
 		setLocation((int)(parentX + 125),(int)(parentY + 125));
 		
 		int x = 563;
-		int y = 208;
+		int y = 333;
 		int height = 20;
 		int width = 238;
 		
@@ -198,7 +208,7 @@ public class EditSceneWindow extends JFrame {
 		m_ConnectedScenesScrollPane = new JScrollPane();
 		m_ConnectedScenesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		m_ConnectedScenesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		m_ConnectedScenesScrollPane.setBounds(345, 209, 208, 98);
+		m_ConnectedScenesScrollPane.setBounds(346, 333, 208, 98);
 		getContentPane().add(m_ConnectedScenesScrollPane);
 		
 		m_ConnectedScenesModel = new DefaultListModel<Scene>();
@@ -212,7 +222,7 @@ public class EditSceneWindow extends JFrame {
 		
 		m_DescScrollPane = new JScrollPane();
 		m_DescScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		m_DescScrollPane.setBounds(10, 209, 325, 168);
+		m_DescScrollPane.setBounds(346, 162, 440, 117);
 		getContentPane().add(m_DescScrollPane);
 		
 		m_DescTextArea = new JTextArea();
@@ -222,34 +232,27 @@ public class EditSceneWindow extends JFrame {
 		m_DescScrollPane.setViewportView(m_DescTextArea);
 		
 		lblConnectedScenes = new JLabel("Connected Scenes");
-		lblConnectedScenes.setBounds(346, 184, 109, 14);
+		lblConnectedScenes.setBounds(349, 308, 109, 14);
 		getContentPane().add(lblConnectedScenes);
 		
 		lblDescription = new JLabel("Description");
-		lblDescription.setBounds(10, 184, 109, 14);
+		lblDescription.setBounds(349, 137, 109, 14);
 		getContentPane().add(lblDescription);
 		
 		btnConnectScene = new JButton("Connect A Scene");
 		btnConnectScene.addActionListener(btnHandler);
-		btnConnectScene.setBounds(345, 318, 208, 23);
+		btnConnectScene.setBounds(345, 442, 209, 23);
 		getContentPane().add(btnConnectScene);
 		
 		btnRemoveConnection = new JButton("Remove Connection");
 		btnRemoveConnection.addActionListener(btnHandler);
-		btnRemoveConnection.setBounds(345, 354, 208, 23);
+		btnRemoveConnection.setBounds(345, 476, 209, 23);
 		getContentPane().add(btnRemoveConnection);
 		
 		btnSaveScene = new JButton("Save Scene");
 		btnSaveScene.addActionListener(btnHandler);
-		btnSaveScene.setBounds(578, 318, 208, 23);
+		btnSaveScene.setBounds(592, 442, 209, 23);
 		getContentPane().add(btnSaveScene);
-		
-		btnDiscard = new JButton("Discard");
-		btnDiscard.addActionListener(btnHandler);
-		btnDiscard.setBounds(578, 354, 208, 23);
-		getContentPane().add(btnDiscard);
-		if (m_SceneManager.contains(m_Scene))
-			btnDiscard.setVisible(false);
 		
 		lblLargeTitle = new JLabel("");
 		lblLargeTitle.setText(m_Scene.getTitle());
@@ -259,7 +262,7 @@ public class EditSceneWindow extends JFrame {
 		getContentPane().add(lblLargeTitle);
 		
 		lblConnectionLabel = new JLabel("Connection Label");
-		lblConnectionLabel.setBounds(563, 184, 196, 14);
+		lblConnectionLabel.setBounds(571, 308, 196, 14);
 		getContentPane().add(lblConnectionLabel);
 		
 		JLabel lblItemConnectedTo = new JLabel("Item dropped on scene\r\n");
@@ -275,7 +278,7 @@ public class EditSceneWindow extends JFrame {
 		
 		btnAddItem = new JButton("Add Item");
 		btnAddItem.addActionListener(btnHandler);
-		btnAddItem.setBounds(578, 128, 109, 23);
+		btnAddItem.setBounds(592, 476, 209, 23);
 		getContentPane().add(btnAddItem);
 		
 		m_ItemDropsTextField = new JTextField();
@@ -306,6 +309,25 @@ public class EditSceneWindow extends JFrame {
 		lblStartOrEnd.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStartOrEnd.setBounds(308, 63, 208, 14);
 		getContentPane().add(lblStartOrEnd);
+		
+		m_ImageLabel = new JLabel();
+		m_ImageLabel.setBounds(10, 137, 325, 362);
+		m_ImageLabel.setIcon(m_SceneManager.getImages().get(0).getImage());
+		getContentPane().add(m_ImageLabel);
+		
+		
+		m_ImageOnScene = new Choice();
+		m_ImageOnScene.addItemListener(itemHandler);
+		m_ImageOnScene.setBounds(10, 112, 210, 20);
+		getContentPane().add(m_ImageOnScene);	
+		
+		JLabel lblSelectAnImage = new JLabel("Scene Image");
+		lblSelectAnImage.setBounds(10, 88, 228, 14);
+		getContentPane().add(lblSelectAnImage);
+		
+		for (SceneImage o_SceneImage : m_SceneManager.getImages())
+			m_ImageOnScene.add(o_SceneImage.getImageName());
+		
 		
 		if (m_Scene.getUnlockItem() != null)
 		{
@@ -389,6 +411,13 @@ public class EditSceneWindow extends JFrame {
 		
 		AddConnectionWindow acw = new AddConnectionWindow(m_SceneManager.getSceneModel(), this, "Connect Scene");
 		acw.run();
+	}
+	
+	private void setImageToSelected()
+	{
+		ImageIcon imageToAdd = m_SceneManager.getImageByName(m_ImageOnScene.getSelectedItem());
+		m_ImageLabel.setIcon(imageToAdd);
+		m_Scene.addImageToScene(imageToAdd);
 	}
 	
 	/**

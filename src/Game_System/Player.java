@@ -22,7 +22,12 @@ public class Player
 		m_Inventory = new ArrayList<Item>();
 	}
 
-	public void addItem( Item toAdd )		{   m_Inventory.add(toAdd); 	}
+	public void addItem( Item toAdd )
+	{   
+		if (!m_Inventory.contains(toAdd))
+			m_Inventory.add(toAdd); 	
+	}
+	
 	public ArrayList<Item> getInventory() 	{	return m_Inventory;			}	
 	public int inventorySize()				{	return m_Inventory.size();	}	
 	public boolean inventoryContains( Item itemCheck )	
