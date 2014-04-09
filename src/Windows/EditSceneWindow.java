@@ -312,7 +312,9 @@ public class EditSceneWindow extends JFrame {
 		
 		m_ImageLabel = new JLabel();
 		m_ImageLabel.setBounds(10, 137, 325, 362);
-		m_ImageLabel.setIcon(m_SceneManager.getImages().get(0).getImage());
+		if (m_SceneManager.getImages().size() > 0)
+			m_ImageLabel.setIcon(m_SceneManager.getImages().get(0).getImage());
+		
 		getContentPane().add(m_ImageLabel);
 		
 		
@@ -327,6 +329,9 @@ public class EditSceneWindow extends JFrame {
 		
 		for (SceneImage o_SceneImage : m_SceneManager.getImages())
 			m_ImageOnScene.add(o_SceneImage.getImageName());
+		
+		if (m_SceneManager.getImages().size() > 0 && m_Scene.getImage() == null)
+			m_Scene.addImageToScene(m_SceneManager.getImages().get(0).getImage());
 		
 		
 		if (m_Scene.getUnlockItem() != null)

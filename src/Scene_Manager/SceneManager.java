@@ -137,7 +137,7 @@ public class SceneManager
 		String notes = "";
 		for ( Scene o_Scene : m_ScenesVisited )
 			if (o_Scene.getNote().length() > 0)
-				notes += "<b>" + o_Scene.getTitle() + "</b>" + " - " + o_Scene.getNote() + "\n";
+				notes += o_Scene.getTitle() + "</b>" + " - " + o_Scene.getNote() + "\n";
 		
 		return notes;
 	}
