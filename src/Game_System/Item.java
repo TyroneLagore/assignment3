@@ -6,19 +6,25 @@ package Game_System;
 import Scene_Manager.Scene;
 
 /**
- * Description
+ * Item Entity - contains variables that pertain to Items.
  *
- * @author	James C. Coté
- * @author Tyrone Lagore
+ * @author	Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
 public class Item 
 {
+	// Private Variables
 	private String 	m_sName;
 	private String 	m_sDesc;
 	private Scene 	m_DroppedIn;
 	private Scene	m_Unlocks;
 	
+	/**
+	 * Default constructor, requires at least a name and description.
+	 * 
+	 * @param name	The Name of the Item.
+	 * @param desc	The Description of the Item.
+	 */
 	public Item (String name, String desc)
 	{
 		m_sName 	= name;

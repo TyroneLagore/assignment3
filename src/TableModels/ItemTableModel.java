@@ -1,15 +1,21 @@
 package TableModels;
 
 import java.util.ArrayList;
-
 import javax.swing.table.*;
-
 import Game_System.*;
 import Scene_Manager.Scene;
 
-
+/**
+ * The Table Model for Items.  Contains a list of Items and monitors it using the
+ * observer design pattern.
+ *
+ * @author	Team Smart Water
+ * @version v1.0 - Apr 8, 2014
+ */
+@SuppressWarnings( "serial" )
 public class ItemTableModel extends AbstractTableModel
 {
+	// private variables
 	private String[] headers = { "Name","Drops In Scene", "Does Drop","Unlocks a Scene" };
 	private ArrayList<Item> m_ItemList;
 	
@@ -19,18 +25,33 @@ public class ItemTableModel extends AbstractTableModel
 	private static final int DROPS 			= 2;
 	private static final int UNLOCKS 		= 3;
 	
-	
+	/**
+	 * Constructor - Initializes the Internal Item list.
+	 * 
+	 * @param itemList	The item list to set the internal list to.
+	 */
 	public ItemTableModel( ArrayList<Item> itemList)
 	{
 		m_ItemList = itemList;
 	}
-	
+
+	/**
+	 * Adds a provided item to the item list and fires changes.
+	 * 
+	 * @param newItem	The Item to add to the model.
+	 */
 	public void addItem( Item newItem )
 	{
 		m_ItemList.add( newItem );
 		fireTableDataChanged( );
 	}
 	
+	/**
+	 * Removes an Item from the internal list.  Also removes the desired item from
+	 * the scenes it's connected to.
+	 * 
+	 * @param sItemName	The name of the item to remove.
+	 */
 	public void removeItem( String sItemName )
 	{
 		Item m_ItemToRemove = null;
@@ -41,7 +62,11 @@ public class ItemTableModel extends AbstractTableModel
 		
 		if( null != m_ItemToRemove )
 		{
-			// TODO: Unlink From Scenes
+			if( m_ItemToRemove.dropsInAScene( ) )
+				m_ItemToRemove.getDropScene( ).removeDropItem( );
+			
+			if( m_ItemToRemove.unlocksAScene( ) )
+				m_ItemToRemove.getUnlockScene( ).removeUnlockItem( );
 			
 			m_ItemList.remove( m_ItemToRemove );
 		}
@@ -83,11 +108,20 @@ public class ItemTableModel extends AbstractTableModel
 		return m_ReturnItem;
 	}
 
+	/**
+	 * Sets a new item list.  Called when a new game is loaded.
+	 * 
+	 * @param itemList	The item list to set internally.
+	 */
 	public void setNewItemList(ArrayList<Item> itemList)
 	{
 		m_ItemList = itemList ;
 		fireTableDataChanged();
 	}
+	
+	/*******************************************************************\
+	 * Functions Used by the Table									   *
+	\*******************************************************************/
 	@Override
 	public String getColumnName( int iColumn )
 	{
@@ -110,7 +144,8 @@ public class ItemTableModel extends AbstractTableModel
 		return m_ItemList.size( );
 	}
 	
-	@Override
+	@SuppressWarnings( { "rawtypes", "unchecked" } )
+    @Override
 	public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
@@ -148,5 +183,9 @@ public class ItemTableModel extends AbstractTableModel
 		 
 		return oReturnObj;
 	}
+	
+	/*******************************************************************\
+	 * End - Functions Used by the Table							   *
+	\*******************************************************************/
 
 }

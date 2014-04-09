@@ -6,18 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.*;
-
 import Game_System.Item;
-import Scene_Manager.Scene;
 import TableModels.ItemTableModel;
-import TableModels.SceneTableModel;
 import UserIO.WindowComm;
-import Windows.AddConnectionWindow.ButtonHandler;
-import java.awt.Component;
-import java.awt.Rectangle;
-import java.awt.Checkbox;
 import java.awt.Choice;
 import java.awt.Font;
 /**
@@ -38,8 +30,10 @@ import java.awt.Font;
  * @author Tyrone Lagore
  * @version April 5, 2014
  */
+@SuppressWarnings( "serial" )
 public class AddItemWindow extends JFrame
 {
+	// Private Variables
 	private WindowComm m_WindowComm;
 	private EditSceneWindow m_Parent;
 	private JList <Item>m_ItemList;
@@ -49,14 +43,10 @@ public class AddItemWindow extends JFrame
 	private JButton btnConnectItem;
 	private Choice m_ItemTypeSelection;
 	
-	
+	/**
+	 * Button Handler Class for handling button actions
+	 */
 	public class ButtonHandler implements ActionListener {
-		private AddItemWindow window;
-
-		public ButtonHandler(AddItemWindow window) {
-			this.window = window;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
@@ -68,11 +58,17 @@ public class AddItemWindow extends JFrame
 	}
 	
 	
+	/**
+	 * AddItemWindow constructor - Initializes private variables and AddItemWindow functionality.
+	 * 
+	 * @param itemTable	ItemTableModel to load the List with.
+	 * @param parent	The parent window to reference for setting position and bounds.
+	 */
 	public AddItemWindow( ItemTableModel itemTable, EditSceneWindow parent)
 	{
 		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
-		ButtonHandler btnHandler = new ButtonHandler(this);
+		ButtonHandler btnHandler = new ButtonHandler();
 
 		m_Parent = parent;
 		
@@ -129,6 +125,9 @@ public class AddItemWindow extends JFrame
 		m_ItemTypeSelection.add("Item unlocks this scene");
 	}
 	
+	/**
+	 * Functionality for the connectItemButton.
+	 */
 	public void connectItemButtonClicked() 
 	{
 		int connectFlag;
@@ -151,12 +150,18 @@ public class AddItemWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Closes the Window and disposes it to avoid memory leaks.
+	 */
 	private void closeWindow()
 	{
 		m_Parent.addItemWidnowHasClosed();
 		dispose();
 	}
 	
+	/**
+	 * Runs the program.
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 

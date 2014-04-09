@@ -3,34 +3,31 @@ package Windows;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Point;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import Game_System.Item;
 import Panels.ItemManagerPanel;
 import UserIO.WindowComm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /**
  * Name: EditItemWindow
+ * Description: Window that allows the user to edit items that are contained in the game.
  * 
- * @author Tyrone Lagore
+ * @author Team Smart Water
  * @version April 4, 2014
  */
+@SuppressWarnings( "serial" )
 public class EditItemWindow extends JFrame {
 
 	private JLabel 				lblItemTitleLg;
@@ -47,16 +44,11 @@ public class EditItemWindow extends JFrame {
 	
 	// Constant variables
 	private static final int YES 	= 0;
-	private static final int NO 	= 1;
 
-	
+	/**
+	 * Small Handler class for Buttons.
+	 */
 	public class ItemButtonHandler implements ActionListener {
-		private EditItemWindow window;
-
-		public ItemButtonHandler(EditItemWindow window) {
-			this.window = window;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
@@ -67,6 +59,9 @@ public class EditItemWindow extends JFrame {
 		}
 	}
 	
+	/**
+	 * Handler for Mouse input.  Used for detecting mouse clicks over connected scene labels.
+	 */
 	public class ItemMouseHandler implements MouseListener
 	{
 		private EditItemWindow m_Window;
@@ -188,12 +183,15 @@ public class EditItemWindow extends JFrame {
 	 */
 	private void setVisibility( boolean bVisible )
 	{
-		m_DropSceneLbl.setVisible( bVisible );
-		m_UnlockSceneLbl.setVisible( bVisible );
-		m_SaveItemBtn.setVisible( bVisible );
-		m_CancelBtn.setVisible( bVisible );
+		m_DropSceneLbl.setEnabled( bVisible );
+		m_UnlockSceneLbl.setEnabled( bVisible );
+		m_SaveItemBtn.setEnabled( bVisible );
+		m_CancelBtn.setEnabled( bVisible );
 	}
 	
+	/**
+	 * Function to be called from RunGameWindow when it closes in debug.
+	 */
 	public void runWindowHasClosed()
 	{
 		setVisibility(true);
@@ -209,14 +207,13 @@ public class EditItemWindow extends JFrame {
 	 */
 	public EditItemWindow( Item itemToEdit, ItemManagerPanel parentWindow, boolean bNewItem )
 	{
+		/* Init some local variables */
+		m_CommWindow = new WindowComm( this );
 		getContentPane().setLayout(null);
 		m_ItmMngrParent = parentWindow;
 		m_EditingItem 	= itemToEdit;
 		m_bNewItem		= bNewItem;
-		
-		/* Init some local variables */
-		m_CommWindow = new WindowComm( this );
-		ItemButtonHandler m_ItmBtnHndlr = new ItemButtonHandler( this );
+		ItemButtonHandler m_ItmBtnHndlr = new ItemButtonHandler( );
 		ItemMouseHandler m_ItmMouseHndlr = new ItemMouseHandler( this );
 		
 		addWindowListener(new WindowAdapter() {
@@ -296,6 +293,9 @@ public class EditItemWindow extends JFrame {
 		m_NameTextArea.selectAll();
 	}
 	
+	/**
+	 * Runs the Window.
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
