@@ -180,7 +180,15 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 												 m_ItemToRemove.getName( ) + "?\"", "Remove" );
 			
 			if( YES == iResult )
+			{
+				if( m_ItemToRemove.dropsInAScene( ) )
+					m_ItemToRemove.getDropScene( ).removeDropItem( );
+				
+				if( m_ItemToRemove.unlocksAScene( ) )
+					m_ItemToRemove.getUnlockScene( ).removeUnlockItem( );
+				
 				m_ItemTableModel.removeItem( m_ItemToRemove.getName( ) );
+			}
 		}
 		else
 			m_WindowComm.displayMessage( "No Item selected!" );
