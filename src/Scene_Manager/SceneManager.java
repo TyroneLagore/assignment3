@@ -40,7 +40,7 @@ public class SceneManager
 	private Scene m_CurrentScene;
 	private Scene m_EndScene;
 	private Player m_Player;
-	private static final String m_ImageDocument = "images.txt";
+	private static final String m_ImageDocument = "images\\images.txt";
 
 	
 	public SceneManager()
@@ -145,6 +145,17 @@ public class SceneManager
 	/*
 	 * Getters
 	 */
+	public ImageIcon getImageByName(String name)
+	{
+		ImageIcon toReturn = null;
+		for (SceneImage o_SceneImage : m_Images )
+			if (o_SceneImage.getImageName().matches(name))
+				toReturn = o_SceneImage.getImage();
+		
+		return toReturn;
+	}
+	
+	public ArrayList<SceneImage> getImages()	{ 	return m_Images;		  }
 	public Player getPlayer()					{ 	return m_Player;		  }
 	public ItemTableModel getItemModel () 		{	return m_ItemTableModel;  }
 	public SceneTableModel getSceneModel ()		{	return m_SceneTableModel; }
@@ -218,7 +229,7 @@ public class SceneManager
         	while (inFile.hasNextLine())
         	{
         		String imageName = inFile.nextLine();
-        		String fileName = inFile.nextLine();
+        		String fileName = "images\\" + inFile.nextLine();
         		
         		m_Images.add (new SceneImage(fileName, imageName));
         	}

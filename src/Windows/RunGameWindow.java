@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 import Game_System.Item;
 import Game_System.Player;
@@ -50,6 +51,7 @@ public class RunGameWindow extends JFrame
 	private JTextArea m_NoteTextArea;
 	private boolean m_bDebug;
 	private JLabel m_lblNote;
+	private JScrollPane scrollPane;
 	
 	public class ButtonHandler implements ActionListener 
 	{
@@ -199,8 +201,6 @@ public class RunGameWindow extends JFrame
 		m_SceneManager = sceneManager;
 		m_Player = m_SceneManager.getPlayer();
 		m_Parent = parent;
-		m_Player.clearPlayerInventory();
-		m_SceneManager.clearVisitedScenes();
 		m_bDebug = false;		
 		m_CurrentScene = m_SceneManager.getStartScene();
 		
@@ -263,9 +263,10 @@ public class RunGameWindow extends JFrame
 	private void loadSceneInfo( Scene nextScene )
 	{
 		Item unlockItem = nextScene.getUnlockItem();
-		String addedText = nextScene.getDropItem() != null && !m_Player.inventoryContains(nextScene.getDropItem()) ? 
-				"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
-
+		String addedText = "";
+		if (!m_bDebug)
+			addedText = nextScene.getDropItem() != null && !m_Player.inventoryContains(nextScene.getDropItem()) ? 
+					"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
 
 		if(unlockItem == null || m_bDebug || m_Player.inventoryContains(unlockItem))
 		{

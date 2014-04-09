@@ -61,6 +61,8 @@ public class Scene {
 		
 	}
 	
+	
+	public void addImageToScene(ImageIcon image)	{ m_Image = image;		}
 	public void setSceneIsConnected(boolean bIsConnected) 
 													{ m_ConnectedTo = bIsConnected; }
 	public boolean getSceneIsConnected() 			{ return m_ConnectedTo; }
