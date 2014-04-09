@@ -52,7 +52,7 @@ public class JournalWindow extends JFrame
 	}
 	
 	
-	public JournalWindow (RunGameWindow parent, String notes)
+	public JournalWindow (RunGameWindow parent, String notes, String font)
 	{
 		m_Parent = parent;
 		
@@ -74,7 +74,9 @@ public class JournalWindow extends JFrame
 		getContentPane().add(scrollPane);
 		
 		JTextArea m_NoteTextArea = new JTextArea();
-		m_NoteTextArea.setFont(new Font("Lucida Handwriting", Font.PLAIN, 13));
+		m_NoteTextArea.setLineWrap(true);
+		m_NoteTextArea.setWrapStyleWord(true);
+		m_NoteTextArea.setFont(new Font(font, Font.PLAIN, 13));
 		m_NoteTextArea.setBackground(SystemColor.control);
 		scrollPane.setViewportView(m_NoteTextArea);
 		m_NoteTextArea.setEditable(false);

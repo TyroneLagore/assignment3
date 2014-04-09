@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.*;
 
+import javax.swing.ImageIcon;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
@@ -33,16 +35,19 @@ public class SceneManager
 	private ArrayList<Scene> m_SceneGraph;
 	private ArrayList<Item> m_ItemList;
 	private ArrayList<Scene> m_ScenesVisited;
+	private ArrayList<SceneImage> m_Images;
 	private Scene m_StartScene;
 	private Scene m_CurrentScene;
 	private Scene m_EndScene;
 	private Player m_Player;
+	private static final String m_ImageDocument = "images.txt";
 
 	
 	public SceneManager()
 	{
 		m_StartScene = new Scene ("Beginning", "<Description>");
 		m_EndScene = new Scene ("End", "<Description>");
+		m_Images = new ArrayList<SceneImage>();
 		
 		m_SceneGraph = new ArrayList<Scene>();
 		m_SceneGraph.add(m_StartScene);
@@ -55,6 +60,7 @@ public class SceneManager
 		
 		m_ScenesVisited = new ArrayList<Scene>();
 		
+		parseImages();
 		updateSceneConnections();
 	}
 
@@ -131,12 +137,10 @@ public class SceneManager
 		String notes = "";
 		for ( Scene o_Scene : m_ScenesVisited )
 			if (o_Scene.getNote().length() > 0)
-				notes += o_Scene.getTitle() + " - " + o_Scene.getNote() + "\n";
+				notes += "<b>" + o_Scene.getTitle() + "</b>" + " - " + o_Scene.getNote() + "\n";
 		
 		return notes;
 	}
-	
-	public void clearVisitedScenes()			{ m_ScenesVisited.clear();	  }
 	
 	/*
 	 * Getters
@@ -202,5 +206,31 @@ public class SceneManager
 			for (Scene o_Connection : connections)
 				if (!o_Connection.getSceneIsConnected())
 					findConnections(o_Connection);
+	}
+	
+	public void parseImages()
+	{
+		Scanner inFile;
+        try
+        {
+        	inFile = new Scanner( new File (m_ImageDocument) );
+        	
+        	while (inFile.hasNextLine())
+        	{
+        		String imageName = inFile.nextLine();
+        		String fileName = inFile.nextLine();
+        		
+        		m_Images.add (new SceneImage(fileName, imageName));
+        	}
+        	
+        }catch(Exception ex){}
+	}
+
+	public void resetGame() 
+	{
+		m_Player.clearPlayerInventory();
+		m_ScenesVisited.clear();
+		for (Scene o_Scene : m_SceneGraph )
+			o_Scene.setNote("");
 	}
 }

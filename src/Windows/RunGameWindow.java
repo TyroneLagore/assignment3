@@ -48,6 +48,7 @@ public class RunGameWindow extends JFrame
 	private JButton btnJournal;
 	private JButton btnBacktrack;
 	private JTextArea m_NoteTextArea;
+	private JScrollPane scrollPane;
 	
 	public class ButtonHandler implements ActionListener 
 	{
@@ -94,8 +95,7 @@ public class RunGameWindow extends JFrame
 		m_SceneManager = sceneManager;
 		m_Player = m_SceneManager.getPlayer();
 		m_Parent = parent;
-		m_Player.clearPlayerInventory();
-		m_SceneManager.clearVisitedScenes();
+		m_SceneManager.resetGame();
 		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
 		
@@ -144,10 +144,15 @@ public class RunGameWindow extends JFrame
 		btnGo.setBounds(10, 335, 115, 23);
 		getContentPane().add(btnGo);
 		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(406, 81, 108, 133);
+		getContentPane().add(scrollPane);
+		
 		m_NoteTextArea = new JTextArea();
+		scrollPane.setViewportView(m_NoteTextArea);
+		m_NoteTextArea.setWrapStyleWord(true);
+		m_NoteTextArea.setLineWrap(true);
 		m_NoteTextArea.setText("");
-		m_NoteTextArea.setBounds(406, 81, 108, 133);
-		getContentPane().add(m_NoteTextArea);
 		
 		JLabel lblNote = new JLabel("Note");
 		lblNote.setHorizontalAlignment(SwingConstants.CENTER);
@@ -174,11 +179,21 @@ public class RunGameWindow extends JFrame
 		dispose();
 	}
 	
-	private void openInventory(){}
+	private void openInventory()
+	{
+		String inventory = "";
+		for (Item o_Item : m_Player.getInventory())
+			inventory += o_Item.getName() + "\n";
+			
+		
+		JournalWindow jw = new JournalWindow(this, inventory, "Comic Sans");
+		toggleButtons(false);
+		jw.run();
+	}
 	
 	private void openJournal()
 	{
-		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes());
+		JournalWindow jw = new JournalWindow(this, m_SceneManager.getNotes(), "Lucida Handwriting");
 		toggleButtons(false);
 		jw.run();
 		
@@ -208,10 +223,9 @@ public class RunGameWindow extends JFrame
 	private void loadSceneInfo( Scene nextScene )
 	{
 		Item unlockItem = nextScene.getUnlockItem();
-		String addedText = nextScene.getDropItem() != null ? 
+		String addedText = nextScene.getDropItem() != null && !m_Player.inventoryContains(nextScene.getDropItem()) ? 
 				"You receive loot: " + nextScene.getDropItem().getName() + "\n\n" : "";
 		
-
 		if (unlockItem == null || m_Player.inventoryContains(unlockItem))
 		{
 			m_CurrentScene.setNote(m_NoteTextArea.getText());
@@ -222,7 +236,7 @@ public class RunGameWindow extends JFrame
 			m_NoteTextArea.setText(m_CurrentScene.getNote());
 			
 			if (addedText.length() > 0)
-				m_Player.addItem(nextScene.getDropItem());
+				m_Player.addItem(m_CurrentScene.getDropItem());
 			
 			m_lblTitle.setText(m_CurrentScene.getTitle());
 			m_SceneDescTextArea.setText(addedText + m_CurrentScene.getDesc());
@@ -234,8 +248,14 @@ public class RunGameWindow extends JFrame
 				btnGo.setText("Go");
 				
 		}else
+		{
+			m_CurrentScene.setNote("Needed item: " + unlockItem.getName() 
+					+ " to enter " + nextScene.getTitle() + "\n\n" + m_NoteTextArea.getText());
+			
+			m_NoteTextArea.setText(m_CurrentScene.getNote());
 			m_WindowComm.displayMessage("You require a " + unlockItem.getName() + " to enter that"
 					+ " scene!.");
+		}
 	}
 	
 	private void generateChoices()

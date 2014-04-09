@@ -5,6 +5,8 @@ package Scene_Manager;
 
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+
 import Game_System.Item;
 
 /**
@@ -23,6 +25,7 @@ public class Scene {
 	private boolean m_ConnectedTo;
 	private static final int MAX_CONNECTIONS = 4;
 	private String m_Note;
+	private ImageIcon m_Image;
 
 	public Scene(String title, String desc) {
 		m_UnlockItem = null;

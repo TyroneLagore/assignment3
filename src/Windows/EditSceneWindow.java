@@ -1,6 +1,8 @@
 package Windows;
 
 import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -15,6 +17,7 @@ import TableModels.SceneTableModel;
 import UserIO.WindowComm;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -163,7 +166,7 @@ public class EditSceneWindow extends JFrame {
 		
 		ButtonHandler btnHandler = new ButtonHandler();
 		
-		setBounds( 100, 100, 830, 440 );
+		setBounds( 100, 100, 830, 548 );
 		Point parentLocation = m_Parent.getLocation();
 		double parentX = parentLocation.getX();
 		double parentY = parentLocation.getY();
@@ -212,7 +215,7 @@ public class EditSceneWindow extends JFrame {
 		
 		m_DescScrollPane = new JScrollPane();
 		m_DescScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		m_DescScrollPane.setBounds(10, 209, 325, 168);
+		m_DescScrollPane.setBounds(10, 318, 325, 168);
 		getContentPane().add(m_DescScrollPane);
 		
 		m_DescTextArea = new JTextArea();
@@ -226,7 +229,7 @@ public class EditSceneWindow extends JFrame {
 		getContentPane().add(lblConnectedScenes);
 		
 		lblDescription = new JLabel("Description");
-		lblDescription.setBounds(10, 184, 109, 14);
+		lblDescription.setBounds(10, 293, 109, 14);
 		getContentPane().add(lblDescription);
 		
 		btnConnectScene = new JButton("Connect A Scene");
@@ -306,6 +309,14 @@ public class EditSceneWindow extends JFrame {
 		lblStartOrEnd.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStartOrEnd.setBounds(308, 63, 208, 14);
 		getContentPane().add(lblStartOrEnd);
+		
+		
+		JLabel label = new JLabel();
+		label.setBounds(10, 95, 275, 187);
+		String filename = m_WindowComm.getFileFromExplorer(FileDialog.LOAD);
+		ImageIcon image = new ImageIcon(filename);
+		label.setIcon(image);
+		getContentPane().add(label);
 		
 		if (m_Scene.getUnlockItem() != null)
 		{
