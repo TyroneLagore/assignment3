@@ -1,42 +1,63 @@
 package TableModels;
 
 import java.util.ArrayList;
-
 import javax.swing.table.*;
-
-import Game_System.Item;
 import Scene_Manager.Scene;
 
+/**
+ * Model for Scene Tables.
+ *
+ * @author	Team Smart Water
+ * @version v1.0 - Apr 8, 2014
+ */
+@SuppressWarnings( "serial" )
 public class SceneTableModel extends AbstractTableModel
-{ /* XXX isolated infers it has no connections, prior or post */
+{ 
+	// Private Variables
 	private String[] headers = { "Name","Item Drops", "Item Unlocks","# Connected","Reachable" };
 	private ArrayList<Scene> m_SceneGraph;
 	
+	// Constants
 	private static final int NAME 				= 0;
 	private static final int DROP 				= 1;
 	private static final int UNLOCK				= 2;
 	private static final int NUM_CONNECTIONS 	= 3;
 	private static final int NO_PATH			= 4;
 	
+	/**
+	 * Constructor - Takes in a starting array of scenes to set to the internal list.
+	 * 
+	 * @param sceneGraph	The List of scenes to set internally.
+	 */
 	public SceneTableModel ( ArrayList<Scene> sceneGraph)
 	{
 		m_SceneGraph = sceneGraph;
 		fireTableDataChanged();
 	}
 	
+	/**
+	 * Sets a new sceneGraph to the internal scene graph.  Called when a new game is loaded.
+	 * 
+	 * @param sceneGraph	The new list to set the internal list to.
+	 */
 	public void setNewSceneGraph (ArrayList<Scene> sceneGraph )
 	{ 
 		m_SceneGraph = sceneGraph; 
 		fireTableDataChanged();
 	}
+	
+	/*******************************************************************\
+	 * Functions Used by the Table									   *
+	\*******************************************************************/
+	@Override
 	public String getColumnName(int column)		{ return headers[column]; }
 	@Override
 	public int getColumnCount() 				{ return headers.length;  }
 	@Override
 	public int getRowCount() 					{ return m_SceneGraph.size(); }
-	@Override
+	@SuppressWarnings( { "rawtypes", "unchecked" } )
+    @Override
 	public Class getColumnClass(int arg0) 		{ return getValueAt(0, arg0).getClass(); }
-
 	@Override
 	public Object getValueAt(int row, int col) 
 	{
@@ -71,15 +92,17 @@ public class SceneTableModel extends AbstractTableModel
 		
 		return returnObj;
 	}
+	/*******************************************************************\
+	 * End - Functions Used by the Table							   *
+	\*******************************************************************/
 	
 	/**
 	 * Gets a scene from the specified index
-	 * @param index The row in which the item is kept.
-	 * @return Scene The indexed item.
+	 * @param index 	The row in which the Scene is kept.
+	 * @return Scene 	The indexed Scene.
 	 */
 	public Scene getSceneAt(int index)
 	{
 		return m_SceneGraph.get(index);
 	}
-
 }
