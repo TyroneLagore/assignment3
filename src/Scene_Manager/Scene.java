@@ -36,6 +36,7 @@ public class Scene {
 		m_Desc = desc;
 		m_ConnectedTo = false;
 		m_Note = "";
+		m_Image = null;
 	}
 
 	public void addConnection(Scene toConnect, String connectionLabel) 
@@ -84,6 +85,7 @@ public class Scene {
 	public Item getUnlockItem()			 			{ return m_UnlockItem; 		}
 
 	/* Getters/Setters */
+	public ImageIcon getImage()						{ return m_Image;			}
 	public void setNote(String note)				{ m_Note = note;			}
 	public String getNote()							{ return m_Note;			}
 	public String getTitle() 						{ return m_Title; 			}
