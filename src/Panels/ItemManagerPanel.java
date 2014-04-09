@@ -6,8 +6,6 @@ import Scene_Manager.SceneManager;
 import TableModels.ItemTableModel;
 import UserIO.WindowComm;
 import Windows.*;
-import Windows.MainWindow;
-import net.miginfocom.swing.MigLayout;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.TitledBorder;
@@ -18,6 +16,7 @@ import javax.swing.border.TitledBorder;
  * @author	Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
+@SuppressWarnings( "serial" )
 public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 	/* Private Variables */
 	private JTable 			m_ItemTable;
@@ -26,24 +25,20 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 	private JButton 		m_EdtItmBtn;
 	private JScrollPane 	scrollPane;
 	private WindowComm 		m_WindowComm;
-	private SceneManager 	m_SceneManager;
 	private ItemTableModel 	m_ItemTableModel;
+	private JTextField 		m_ItemTitleTextField;
+	private JTextArea 		m_ItemDescriptionTextArea;
+	private JTextField 		m_ItemUnlocksTextField;
+	private JTextField 		m_ItemDropsTextField;
+	private JLabel 			lblItemDropsAt;
 	
 	// Constants
 	private static final int YES	= 0;
-	private JTextField m_ItemTitleTextField;
-	private JTextArea m_ItemDescriptionTextArea;
-	private JTextField m_ItemUnlocksTextField;
-	private JTextField m_ItemDropsTextField;
-	private JLabel lblItemDropsAt;
 	
+	/**
+	 * Button Handler for Item Manager Panel.
+	 */
 	public class ItemManagerButtonHandler implements ActionListener {
-		private ItemManagerPanel parent;
-
-		public ItemManagerButtonHandler(ItemManagerPanel parent) {
-			this.parent = parent;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
@@ -54,13 +49,16 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 	}
 
 	/**
-	 * Create the panel.
+	 * Create the ItemManagerPanel.
+	 * 
+	 * @param itemsTable	The Model to load the Item Table with.
+	 * @param mWindow		The parent window.
+	 * @param sManager		The SceneManager to load the Item List from if a new Game is being loaded.
 	 */
 	public ItemManagerPanel( ItemTableModel itemsTable, MainWindow mWindow, SceneManager sManager )
 	{
-		ItemManagerButtonHandler btnHandler = new ItemManagerButtonHandler(this);
+		ItemManagerButtonHandler btnHandler = new ItemManagerButtonHandler( );
 		m_WindowComm = new WindowComm(mWindow);
-		m_SceneManager = sManager;
 		m_ItemTableModel = itemsTable;
 		
 		m_AddItmBtn = new JButton("Add");
@@ -170,6 +168,9 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		openEditItemWindow( m_NewItem, true );
 	}
 	
+	/**
+	 * After prompting the user, removes the item and disconnects it from associated scenes.
+	 */
 	private void removeItem( )
 	{
 		Item m_ItemToRemove = getSelectedItem( );
@@ -179,16 +180,8 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 			int iResult = m_WindowComm.getYesNo( "Are you sure you want to remove \"" + 
 												 m_ItemToRemove.getName( ) + "?\"", "Remove" );
 			
-			if( YES == iResult )
-			{
-				if( m_ItemToRemove.dropsInAScene( ) )
-					m_ItemToRemove.getDropScene( ).removeDropItem( );
-				
-				if( m_ItemToRemove.unlocksAScene( ) )
-					m_ItemToRemove.getUnlockScene( ).removeUnlockItem( );
-				
+			if( YES == iResult )				
 				m_ItemTableModel.removeItem( m_ItemToRemove.getName( ) );
-			}
 		}
 		else
 			m_WindowComm.displayMessage( "No Item selected!" );
@@ -268,19 +261,18 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 		m_AddItmBtn.setEnabled(b_Toggle);
 		m_RmvItmBtn.setEnabled(b_Toggle);
 		m_EdtItmBtn.setEnabled(b_Toggle);
-	}
-	
-	public void loadSceneManager()
-	{
-		m_ItemTableModel.setNewItemList(m_SceneManager.getItemList());
-	}
-	
+	}	
 
+	/**
+	 * Mouse Event that triggers when a mouse is clicked and dragged.
+	 * -- NOT IMPLEMENTED --
+	 */
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		
-	}
+	public void mouseDragged(MouseEvent arg0) { }
 
+	/**
+	 * Functionality that loads up side-inspection with the item that the mouse is over.
+	 */
 	@Override
 	public void mouseMoved(MouseEvent event) 
 	{
@@ -297,6 +289,9 @@ public class ItemManagerPanel extends JPanel implements MouseMotionListener {
 			clearSceneFields();
 	}
 	
+	/**
+	 * Function to clear all the fields on the side-inspection.
+	 */
 	private void clearSceneFields()
 	{
 		m_ItemTitleTextField.setText("");

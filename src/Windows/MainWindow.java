@@ -2,29 +2,36 @@ package Windows;
 
 import java.awt.*;
 import javax.swing.JFrame;
+<<<<<<< HEAD
 import javax.swing.JOptionPane;
+=======
+import Game_System.GameSystem;
+>>>>>>> upstream/master
 import Panels.ItemManagerPanel;
 import Panels.SceneManagerPanel;
 import Scene_Manager.SceneManager;
-import TableModels.*;
 import UserIO.WindowComm;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
-import javax.swing.JPanel;
 
 /**
- * Main Window object for displaying the majority of the game editor
+ * Main Window object for displaying and implementing the majority of the game editor
  * functionality.
  * 
  * @author Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
+@SuppressWarnings( "serial" )
 public class MainWindow extends JFrame{
 
 	/* Private Variables for Main Window */
+<<<<<<< HEAD
 	
 	private SceneManager m_MainSystem;
+=======
+	private GameSystem m_MainSystem;
+>>>>>>> upstream/master
 	private SceneManagerPanel m_SceneMngrPnl;
 	private ItemManagerPanel m_ItemMngrPnl;
 	private WindowComm m_WindowComm;
@@ -35,34 +42,30 @@ public class MainWindow extends JFrame{
 	private JMenuItem mntmQuit;
 	private JMenuItem mntmRun;
 
-	// ================== Inner Classes ==============================
+	/**
+	 * Inner class button handler for handling button clicked events.
+	 *
+	 * @author	James C. Coté
+	 * @version v1.0 - Apr 8, 2014
+	 */
 	public class MenuHandler implements ActionListener {
-		private MainWindow window;
-
-		public MenuHandler(MainWindow window) {
-			this.window = window;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
 			if (e.getSource().equals(mntmSave))
 				saveProject();
-
 			else if (e.getSource().equals(mntmLoad))
 				loadProject();
-			
 			else if (e.getSource().equals(mntmQuit))
 				verifyQuit();
-			
 			else if (e.getSource().equals(mntmRun))
 				runGame();
 		}
 	}
-	
 
-
-	// =============================================================
+	/**
+	 * Runs the Window.
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
@@ -81,7 +84,7 @@ public class MainWindow extends JFrame{
 	
 	
 	/**
-	 * Create the application.
+	 * Create the Window and initialize its parameters.
 	 */
 	public MainWindow( SceneManager mainSystem ) {
 		m_MainSystem = mainSystem;
@@ -132,11 +135,18 @@ public class MainWindow extends JFrame{
 		}
 	}
 	
+	/**
+	 * Function that makes the main window visible after the Run window closes.
+	 * - Called from Run Window.
+	 */
 	public void runWindowHasClosed()
 	{
 		setVisible(true);
 	}
 
+	/**
+	 * Launches the run window and runs the game in its current state.
+	 */
 	public void runGame()
 	{
 		if (m_MainSystem.getEndScene().getSceneIsConnected())
@@ -147,8 +157,9 @@ public class MainWindow extends JFrame{
 		}else
 			m_WindowComm.displayMessage("The \"Beginning\" scene must connect to the \"End\" scene.");
 	}
+	
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the contents of the Window.
 	 */
 	private void initialize() {
 		addWindowListener(new WindowAdapter() {
@@ -160,7 +171,7 @@ public class MainWindow extends JFrame{
 		
 		m_WindowComm = new WindowComm(this);
 		
-		MenuHandler btnHandler = new MenuHandler(this);
+		MenuHandler btnHandler = new MenuHandler( );
 		
 		setBounds(100, 100, 799, 569);
 
@@ -204,7 +215,7 @@ public class MainWindow extends JFrame{
 	}
 	
 	/**
-	 * Window closing override
+	 * Functionality for closing a window.
 	 */
 	private void closeWindow()
 	{

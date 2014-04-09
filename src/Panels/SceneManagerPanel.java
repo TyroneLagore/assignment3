@@ -1,39 +1,24 @@
 package Panels;
 
 import java.awt.*;
-
 import Windows.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseMotionListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
-import javax.swing.JToolTip;
-
 import Scene_Manager.Scene;
 import Scene_Manager.SceneManager;
 import TableModels.SceneTableModel;
 import UserIO.WindowComm;
-import net.miginfocom.swing.MigLayout;
-
-import javax.swing.DropMode;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.JTextPane;
 
 /**
  * Main Panel for Managing all the scenes in the game, allows the user the
@@ -43,8 +28,8 @@ import javax.swing.JTextPane;
  * @author Team Smart Water
  * @version v1.0 - Mar 25, 2014
  */
+@SuppressWarnings( "serial" )
 public class SceneManagerPanel extends JPanel implements MouseMotionListener{
-	private int x, y;  // mouse x, y
 	private JButton m_RmvScnBtn;
 	private JButton m_AddScnBtn;
 	private JTable m_SceneTable;
@@ -59,13 +44,10 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 	private JTextField m_ItemUnlocks;
 
 
+	/**
+	 * Button Handler for Scene Manager Panel Buttons.
+	 */
 	public class ButtonHandler implements ActionListener {
-		private SceneManagerPanel scenePanel;
-
-		public ButtonHandler(SceneManagerPanel scenePanel) {
-			this.scenePanel = scenePanel;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent btnPressed) {
 			if (btnPressed.getSource().equals(m_RmvScnBtn))
@@ -78,7 +60,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 	}
 
 	/**
-	 * 
+	 * Functionality for removing a scene from the graph.
 	 */
 	public void removeSceneClicked() 
 	{
@@ -102,7 +84,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 	}
 
 	/**
-	 * 
+	 * Implements functionality for adding a scene to the game.
 	 */
 	public void addSceneClicked()
 	{
@@ -111,7 +93,7 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 	}
 
 	/**
-	 * 
+	 * Implements functionality for editing a scene that's in the game.
 	 */
 	public void editSceneClicked() 
 	{
@@ -119,6 +101,10 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 			openEditSceneWindow(m_SceneTableModel.getSceneAt(m_SceneTable.getSelectedRow()));
 	}
 	
+	/**
+	 * Opens up an EditSceneWindow with the specified Scene to edit.
+	 * @param toEdit	The Scene to launch the window with.
+	 */
 	private void openEditSceneWindow(Scene toEdit)
 	{
 		toggleSaveEditEnabled(false);
@@ -126,6 +112,14 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		esw.run();
 	}
 
+	/**
+	 * Given a scene, saves the scene to the Scene Manager with a new title (presumably edited by the caller).
+	 * 
+	 * @param toSave	The Scene to save.
+	 * @param newTitle	The new title to save the scene under.
+	 * @return			Returns whether the scene was saved successfully or not.
+	 * 					Will return with false if the newTitle already exists.
+	 */
 	public boolean saveEdittedScene(Scene toSave, String newTitle)
 	{
 		boolean b_SceneAdded = m_SceneManager.saveScene(toSave, newTitle);
@@ -135,23 +129,36 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		return b_SceneAdded;
 	}
 	
+	/**
+	 * Function that's called specifically from the edit scene window.
+	 * toggles buttons and visible dynamics to be visible.
+	 */
 	public void editSceneWindowHasClosed()
 	{
 		toggleSaveEditEnabled(true);
 	}
 	
+	/**
+	 * Function that sets whether the buttons are enabled or not.
+	 * @param b_Toggle	Variable to set the buttons to be enabled or disabled.
+	 */
 	private void toggleSaveEditEnabled(boolean b_Toggle)
 	{
 		m_AddScnBtn.setEnabled(b_Toggle);
 		m_RmvScnBtn.setEnabled(b_Toggle);
 		m_EdtScnBtn.setEnabled(b_Toggle);
 	}
+	
 	/**
-	 * Create the panel.
+	 * Creates and initializes the panel.
+	 * 
+	 * @param scenesTable	The Table Model to load the table with.
+	 * @param mWindow		The parent window for loading new windows from.
+	 * @param sManager		The scene manager to reference for saving scenes.
 	 */
 	public SceneManagerPanel(SceneTableModel scenesTable, MainWindow mWindow, SceneManager sManager) {
 
-		ButtonHandler btnHandler = new ButtonHandler(this);
+		ButtonHandler btnHandler = new ButtonHandler( );
 		m_WindowComm = new WindowComm (mWindow);
 		m_SceneManager = sManager;
 
@@ -240,17 +247,17 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 		lblItemDroppedOn.setBounds(16, 301, 170, 14);
 		panel.add(lblItemDroppedOn);
 	}
-	
-	public void loadSceneManager()
-	{
-		m_SceneTableModel.setNewSceneGraph(m_SceneManager.getSceneGraph());
-	}
 
+	/**
+	 * Handler for Dragging the Mouse.
+	 *  -- NOT IMPLEMENTED --
+	 */
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		
-	}
+	public void mouseDragged(MouseEvent arg0) { }
 
+	/**
+	 * Trigger for events when the mouse is moved over an object.
+	 */
 	@Override
 	public void mouseMoved(MouseEvent event) 
 	{
@@ -267,6 +274,9 @@ public class SceneManagerPanel extends JPanel implements MouseMotionListener{
 			clearSceneFields();
 	}
 	
+	/**
+	 * Clears fields on the side-description.
+	 */
 	public void clearSceneFields()
 	{
 		m_SceneTitleTextField.setText("");

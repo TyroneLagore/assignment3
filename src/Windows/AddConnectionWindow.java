@@ -1,23 +1,24 @@
 package Windows;
 
 import java.awt.EventQueue;
-
 import javax.swing.*;
-
-import Panels.SceneManagerPanel;
 import Scene_Manager.*;
 import TableModels.SceneTableModel;
-import UserIO.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Window for selecting and Adding a connection to a scene.
+ *
+ * @author	Team Smart Water
+ * @version v1.0 - Apr 8, 2014
+ */
+@SuppressWarnings( "serial" )
 public class AddConnectionWindow extends JFrame 
 {
-	private WindowComm m_WindowComm;
 	private EditSceneWindow m_Parent;
 	private JList <Scene>m_ScenesJList;
 	private JScrollPane m_ScenesScrollPane;
@@ -25,14 +26,10 @@ public class AddConnectionWindow extends JFrame
 	private DefaultListModel<Scene> m_SceneListModel;
 	private JButton btnConnectScene;
 	
-	
+	/**
+	 * Button Handler for AddConnectionWindow Buttons
+	 */
 	public class ButtonHandler implements ActionListener {
-		private AddConnectionWindow window;
-
-		public ButtonHandler(AddConnectionWindow addConnectionWindow) {
-			this.window = addConnectionWindow;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
@@ -43,9 +40,15 @@ public class AddConnectionWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Constructor for AddConnectionWindow - Initializes private variables as well as window functionality.
+	 * 
+	 * @param sceneTable	The SceneTableModel to load the list from.
+	 * @param parent		The parent window to set position and bounds from
+	 * @param buttonName	Dynamic name of the Connect Scene Button
+	 */
 	public AddConnectionWindow( SceneTableModel sceneTable, EditSceneWindow parent, String buttonName)
 	{
-		m_WindowComm = new WindowComm(this);
 		getContentPane().setLayout(null);
 
 		m_Parent = parent;
@@ -54,11 +57,10 @@ public class AddConnectionWindow extends JFrame
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
 				closeWindow();
 			}
 		});
-		ButtonHandler btnHandler = new ButtonHandler(this);
+		ButtonHandler btnHandler = new ButtonHandler( );
 		
 		setBounds( 100, 100, 390, 552 );
 		Point parentLocation = m_Parent.getLocation();
@@ -93,7 +95,9 @@ public class AddConnectionWindow extends JFrame
 
 	}
 	
-	
+	/**
+	 * Function to run the Window
+	 */
 	public void run()
 	{
 		EventQueue.invokeLater(new Runnable() 
@@ -110,6 +114,9 @@ public class AddConnectionWindow extends JFrame
 		});
 	}
 	
+	/**
+	 * Functionality to perform when the ConnectScene button is clicked.
+	 */
 	private void connectSceneClicked()
 	{
 		Scene toConnect = m_ScenesJList.getSelectedValue();
@@ -120,6 +127,9 @@ public class AddConnectionWindow extends JFrame
 		}
 	}
 	
+	/**
+	 * Implements Close Window functionality.
+	 */
 	private void closeWindow()
 	{
 		m_Parent.addConnectionWindowHasClosed();
